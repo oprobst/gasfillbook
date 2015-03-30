@@ -13,7 +13,7 @@
   <!-- Other module inherits                                      -->
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='de.tsvmalsch.client.gasfillbook' />
+  <entry-point class='de.tsvmalsch.client.GasFillBook' />
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
