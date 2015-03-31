@@ -1,10 +1,17 @@
 package de.tsvmalsch.client;
 
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -12,17 +19,32 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.shared.model.Member;
+
 public class Login extends Composite {
 	private TextBox textBoxUsername;
+	private TextBox textBoxMemberNumber;
 	private TextBox textBoxPassword;
 	private final RootPanel rootPanel;
+	private Label lblWelcome = new Label("Hallo,");
+
+	Logger logger = Logger.getLogger("NameOfYourLogger");
+
+	/**
+	 * Create a remote service proxy to talk to the server-side Greeting
+	 * service.
+	 */
+	private final UserAuthenticationServiceAsync authService = GWT
+			.create(UserAuthenticationService.class);
 
 	public Login(final RootPanel rootPanel) {
+
+		authService.getAllMembers(new AsyncCallbackAllMembers());
+
 		this.rootPanel = rootPanel;
 		VerticalPanel verticalPanel = new VerticalPanel();
 		initWidget(verticalPanel);
 
-		Label lblWelcome = new Label("Hallo,");
 		lblWelcome.setStyleName("gwt-Label-Login");
 		verticalPanel.add(lblWelcome);
 
@@ -46,8 +68,8 @@ public class Login extends Composite {
 		lblNumber.setStyleName("gwt-Label-Login");
 		flexTable.setWidget(1, 0, lblNumber);
 
-		textBoxUsername = new TextBox();
-		flexTable.setWidget(1, 1, textBoxUsername);
+		textBoxMemberNumber = new TextBox();
+		flexTable.setWidget(1, 1, textBoxMemberNumber);
 
 		Label lblPassword = new Label("Password:");
 		lblPassword.setStyleName("gwt-Label-Login");
@@ -64,10 +86,56 @@ public class Login extends Composite {
 					Window.alert("Username or password is empty.");
 				}
 
+				authService.authenticate(
+						Integer.parseInt(textBoxMemberNumber.getText()),
+						textBoxPassword.getText(),
+						new AsyncCallbackAuthenticate());
+
 				rootPanel.clear();
 				rootPanel.add(new MainPanel());
 			}
 		});
 		flexTable.setWidget(3, 1, btnSignIn);
 	}
+
+	class AsyncCallbackAllMembers implements AsyncCallback<Collection<Member>> {
+
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE,
+					"Failure when getting all members from db.", caught);
+
+			dialogBox.center();
+
+		}
+
+		public void onSuccess(Collection<Member> result) {
+			lblWelcome.setText(result.toString());
+
+		}
+	};
+
+	class AsyncCallbackAuthenticate implements AsyncCallback<Boolean> {
+
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE, "Failure when authenticating member.",
+					caught);
+
+			dialogBox.center();
+			caught.printStackTrace();
+
+		}
+
+		public void onSuccess(Boolean result) {
+			lblWelcome.setText(result.toString());
+
+		}
+	};
 }
