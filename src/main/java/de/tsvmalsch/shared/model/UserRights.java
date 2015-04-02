@@ -1,11 +1,17 @@
 package de.tsvmalsch.shared.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class UserRights {
+public class UserRights implements Serializable {
+
+	/**
+	 * suid
+	 */
+	private static final long serialVersionUID = -3387478939230147281L;
 
 	private Boolean isAuthorizedToBlendPartial = false;
 	
