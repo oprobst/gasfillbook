@@ -24,7 +24,7 @@ public class FillingInvoiceItem implements Serializable {
 	 */
 	private static final long serialVersionUID = -8540656564045693342L;
 
-	private FillingInvoiceItem adjustmentEntyFor;
+	private FillingInvoiceItem adjustmentEntryFor;
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -33,6 +33,10 @@ public class FillingInvoiceItem implements Serializable {
 	@ManyToOne
 	@NotNull
 	private Member creditor;
+
+	private float pricePerLiterHelium;
+
+	private float pricePerLiterOxygen;
 
 	@NotNull
 	private Date dateOfFilling;
@@ -45,11 +49,10 @@ public class FillingInvoiceItem implements Serializable {
 	@GeneratedValue(generator = "increment")
 	@GenericGenerator(name = "increment", strategy = "increment")
 	private Long id;
-	
+
 	private Date invoicingDate;
 
 	private int literHeliumFilled;
-
 	private int literOxygenFilled;
 
 	private Date paymentReceiptDate;
@@ -57,7 +60,7 @@ public class FillingInvoiceItem implements Serializable {
 	private int startingPressure;
 
 	public FillingInvoiceItem getAdjustmentEntryFor() {
-		return adjustmentEntyFor;
+		return adjustmentEntryFor;
 	}
 
 	public BlendingType getBlendingType() {
@@ -96,12 +99,20 @@ public class FillingInvoiceItem implements Serializable {
 		return paymentReceiptDate;
 	}
 
+	public float getPricePerLiterHelium() {
+		return pricePerLiterHelium;
+	}
+
+	public float getPricePerLiterOxygen() {
+		return pricePerLiterOxygen;
+	}
+
 	public int getStartingPressure() {
 		return startingPressure;
 	}
 
 	public void setAdjustmentEntryFor(FillingInvoiceItem adjustmentEntryOf) {
-		this.adjustmentEntyFor = adjustmentEntryOf;
+		this.adjustmentEntryFor = adjustmentEntryOf;
 	}
 
 	public void setBlendingType(BlendingType blendingType) {
@@ -138,6 +149,14 @@ public class FillingInvoiceItem implements Serializable {
 
 	public void setPaymentReceiptDate(Date paymentReceiptDate) {
 		this.paymentReceiptDate = paymentReceiptDate;
+	}
+
+	public void setPricePerLiterHelium(float pricePerLiterHelium) {
+		this.pricePerLiterHelium = pricePerLiterHelium;
+	}
+
+	public void setPricePerLiterOxygen(float pricePerLiterOxygen) {
+		this.pricePerLiterOxygen = pricePerLiterOxygen;
 	}
 
 	public void setStartingPressure(int startingPressure) {
