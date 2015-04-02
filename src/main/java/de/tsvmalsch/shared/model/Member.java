@@ -3,8 +3,10 @@ package de.tsvmalsch.shared.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -22,7 +24,7 @@ public class Member implements Serializable {
 	 */
 	private static final long serialVersionUID = 3113539902485969147L;
 
-	@OneToMany(mappedBy = "owner")
+	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Cylinder> cylinders;
 
 	@NotNull

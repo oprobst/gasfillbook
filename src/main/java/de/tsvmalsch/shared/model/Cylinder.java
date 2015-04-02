@@ -17,8 +17,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-public class Cylinder implements Serializable {
-
+public class Cylinder implements Serializable{
+ 
 	/**
 	 * suid
 	 */
@@ -59,6 +59,8 @@ public class Cylinder implements Serializable {
 
 	private String valveKit;
 
+	
+	
 	public CylinderType getGasType() {
 		return gasType;
 	}

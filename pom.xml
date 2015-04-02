@@ -66,6 +66,12 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.35</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.dozer</groupId>
+			<artifactId>dozer</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+
 
 		<!-- GWT dependencies -->
 		<dependency>
@@ -78,11 +84,8 @@
 			<artifactId>gwt-user</artifactId>
 			<scope>provided</scope>
 		</dependency>
-	<!-- 	<dependency>
-			<groupId>com.sencha.gxt</groupId>
-			<artifactId>gxt</artifactId>
-			<version>3.1.1</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.sencha.gxt</groupId> <artifactId>gxt</artifactId> 
+			<version>3.1.1</version> </dependency> -->
 
 
 		<!-- Testing dependencies -->
