@@ -25,8 +25,7 @@ public class Login extends Composite {
 	private TextBox textBoxUsername;
 	private TextBox textBoxMemberNumber;
 	private TextBox textBoxPassword;
-	private final RootPanel rootPanel;
-	private Label lblWelcome = new Label("Hallo,");
+	 private Label lblWelcome = new Label("Hallo,");
 
 	Logger logger = Logger.getLogger("NameOfYourLogger");
 
@@ -37,11 +36,10 @@ public class Login extends Composite {
 	private final UserAuthenticationServiceAsync authService = GWT
 			.create(UserAuthenticationService.class);
 
-	public Login(final RootPanel rootPanel) {
+	public Login() {
 
 		authService.getAllMembers(new AsyncCallbackAllMembers());
-
-		this.rootPanel = rootPanel;
+ 
 		VerticalPanel verticalPanel = new VerticalPanel();
 		initWidget(verticalPanel);
 
@@ -90,7 +88,8 @@ public class Login extends Composite {
 						Integer.parseInt(textBoxMemberNumber.getText()),
 						textBoxPassword.getText(),
 						new AsyncCallbackAuthenticate());
-
+				
+				RootPanel rootPanel = RootPanel.get();
 				rootPanel.clear();
 				rootPanel.add(new MainPanel());
 			}

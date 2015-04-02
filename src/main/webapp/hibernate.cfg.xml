@@ -18,5 +18,6 @@
 
 		<mapping class="de.tsvmalsch.shared.model.Member" />
 		<mapping class="de.tsvmalsch.shared.model.Cylinder" />
+		<mapping class="de.tsvmalsch.shared.model.FillingInvoiceItem" />
 	</session-factory>
 </hibernate-configuration>

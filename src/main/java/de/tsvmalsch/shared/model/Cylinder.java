@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -22,10 +24,25 @@ public class Cylinder implements Serializable {
 	 */
 	private static final long serialVersionUID = -1393816010017456513L;
 
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private CylinderType gasType;
+
 	@Id
 	@GeneratedValue(generator = "increment")
 	@GenericGenerator(name = "increment", strategy = "increment")
 	private Long id;
+
+	@Min(200)
+	@Max(300)
+	private int maximumPreasure;
+
+	private String name;
+
+	@NotNull
+	private Date nextInspectionDate;
+
+	private String note;
 
 	@ManyToOne
 	@NotNull
@@ -37,21 +54,10 @@ public class Cylinder implements Serializable {
 	@NotNull
 	private Float sizeInLiter;
 
-	@NotNull
-	private Date nextInspectionDate;
-
-	@NotNull
-	@Enumerated(EnumType.STRING)
-	private CylinderType gasType;
-	
 	@OneToOne
 	private Cylinder twinSetPartner;
 
 	private String valveKit;
-
-	private String note;
-
-	private String name;
 
 	public CylinderType getGasType() {
 		return gasType;
@@ -59,6 +65,10 @@ public class Cylinder implements Serializable {
 
 	public Long getId() {
 		return id;
+	}
+
+	public int getMaximumPreasure() {
+		return maximumPreasure;
 	}
 
 	public String getName() {
@@ -99,6 +109,10 @@ public class Cylinder implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public void setMaximumPreasure(int maximumPreasure) {
+		this.maximumPreasure = maximumPreasure;
 	}
 
 	public void setName(String name) {

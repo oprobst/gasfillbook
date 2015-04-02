@@ -58,7 +58,7 @@ public class GasFillBook implements EntryPoint {
 		verticalPanel.add(lblWelcomeToThe);
 		lblWelcomeToThe.setSize("206px", "124px");
 
-		Login login = new Login(rootPanel);
+		Login login = new Login();
 		verticalPanel.add(login);
 		
 		
