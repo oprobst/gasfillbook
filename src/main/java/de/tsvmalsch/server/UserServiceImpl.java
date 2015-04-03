@@ -15,16 +15,16 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import de.tsvmalsch.client.UserAuthenticationService;
+import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.shared.model.Member;
 
 @SuppressWarnings("serial")
-public class UserAuthenticationServiceImpl extends RemoteServiceServlet
-		implements UserAuthenticationService {
+public class UserServiceImpl extends RemoteServiceServlet
+		implements UserService {
 
-	Logger log = LoggerFactory.getLogger(UserAuthenticationServiceImpl.class);
+	Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
-	public UserAuthenticationServiceImpl() throws Exception {
+	public UserServiceImpl() throws Exception {
 
 		Member m = new Member();
 		m.setFirstName("Oliver");
@@ -56,6 +56,11 @@ public class UserAuthenticationServiceImpl extends RemoteServiceServlet
 		m.setHasGasblenderBrevet(true);
 		allMembers.put("Olivia Patzelt", m);
 
+		Collection <Member> moreDummys = CreateDemoDataService.createDummyMembers();
+		for (Member dmem : moreDummys){
+			allMembers.put(dmem.getFirstName() + " " + dmem.getLastName(), dmem);
+		}
+		
 		if (true)
 			return;
 

@@ -3,19 +3,13 @@
                          "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 	<!-- Servlets -->
-	<servlet>
-		<servlet-name>greetServlet</servlet-name>
-		<servlet-class>de.tsvmalsch.server.GreetingServiceImpl</servlet-class>
-	</servlet>
+	 
 	<servlet>
 		<servlet-name>authServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.UserAuthenticationServiceImpl</servlet-class>
 	</servlet>
 
-	<servlet-mapping>
-		<servlet-name>greetServlet</servlet-name>
-		<url-pattern>/gasfillbook/greet</url-pattern>
-	</servlet-mapping>
+	 
 	<servlet-mapping>
 		<servlet-name>authServlet</servlet-name>
 		<url-pattern>/gasfillbook/auth</url-pattern>
