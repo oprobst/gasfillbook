@@ -1,8 +1,8 @@
 package de.tsvmalsch.server;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +25,9 @@ public class CylinderServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Collection<Cylinder> getAllCylinderOf(Member member) {
+	public Set<Cylinder> getAllCylinderOf(Member member) {
 
-		Collection<Cylinder> dummy = new LinkedList<Cylinder>();
+		HashSet<Cylinder> dummy = new HashSet<Cylinder>();
 		Cylinder cy = new Cylinder();
 		cy.setName("D12-a");
 		cy.setMaximumPreasure(300);
@@ -60,6 +60,7 @@ public class CylinderServiceImpl extends RemoteServiceServlet implements
 			dummy.add(cy3);
 		}
 
+		member.setCylinders(dummy);
 		return dummy;
 	}
 

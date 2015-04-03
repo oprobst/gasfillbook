@@ -22,9 +22,9 @@ public class MainPanel extends Composite {
 	
 		rootPanel.add(verticalPanel);
 
-		toolbar = new ToolbarComposite(verticalPanel);
+		toolbar = new ToolbarComposite();
 
-		verticalPanel.add(toolbar);
+		//verticalPanel.add(toolbar);
 
 		verticalPanel.add(contextWidget);
 		initWidget(verticalPanel);

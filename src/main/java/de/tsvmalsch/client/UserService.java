@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import de.tsvmalsch.shared.model.Member;
 
-@RemoteServiceRelativePath("auth")
+@RemoteServiceRelativePath("user")
 public interface UserService extends RemoteService {
 
 	Collection<Member> getAllMembers();
@@ -20,4 +20,6 @@ public interface UserService extends RemoteService {
 	Collection<String> getAllMembersNames();
 
 	Member getMemberByNumber(int number);
+
+	Member getCurrentMember();
 }

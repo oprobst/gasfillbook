@@ -125,7 +125,7 @@ public class CreateDemoDataService {
 			mlist.add(m);
 			m.setFirstName(CreateDemoDataService.getFirstName(i % 250));
 			m.setLastName(CreateDemoDataService.getLastName(i % 94));
-			m.setMemberNumber(i);
+			m.setMemberNumber(i + 10);
 			m.setEncodedPassword("1");
 			m.setEmail(CreateDemoDataService.getFirstName(i % 250) + "."
 					+ CreateDemoDataService.getLastName(i % 94)
@@ -141,7 +141,7 @@ public class CreateDemoDataService {
 					* 60 * 24 * 360 * 1000));
 			cy.setSizeInLiter(12.0f);
 			cy.setOwner(m);
-			cy.setSerialNumber("0000124124");
+			cy.setSerialNumber("0000124124" + i);
 			cset.add(cy);
 			Cylinder cy2 = new Cylinder();
 			cy2.setName("D12-a");
@@ -150,19 +150,21 @@ public class CreateDemoDataService {
 					+ 1000 * 60 * 24 * 360 * 1000));
 			cy2.setSizeInLiter(12.0f);
 			cy2.setOwner(m);
-			cy2.setSerialNumber("0000124125");
+			cy2.setSerialNumber("0000124125" + i);
 			cy2.setTwinSetPartner(cy);
 			cset.add(cy2);
 
 			for (int j = 0; j < 5; j++) {
 				Cylinder cy3 = new Cylinder();
-				cy3.setName("S-" + j);
+				if (i < 2) {
+					cy3.setName("S-" + j);
+				}
 				cy3.setMaximumPreasure(232);
 				cy3.setNextInspectionDate(new Date(System.currentTimeMillis()
 						+ 1000 * 60 * 24 * (360 - (j - 2) * 10) * 1000));
 				cy3.setSizeInLiter(11.1f);
 				cy3.setOwner(m);
-				cy3.setSerialNumber("MES123");
+				cy3.setSerialNumber("MES123" + i + "" + j);
 				cset.add(cy3);
 			}
 			m.setCylinders(cset);

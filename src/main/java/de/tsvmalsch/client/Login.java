@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.composite.ToolbarComposite;
 import de.tsvmalsch.shared.model.Member;
 
 public class Login extends Composite {
@@ -50,14 +51,13 @@ public class Login extends Composite {
 	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();
 	final SuggestBox suggestBox;
 
-	Logger logger = Logger.getLogger("NameOfYourLogger");
+	Logger logger = Logger.getLogger(Login.class.getCanonicalName());
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
-	private final UserServiceAsync authService = GWT
-			.create(UserService.class);
+	private final UserServiceAsync authService = GWT.create(UserService.class);
 
 	public Login() {
 
@@ -70,7 +70,7 @@ public class Login extends Composite {
 		verticalPanel.add(lblWelcome);
 
 		Label lblLoginToYour = new Label(
-				"Bitte gib Deinen Namen oder deine Mitgliedsnummer ein.");
+				"bitte gib Deinen Namen oder deine Mitgliedsnummer ein.");
 		lblLoginToYour.setStyleName("gwt-Label-Login");
 		verticalPanel.add(lblLoginToYour);
 
@@ -116,9 +116,6 @@ public class Login extends Composite {
 						textBoxPassword.getText(),
 						new AsyncCallbackAuthenticate());
 
-				RootPanel rootPanel = RootPanel.get();
-				rootPanel.clear();
-				rootPanel.add(new MainPanel());
 			}
 		});
 		flexTable.setWidget(3, 1, btnSignIn);
@@ -197,7 +194,17 @@ public class Login extends Composite {
 		}
 
 		public void onSuccess(Boolean result) {
-			lblWelcome.setText(result.toString());
+			if (result) {				
+				
+				new ToolbarComposite();
+				
+			} else {
+				DialogBox dialogBox = new DialogBox();
+				dialogBox.setTitle("Authentication failed");
+				dialogBox.setText("Username or password wrong.");
+				dialogBox.center();
+
+			}
 
 		}
 	}

@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.hibernate.Query;
@@ -19,8 +22,8 @@ import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.shared.model.Member;
 
 @SuppressWarnings("serial")
-public class UserServiceImpl extends RemoteServiceServlet
-		implements UserService {
+public class UserServiceImpl extends RemoteServiceServlet implements
+		UserService {
 
 	Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -56,11 +59,13 @@ public class UserServiceImpl extends RemoteServiceServlet
 		m.setHasGasblenderBrevet(true);
 		allMembers.put("Olivia Patzelt", m);
 
-		Collection <Member> moreDummys = CreateDemoDataService.createDummyMembers();
-		for (Member dmem : moreDummys){
-			allMembers.put(dmem.getFirstName() + " " + dmem.getLastName(), dmem);
+		Collection<Member> moreDummys = CreateDemoDataService
+				.createDummyMembers();
+		for (Member dmem : moreDummys) {
+			allMembers
+					.put(dmem.getFirstName() + " " + dmem.getLastName(), dmem);
 		}
-		
+
 		if (true)
 			return;
 
@@ -88,7 +93,27 @@ public class UserServiceImpl extends RemoteServiceServlet
 	public boolean authenticate(int memberNumber, String encodedPassword)
 			throws IllegalArgumentException {
 
+		// TODO Authenticate
+
+		// create session and store user
+		HttpServletRequest request = this.getThreadLocalRequest();
+		HttpSession session = request.getSession(true);
+		Member m = this.getMemberByNumber(memberNumber);
+		session.setAttribute("currentMember", m);
+
 		return true;
+	}
+
+	@Override
+	public Member getCurrentMember (){
+		HttpServletRequest request = this.getThreadLocalRequest();
+	    HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("currentMember") == null)
+			return null;
+		
+		Member m = (Member) session.getAttribute("currentMember");
+		return m;
+	
 	}
 
 	@Override

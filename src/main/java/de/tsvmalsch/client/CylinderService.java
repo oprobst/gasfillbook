@@ -1,6 +1,6 @@
 package de.tsvmalsch.client;
 
-import java.util.Collection;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -16,7 +16,7 @@ import de.tsvmalsch.shared.model.Member;
 @RemoteServiceRelativePath("cylinder")
 public interface CylinderService extends RemoteService {
 
-	Collection<Cylinder> getAllCylinderOf(Member member);
+	Set<Cylinder> getAllCylinderOf(Member member);
 
 	void addCylinder(Cylinder cylinder);
 

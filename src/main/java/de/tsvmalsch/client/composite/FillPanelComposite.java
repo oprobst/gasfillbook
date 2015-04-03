@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class FillPanelComposite extends Composite {
 
+	private int currentView = 0;
 	private VerticalPanel vp = null;
 
 	/*
@@ -21,13 +22,19 @@ public class FillPanelComposite extends Composite {
 	private class UserDataClickHandler implements ChangeHandler {
 		public void onChange(com.google.gwt.event.dom.client.ChangeEvent event) {
 
+			cylinderSelectComposite.setVisible(false);
+
 			int index = cboChooseAction.getSelectedIndex();
+
 			switch (index) {
 			case 0:// own cylinder
+				cylinderSelectComposite.setVisible(true);
 				return;
 			case 1:// club cylinder
+				cylinderSelectComposite.setVisible(true);
 				return;
 			case 2:// cylinder of other member
+				cylinderSelectComposite.setVisible(true);
 				return;
 			default:
 				throw new RuntimeException("Unknown ListBox selection index "
@@ -53,9 +60,13 @@ public class FillPanelComposite extends Composite {
 		cboChooseAction.addItem("fill a club cylinder");
 		cboChooseAction.addItem("fill a cylinder of another member");
 		hp.add(cboChooseAction);
-		// initWidget(hp);
+
 		vp.add(hp);
+
+		vp.add(cylinderSelectComposite);
+
 		initWidget(vp);
 	}
 
+	CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
 }
