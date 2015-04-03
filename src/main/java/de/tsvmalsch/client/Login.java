@@ -56,8 +56,8 @@ public class Login extends Composite {
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
-	private final UserAuthenticationServiceAsync authService = GWT
-			.create(UserAuthenticationService.class);
+	private final UserServiceAsync authService = GWT
+			.create(UserService.class);
 
 	public Login() {
 
