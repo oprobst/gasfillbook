@@ -21,5 +21,9 @@ public interface CylinderService extends RemoteService {
 	void addCylinder(Cylinder cylinder);
 
 	void removeCylinder(Cylinder cylinder);
-	
+
+	void setSelectedCylinder(Cylinder cylinder);
+
+	Cylinder getSelectedCylinder();
+
 }

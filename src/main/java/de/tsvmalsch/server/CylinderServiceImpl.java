@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +77,24 @@ public class CylinderServiceImpl extends RemoteServiceServlet implements
 	public void removeCylinder(Cylinder cylinder) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void setSelectedCylinder(Cylinder cylinder) {
+		HttpServletRequest request = this.getThreadLocalRequest();
+		HttpSession session = request.getSession(true);
+		session.setAttribute("currentCylinder", cylinder);
+	}
+
+	@Override
+	public Cylinder getSelectedCylinder() {
+		HttpServletRequest request = this.getThreadLocalRequest();
+	    HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("currentCylinder") == null)
+			return null;
+		
+		Cylinder m = (Cylinder) session.getAttribute("currentCylinder");
+		return m;
 	}
 
 }

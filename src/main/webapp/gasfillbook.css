@@ -13,12 +13,25 @@ body {
 	font: normal 14px/20px Arial, Helvetica, sans-serif;
 }
 
+.gwt-Button {
+	padding: 10px 0px 20px;
+}
+
+.label-warning{
+	font-weight: bold;
+	color: #FF2222;
+}
+
+.label-ok{
+	font-weight: bold;
+	color: #22FF22;
+}
+
 .gwt-login-label {
-	font-size: 1.5em;
+	font-size: 1.1em;
 	font-weight: bold;
 	color: #00aaaa;
 	margin: 10px 0px 20px;
-	padding: 10px;
 }
 
 .gwt-welcome-label {

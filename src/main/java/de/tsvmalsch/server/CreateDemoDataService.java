@@ -156,12 +156,12 @@ public class CreateDemoDataService {
 
 			for (int j = 0; j < 5; j++) {
 				Cylinder cy3 = new Cylinder();
-				if (i < 2) {
+				if (j < 2) {
 					cy3.setName("S-" + j);
 				}
 				cy3.setMaximumPreasure(232);
 				cy3.setNextInspectionDate(new Date(System.currentTimeMillis()
-						+ 1000 * 60 * 24 * (360 - (j - 2) * 10) * 1000));
+						+ 60000 * 60 * 24 * 30 * (j - 2)));
 				cy3.setSizeInLiter(11.1f);
 				cy3.setOwner(m);
 				cy3.setSerialNumber("MES123" + i + "" + j);
