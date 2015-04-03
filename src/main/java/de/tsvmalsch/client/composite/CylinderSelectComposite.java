@@ -28,7 +28,7 @@ import de.tsvmalsch.shared.model.Member;
 public class CylinderSelectComposite extends Composite {
 
 	private HorizontalPanel hp = null;
-	
+
 	private final Label lblInspectionWarning = new Label(" ");
 
 	private final UserServiceAsync userService = GWT.create(UserService.class);
@@ -43,35 +43,29 @@ public class CylinderSelectComposite extends Composite {
 			String key = cboSelectCylinder.getSelectedItemText();
 			Cylinder c = cylinderOfMember.get(key);
 			cylinderService.setSelectedCylinder(c, null);
-			visualizeInspectionDate(c);
 
-		}
+			Date nextInsp = c.getNextInspectionDate();
+			Date today = new Date();
 
-	};
+			String pattern = "mm/yyyy";
+			DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
+			DateTimeFormat dtf = new DateTimeFormat(pattern, info) {
+			};
 
-	private void visualizeInspectionDate(Cylinder c) {
-		Date nextInsp = c.getNextInspectionDate();
-		Date today = new Date();
-
-		String pattern = "mm/yyyy";
-		DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
-		DateTimeFormat dtf = new DateTimeFormat(pattern, info) {
-		};
-
-		if (today.compareTo(nextInsp) > 0) {
-			lblInspectionWarning.setStyleName("label-warning");
-			lblInspectionWarning
-					.setText("TÜV invalid: " + dtf.format(nextInsp));
-		} else {
-			lblInspectionWarning.setStyleName("label-ok");
-			lblInspectionWarning.setText("TÜV till: " + dtf.format(nextInsp));
+			if (today.compareTo(nextInsp) > 0) {
+				lblInspectionWarning.setStyleName("label-warning");
+				lblInspectionWarning.setText("TÜV invalid: "
+						+ dtf.format(nextInsp));
+			} else {
+				lblInspectionWarning.setStyleName("label-ok");
+				lblInspectionWarning.setText("TÜV till: "
+						+ dtf.format(nextInsp));
+			}
 		}
 
 	};
 
 	ListBox cboSelectCylinder = new ListBox();
-
-	Button btnUserData = new Button();
 
 	public CylinderSelectComposite() {
 		hp = new HorizontalPanel();

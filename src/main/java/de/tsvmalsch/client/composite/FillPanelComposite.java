@@ -28,12 +28,15 @@ public class FillPanelComposite extends Composite {
 
 			switch (index) {
 			case 0:// own cylinder
+				selectOtherMemberComposite.setVisible(false);
 				cylinderSelectComposite.setVisible(true);
+
 				return;
 			case 1:// club cylinder
 				cylinderSelectComposite.setVisible(true);
 				return;
 			case 2:// cylinder of other member
+				selectOtherMemberComposite.setVisible(true);
 				cylinderSelectComposite.setVisible(true);
 				return;
 			default:
@@ -63,10 +66,12 @@ public class FillPanelComposite extends Composite {
 
 		vp.add(hp);
 
+		vp.add(selectOtherMemberComposite);
 		vp.add(cylinderSelectComposite);
 
 		initWidget(vp);
 	}
 
 	CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
+	SelectOtherMemberComposite selectOtherMemberComposite = new SelectOtherMemberComposite();
 }
