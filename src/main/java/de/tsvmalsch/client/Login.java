@@ -5,8 +5,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -14,18 +18,37 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import de.tsvmalsch.shared.model.Member;
 
 public class Login extends Composite {
-	private TextBox textBoxUsername;
+
+	protected Member getCurrentMember() {
+		return currentMember;
+	}
+
+	protected void setCurrentMember(Member currentMember) {
+		this.currentMember = currentMember;
+		textBoxMemberNumber.setText("" + currentMember.getMemberNumber());
+		suggestBox.setText(currentMember.getFirstName() + " "
+				+ currentMember.getLastName());
+		textBoxPassword.setText("");
+		textBoxPassword.setFocus(true);
+	}
+
+	private Member currentMember;
+
 	private TextBox textBoxMemberNumber;
 	private TextBox textBoxPassword;
-	 private Label lblWelcome = new Label("Hallo,");
+	private Label lblWelcome = new Label("Hallo,");
+	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();
+	final SuggestBox suggestBox;
 
 	Logger logger = Logger.getLogger("NameOfYourLogger");
 
@@ -38,8 +61,8 @@ public class Login extends Composite {
 
 	public Login() {
 
-		authService.getAllMembers(new AsyncCallbackAllMembers());
- 
+		authService.getAllMembersNames(new AsyncCallbackAllMembers());
+
 		VerticalPanel verticalPanel = new VerticalPanel();
 		initWidget(verticalPanel);
 
@@ -59,8 +82,10 @@ public class Login extends Composite {
 		lblUsername.setStyleName("gwt-Label-Login");
 		flexTable.setWidget(0, 0, lblUsername);
 
-		textBoxUsername = new TextBox();
-		flexTable.setWidget(0, 1, textBoxUsername);
+		suggestBox = new SuggestBox(suggestBoxContent);
+		suggestBox.ensureDebugId("cwSuggestBox");
+		suggestBox.addValueChangeHandler(new TextBoxMemberNameChangeHandler());
+		flexTable.setWidget(0, 1, suggestBox);
 
 		Label lblNumber = new Label("Mitgliedsnr:");
 		lblNumber.setStyleName("gwt-Label-Login");
@@ -68,6 +93,8 @@ public class Login extends Composite {
 
 		textBoxMemberNumber = new TextBox();
 		flexTable.setWidget(1, 1, textBoxMemberNumber);
+		textBoxMemberNumber
+				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
 
 		Label lblPassword = new Label("Password:");
 		lblPassword.setStyleName("gwt-Label-Login");
@@ -79,7 +106,7 @@ public class Login extends Composite {
 		Button btnSignIn = new Button("Sign In");
 		btnSignIn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (textBoxUsername.getText().length() == 0
+				if (suggestBox.getText().length() == 0
 						|| textBoxPassword.getText().length() == 0) {
 					Window.alert("Username or password is empty.");
 				}
@@ -88,7 +115,7 @@ public class Login extends Composite {
 						Integer.parseInt(textBoxMemberNumber.getText()),
 						textBoxPassword.getText(),
 						new AsyncCallbackAuthenticate());
-				
+
 				RootPanel rootPanel = RootPanel.get();
 				rootPanel.clear();
 				rootPanel.add(new MainPanel());
@@ -97,7 +124,7 @@ public class Login extends Composite {
 		flexTable.setWidget(3, 1, btnSignIn);
 	}
 
-	class AsyncCallbackAllMembers implements AsyncCallback<Collection<Member>> {
+	class AsyncCallbackAllMembers implements AsyncCallback<Collection<String>> {
 
 		public void onFailure(Throwable caught) {
 			// Show the RPC error message to the user
@@ -111,9 +138,46 @@ public class Login extends Composite {
 
 		}
 
-		public void onSuccess(Collection<Member> result) {
-			lblWelcome.setText(result.toString());
+		public void onSuccess(Collection<String> result) {
+			suggestBoxContent.addAll(result);
+		}
+	};
 
+	class AsyncCallbackMemberByNumber implements AsyncCallback<Member> {
+
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE,
+					"Failure when getting all members from db.", caught);
+
+			dialogBox.center();
+
+		}
+
+		public void onSuccess(Member result) {
+			setCurrentMember(result);
+		}
+	};
+
+	class AsyncCallbackMemberByName implements AsyncCallback<Member> {
+
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE,
+					"Failure when getting all members from db.", caught);
+
+			dialogBox.center();
+
+		}
+
+		public void onSuccess(Member result) {
+			setCurrentMember(result);
 		}
 	};
 
@@ -135,6 +199,29 @@ public class Login extends Composite {
 		public void onSuccess(Boolean result) {
 			lblWelcome.setText(result.toString());
 
+		}
+	}
+
+	class TextBoxMemberNumberChangeHandler implements ChangeHandler {
+		@Override
+		public void onChange(ChangeEvent event) {
+			try {
+				int i = Integer.parseInt(textBoxMemberNumber.getText());
+				authService.getMemberByNumber(i,
+						new AsyncCallbackMemberByNumber());
+			} catch (NumberFormatException e) {
+				return;
+			}
+
+		}
+	};
+
+	class TextBoxMemberNameChangeHandler implements ValueChangeHandler<String> {
+
+		@Override
+		public void onValueChange(ValueChangeEvent<String> event) {
+			String name = event.getValue();
+			authService.getMemberByName(name, new AsyncCallbackMemberByName());
 		}
 	};
 }

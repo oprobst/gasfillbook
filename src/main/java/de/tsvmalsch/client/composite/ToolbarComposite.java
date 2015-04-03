@@ -1,4 +1,4 @@
-package de.tsvmalsch.client;
+package de.tsvmalsch.client.composite;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

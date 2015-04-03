@@ -5,6 +5,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.composite.ToolbarComposite;
+
 public class MainPanel extends Composite {
 
 	ToolbarComposite toolbar = null;

@@ -13,7 +13,7 @@ import de.tsvmalsch.shared.model.Member;
 
 public class InitDBWithDemoData {
 	private static String getFirstName(int i) {
-		if (i > 140) i = 0;
+
 		final String[] names = { "O ", "Mia ", "Emma ", "Hannah ", "Sofia ",
 				"Anna ", "Lea ", "Emilia ", "Marie ", "Lena ", "Leonie ",
 				"Emily ", "Lina ", "Amelie ", "Sophie ", "Lilly ", "Luisa ",
@@ -96,7 +96,7 @@ public class InitDBWithDemoData {
 	}
 
 	private static String getLastName(int i) {
-		if (i > 97) i = 0;
+
 		final String[] names = { "Müller", "Schneider", "Fischer", "Weber",
 				"Meyer", "Wagner", "Becker", "Schulz", "Hoffmann", "Schäfer",
 				"Koch", "Bauer", "Richter", "Klein", "Übername", "Schröder",
@@ -121,13 +121,14 @@ public class InitDBWithDemoData {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 250; i++) {
 			Member m = new Member();
-			m.setFirstName(InitDBWithDemoData.getFirstName(i));
-			m.setLastName(InitDBWithDemoData.getLastName(i));
+			m.setFirstName(InitDBWithDemoData.getFirstName(i % 250));
+			m.setLastName(InitDBWithDemoData.getLastName(i % 94));
 			m.setMemberNumber(i);
 			m.setEncodedPassword("1");
-			m.setEmail(InitDBWithDemoData.getFirstName(i) + "." + InitDBWithDemoData.getLastName(i) +"@tsv-malsch.de");
+			m.setEmail(InitDBWithDemoData.getFirstName(i) + "."
+					+ InitDBWithDemoData.getLastName(i) + "@tsv-malsch.de");
 			m.setIsActive(true);
 			m.setHasGasblenderBrevet(true);
 			session.save(m);
@@ -154,7 +155,7 @@ public class InitDBWithDemoData {
 			session.save(cy);
 			for (int j = 0; j < 5; j++) {
 				Cylinder cy3 = new Cylinder();
-				cy3.setName("D12-a");
+				cy3.setName("S-" + j);
 				cy3.setMaximumPreasure(232);
 				cy3.setNextInspectionDate(new Date(System.currentTimeMillis()
 						+ 1000 * 60 * 24 * (360 - j * 10) * 1000));
