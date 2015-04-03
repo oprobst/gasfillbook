@@ -68,6 +68,12 @@ public class FillingInvoiceItem implements Serializable {
 	private float pricePerLiterOxygen;
 
 	/**
+	 * Pressure in cylinder when starting gas blending
+	 */
+	private int startPressure;
+
+
+	/**
 	 * The date when the cylinder was filled.
 	 */
 	@NotNull
@@ -108,7 +114,14 @@ public class FillingInvoiceItem implements Serializable {
 	 */
 	private Date paymentReceiptDate;
 
+	public int getStartPressure() {
+		return startPressure;
+	}
 
+	public void setStartPressure(int startPressure) {
+		this.startPressure = startPressure;
+	}
+	
 	public FillingInvoiceItem getAdjustmentEntryFor() {
 		return adjustmentEntryFor;
 	}
@@ -157,7 +170,6 @@ public class FillingInvoiceItem implements Serializable {
 		return pricePerLiterOxygen;
 	}
 
-
 	public void setAdjustmentEntryFor(FillingInvoiceItem adjustmentEntryOf) {
 		this.adjustmentEntryFor = adjustmentEntryOf;
 	}
@@ -205,7 +217,5 @@ public class FillingInvoiceItem implements Serializable {
 	public void setPricePerLiterOxygen(float pricePerLiterOxygen) {
 		this.pricePerLiterOxygen = pricePerLiterOxygen;
 	}
-
-
 
 }
