@@ -18,6 +18,14 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * This is one invoice item recording one blending execution.
+ * 
+ * It contains all data required for accounting a user.
+ * 
+ * @author Oliver Probst
+ *
+ */
 @Entity
 public class FillingInvoiceItem implements Serializable {
 
@@ -26,40 +34,80 @@ public class FillingInvoiceItem implements Serializable {
 	 */
 	private static final long serialVersionUID = -8540656564045693342L;
 
+	/**
+	 * If a user do a mistake when booking a gas blending execution, he can
+	 * define another FillingInvoiceItem which is an adjustment of the former
+	 * item.
+	 * 
+	 */
 	private FillingInvoiceItem adjustmentEntryFor;
 
+	/**
+	 * Which kind of blending was executed.
+	 */
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private BlendingType blendingType;
 
+	/**
+	 * The creditor, which shall be accounted. The member filling the cylinder
+	 * can be a different one that the one who pays the bill.
+	 */
 	@ManyToOne
 	@NotNull
 	private Member creditor;
 
+	/**
+	 * The price per liter He when executing the gas blending
+	 */
 	private float pricePerLiterHelium;
 
+	/**
+	 * The price per liter O2 when executing the gas blending
+	 */
 	private float pricePerLiterOxygen;
 
+	/**
+	 * The date when the cylinder was filled.
+	 */
 	@NotNull
 	private Date dateOfFilling;
 
+	/**
+	 * The cylinder filled.
+	 */
 	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Max(2)
 	private Set<Cylinder> filledCylinder;
 
+	/**
+	 * DB generated UUID
+	 */
 	@Id
 	@GeneratedValue(generator = "increment")
 	@GenericGenerator(name = "increment", strategy = "increment")
 	private Long id;
 
+	/**
+	 * Date the invoice was sent to member. If null, currently no invoice sent.
+	 * This Date is used to ensure that the invoice is send only once.
+	 */
 	private Date invoicingDate;
 
+	/**
+	 * The amount of liter filled.
+	 */
 	private int literHeliumFilled;
+	/**
+	 * The amount of liter Oxygen filled.
+	 */
 	private int literOxygenFilled;
 
+	/**
+	 * The date when the payment was received.
+	 */
 	private Date paymentReceiptDate;
 
-	private int startingPressure;
 
 	public FillingInvoiceItem getAdjustmentEntryFor() {
 		return adjustmentEntryFor;
@@ -109,9 +157,6 @@ public class FillingInvoiceItem implements Serializable {
 		return pricePerLiterOxygen;
 	}
 
-	public int getStartingPressure() {
-		return startingPressure;
-	}
 
 	public void setAdjustmentEntryFor(FillingInvoiceItem adjustmentEntryOf) {
 		this.adjustmentEntryFor = adjustmentEntryOf;
@@ -161,8 +206,6 @@ public class FillingInvoiceItem implements Serializable {
 		this.pricePerLiterOxygen = pricePerLiterOxygen;
 	}
 
-	public void setStartingPressure(int startingPressure) {
-		this.startingPressure = startingPressure;
-	}
+
 
 }
