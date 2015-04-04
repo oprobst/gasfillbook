@@ -54,7 +54,7 @@ public class UserDataComposite extends Composite {
 
 	public UserDataComposite() {
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
-
+		setWidth("600px");
 		VerticalPanel vp = new VerticalPanel();
 
 		vp.add(lblHeader);
