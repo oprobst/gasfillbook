@@ -6,8 +6,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -97,6 +95,19 @@ public class FillingInvoiceItem implements Serializable {
 	 * This Date is used to ensure that the invoice is send only once.
 	 */
 	private Date invoicingDate;
+
+	/**
+	 * The amount of liter filled.
+	 */
+	private int literAirFilled;
+
+	public int getLiterAirFilled() {
+		return literAirFilled;
+	}
+
+	public void setLiterAirFilled(int literAirFilled) {
+		this.literAirFilled = literAirFilled;
+	}
 
 	/**
 	 * The amount of liter filled.

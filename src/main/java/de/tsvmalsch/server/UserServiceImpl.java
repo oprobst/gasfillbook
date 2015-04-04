@@ -105,15 +105,15 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public Member getCurrentMember (){
+	public Member getCurrentMember() {
 		HttpServletRequest request = this.getThreadLocalRequest();
-	    HttpSession session = request.getSession(false);
+		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("currentMember") == null)
 			return null;
-		
+
 		Member m = (Member) session.getAttribute("currentMember");
 		return m;
-	
+
 	}
 
 	@Override
@@ -126,7 +126,9 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 		Collection<String> serializable = new ArrayList<String>(
 				allMembers.size());
 		for (String key : allMembers.keySet()) {
-			serializable.add(key);
+			if (!key.equals("TSV Malsch")) {
+				serializable.add(key);
+			}
 		}
 		return serializable;
 	}
@@ -145,6 +147,30 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void setMemberToFillFor(int memberNumber)
+			throws IllegalArgumentException {
+
+		// create session and store memberToFill
+		HttpServletRequest request = this.getThreadLocalRequest();
+		HttpSession session = request.getSession(true);
+		Member m = this.getMemberByNumber(memberNumber);
+		session.setAttribute("memberToFillFor", m);
+
+	}
+
+	@Override
+	public Member getMemberToFillFor() {
+		HttpServletRequest request = this.getThreadLocalRequest();
+		HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("memberToFillFor") == null)
+			return null;
+
+		Member m = (Member) session.getAttribute("memberToFillFor");
+		return m;
+
 	}
 
 	private Map<String, Member> allMembers = new HashMap<>();

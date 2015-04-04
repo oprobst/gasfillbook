@@ -53,6 +53,7 @@ public class ToolbarComposite extends Composite {
 
 	Button btnUserData = new Button();
 	Button btnFillHistory = new Button();
+	Button btnCylinderOverview= new Button();
 
 	Label lblCurrentMemberName = new Label();
 
@@ -79,6 +80,10 @@ public class ToolbarComposite extends Composite {
 		btnFillPanel.setText("Fill Cylinder");
 		hPanel.add(btnFillHistory);
 		btnFillHistory.setText("Fill History");
+		
+		hPanel.add(btnCylinderOverview);
+		btnCylinderOverview.setText("Cylinder Overview");
+		
 		hPanel.add(btnUserData);
 		btnUserData.setText("Personal Data");
 

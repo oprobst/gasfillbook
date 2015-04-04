@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -25,6 +26,11 @@ public class SelectOtherMemberComposite extends Composite {
 
 	private SuggestBox suggestBox = null;
 	private TextBox textBoxMemberNumber = null;
+
+	private RadioButton rbtOwnAccount = new RadioButton("creditor", "Me");
+	private RadioButton rbtCylinderOwnersAccount = new RadioButton("creditor",
+			"Owner");
+
 	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();
 
 	public SelectOtherMemberComposite() {
@@ -51,6 +57,13 @@ public class SelectOtherMemberComposite extends Composite {
 		textBoxMemberNumber
 				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
 		hp.add(textBoxMemberNumber);
+
+		Label lblCharge = new Label("Charge ");
+		rbtOwnAccount.setValue(true);
+		hp.add(lblCharge);
+		hp.add(rbtOwnAccount);
+		hp.add(rbtCylinderOwnersAccount);
+
 		initWidget(hp);
 	}
 

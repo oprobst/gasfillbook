@@ -121,6 +121,8 @@ public class CreateDemoDataService {
 	public static Collection<Member> createDummyMembers() {
 		Collection<Member> mlist = new LinkedList<>();
 
+		mlist.add(createClubToolMember());
+
 		for (int i = 0; i < 500; i++) {
 			Member m = new Member();
 			mlist.add(m);
@@ -178,6 +180,40 @@ public class CreateDemoDataService {
 
 		}
 		return mlist;
+	}
+
+	private static Member createClubToolMember() {
+		Member m = new Member();
+		m.setFirstName("TSV");
+		m.setLastName("Malsch");
+		m.setMemberNumber(-1);
+		m.setEncodedPassword("1");
+		m.setEmail("info@tsv-malsch.de");
+		m.setRights(new UserRights());
+		m.getRights().setBlendingAuthorization((int) (Math.random() * 4));
+
+		m.getRights().setLastBriefing(new Date(0));
+		m.setIsActive(true);
+		m.setHasGasblenderBrevet(false);
+
+		Set<Cylinder> cset = new HashSet<Cylinder>();
+
+		for (int j = 0; j < 15; j++) {
+			Cylinder cy3 = new Cylinder();
+			if (j < 2) {
+				cy3.setName("Clubflasche-" + j);
+			}
+			cy3.setMaximumPreasure(232);
+			cy3.setNextInspectionDate(new Date(System.currentTimeMillis()
+					+ 60000 * 60 * 24 * 30 * (j - 2)));
+			cy3.setSizeInLiter(12.0f);
+			cy3.setOwner(m);
+			cy3.setSerialNumber("0815" + j);
+			cset.add(cy3);
+		}
+		m.setCylinders(cset);
+
+		return m;
 	}
 
 	public static Collection<FillingInvoiceItem> createDummyInvoiceItem(Member m) {

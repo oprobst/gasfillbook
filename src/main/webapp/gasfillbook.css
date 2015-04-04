@@ -17,12 +17,12 @@ body {
 	padding: 10px 0px 20px;
 }
 
-.label-warning{
+.label-warning {
 	font-weight: bold;
 	color: #FF2222;
 }
 
-.label-ok{
+.label-ok {
 	font-weight: bold;
 	color: #22FF22;
 }
@@ -68,4 +68,196 @@ body {
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
 	margin: 15px 6px 6px;
+}
+
+
+/* Text Box */
+ 
+
+.gwt-TextBox {
+	padding: 5px 4px;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
+	font-size: small;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+}
+
+.gwt-TextBox-readonly {
+	color: #888;
+}
+
+.gwt-PasswordTextBox {
+	padding: 5px 4px;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
+	font-size: 100%;
+}
+
+.gwt-PasswordTextBox-readonly {
+	color: #888;
+}
+
+.gwt-TextArea {
+	padding: 4px;
+	border: 1px solid #ccc;
+	border-top: 1px solid #666;
+	font-size: 100%;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+}
+
+.gwt-TextArea-readonly {
+	color: #888;
+}
+/* Button  */
+.gwt-Button {
+	margin: 0;
+	padding: 5px 7px;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+	font-size: small;
+	background: url("images/hborder.png") repeat-x 0px -2077px;
+	border: 1px solid #bbb;
+	border-bottom: 1px solid #a0a0a0;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+.gwt-Button:active {
+	border: 1px inset #ccc;
+}
+
+.gwt-Button:hover {
+	border-color: #939393;
+}
+
+.gwt-Button[disabled] {
+	cursor: default;
+	color: #888;
+}
+
+.gwt-Button[disabled]:hover {
+	border: 1px outset #ccc;
+}
+
+/** TAB BAr*/
+.gwt-DecoratedTabBar {
+	background: #ccc;
+	padding-top: 6px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarFirst {
+	width: 5px; /* first tab distance from the left */
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarRest {
+	
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem {
+	border-collapse: collapse;
+	margin-left: 4px;
+}
+
+.gwt-DecoratedTabBar .tabTopCenter {
+	padding: 0px;
+	background: #8E8E8E;
+}
+
+.gwt-DecoratedTabBar .tabTopLeft, .gwt-DecoratedTabBar .tabTopRight {
+	padding: 0px;
+	zoom: 1;
+}
+
+.gwt-DecoratedTabBar .tabTopLeftInner, .gwt-DecoratedTabBar .tabTopRightInner
+	{
+	width: 3px;
+	height: 3px;
+}
+
+.gwt-DecoratedTabBar .tabTopLeft {
+	background: url(images/circles.png) no-repeat 0px 0px;
+	-background: url(images/circles_ie6.png) no-repeat 0px 0px;
+}
+
+.gwt-DecoratedTabBar .tabTopRight {
+	background: url(images/circles.png) no-repeat -3px 0px;
+	-background: url(images/circles_ie6.png) no-repeat -3px 0px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeft, .gwt-DecoratedTabBar .tabMiddleRight
+	{
+	width: 3px;
+	padding: 0px;
+	background: #8E8E8E;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeftInner, .gwt-DecoratedTabBar .tabMiddleRightInner
+	{
+	width: 1px;
+	height: 1px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleCenter {
+	padding: 0px 5px 4px 5px;
+	cursor: pointer;
+	cursor: hand;
+	color: #fff;
+	font-weight: normal;
+	text-align: center;
+	background: #8E8E8E;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopCenter {
+	background: #fff;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopLeft {
+	background: url(images/circles.png) no-repeat -6px 0px;
+	-background: url(images/circles_ie6.png) no-repeat -6px 0px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopRight {
+	background: url(images/circles.png) no-repeat -9px 0px;
+	-background: url(images/circles_ie6.png) no-repeat -9px 0px;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleLeft,
+	.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleRight {
+	background: #fff;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleCenter {
+	cursor: default;
+	background: #fff;
+	color: #333;
+	font-weight: bold;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleCenter {
+	cursor: default;
+	color: #999999;
+}
+
+html>body .gwt-DecoratedTabBar {
+	
+}
+
+* html .gwt-DecoratedTabBar .tabTopLeftInner, * html .gwt-DecoratedTabBar .tabTopRightInner
+	{
+	width: 3px;
+	height: 3px;
+	overflow: hidden;
+}
+
+.gwt-TabPanel {
+	
+}
+
+.gwt-TabPanelBottom {
+	border-color: #ccc;
+	border-style: solid;
+	border-width: 0px 1px 1px;
+	overflow: hidden;
+	padding: 6px;
 }

@@ -22,4 +22,16 @@ public interface UserService extends RemoteService {
 	Member getMemberByNumber(int number);
 
 	Member getCurrentMember();
+
+	Member getMemberToFillFor();
+
+	/**
+	 * The user which shall be charged for the next filling.
+	 * 
+	 * @param number
+	 *            the member number. If -1 is provided, the club will be
+	 *            charged. On -2 The current logged in member will be charged.
+	 * @return
+	 */
+	void setMemberToFillFor(int number);
 }
