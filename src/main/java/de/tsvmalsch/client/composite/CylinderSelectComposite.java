@@ -10,12 +10,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 
 import de.tsvmalsch.client.CylinderService;
 import de.tsvmalsch.client.CylinderServiceAsync;
@@ -29,7 +27,7 @@ public class CylinderSelectComposite extends Composite {
 
 	private HorizontalPanel hp = null;
 
-	private final Label lblInspectionWarning = new Label(" ");
+	private final Label lblInspectionWarning = new Label();
 
 	private final UserServiceAsync userService = GWT.create(UserService.class);
 	private final CylinderServiceAsync cylinderService = GWT
@@ -39,6 +37,9 @@ public class CylinderSelectComposite extends Composite {
 
 		@Override
 		public void onChange(ChangeEvent event) {
+
+			lblInspectionWarning.setStyleName("label-warning");
+			lblInspectionWarning.setText("TÜV ");
 
 			String key = cboSelectCylinder.getSelectedItemText();
 			Cylinder c = cylinderOfMember.get(key);
@@ -79,15 +80,6 @@ public class CylinderSelectComposite extends Composite {
 
 		hp.add(lblInspectionWarning);
 		lblInspectionWarning.setStyleName("label-warning");
-
-		Label lblStartPressure = new Label("Start: ");
-		hp.add(lblStartPressure);
-
-		TextBox txbStartPreasure = new TextBox();
-		hp.add(txbStartPreasure);
-
-		Label lblBar = new Label("bar");
-		hp.add(lblBar);
 
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
 

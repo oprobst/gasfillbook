@@ -82,13 +82,14 @@ public class FillPanelComposite extends Composite {
 
 		vp.add(selectOtherMemberComposite);
 		vp.add(cylinderSelectComposite);
-		
-		tp = new TabLayoutPanel(2.1, Unit.EM); 
+
+		tp = new TabLayoutPanel(2.1, Unit.EM);
 		tp.setAnimationDuration(200);
-		tp.setHeight("350px");
+
+		tp.setHeight("380px");
+		tp.setWidth("600px");
 		vp.add(tp);
- 
-		   
+
 		selectOtherMemberComposite.setVisible(false);
 		cylinderSelectComposite.setVisible(true);
 		userService.setMemberToFillFor(-2,
@@ -100,8 +101,7 @@ public class FillPanelComposite extends Composite {
 	}
 
 	private TabLayoutPanel tp;
-	
-	   
+
 	CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
 	SelectOtherMemberComposite selectOtherMemberComposite = new SelectOtherMemberComposite();
 
@@ -131,10 +131,9 @@ public class FillPanelComposite extends Composite {
 						"Partial Method");
 			}
 			if (userRights.isAllowedToFillMixer()) {
-				tp.add(new GasBlendingComposite(BlendingType.MIXER), "Mixer");
+				//tp.add(new GasBlendingComposite(BlendingType.MIXER), "Mixer");
 			}
 		};
 	}
-
 
 }

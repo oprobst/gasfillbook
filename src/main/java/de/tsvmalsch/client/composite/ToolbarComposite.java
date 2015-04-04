@@ -5,8 +5,6 @@ import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -46,8 +44,8 @@ public class ToolbarComposite extends Composite {
 
 		tp = new TabLayoutPanel(2.1, Unit.EM);
 		tp.setAnimationDuration(200);
-		tp.setHeight("550px");
-		tp.setWidth("550px");
+		tp.setHeight("440px");
+		tp.setWidth("600px");
 
 		HorizontalPanel hPanel = new HorizontalPanel();
 

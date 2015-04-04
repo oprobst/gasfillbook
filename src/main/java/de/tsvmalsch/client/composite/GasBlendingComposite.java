@@ -48,7 +48,7 @@ public class GasBlendingComposite extends Composite {
 	private TextBox txbBarReallyFilledO2 = new TextBox();
 	private TextBox txbBarReallyFilledHe = new TextBox();
 
-	private Label lblFillingCost = new Label(" 12,34 Euro");
+	private Label lblFillingCost = new Label("Cost: 12,34 Euro");
 	private Button btnAccount = new Button();
 
 	private final int blendingType;
