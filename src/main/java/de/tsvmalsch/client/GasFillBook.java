@@ -1,5 +1,6 @@
 package de.tsvmalsch.client;
 
+import de.tsvmalsch.client.composite.ToolbarComposite;
 import de.tsvmalsch.shared.FieldVerifier;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -51,8 +52,15 @@ public class GasFillBook implements EntryPoint {
 		verticalPanel.add(lblWelcomeToThe);
 		lblWelcomeToThe.setSize("206px", "124px");
 
-		Login login = new Login();
+		Login login = new Login(this);
 		verticalPanel.add(login);
 
 	}
+
+	public void userAuthenticated() {
+		RootPanel rootPanel = RootPanel.get();
+		rootPanel.clear();
+		rootPanel.add(new ToolbarComposite());
+	}
+
 }

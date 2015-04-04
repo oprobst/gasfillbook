@@ -28,6 +28,7 @@ public class ToolbarComposite extends Composite {
 
 	Logger logger = Logger.getLogger(ToolbarComposite.class.getCanonicalName());
 
+	
 	FillPanelComposite fillPanelComposite ;
 
 	UserDataComposite userDataComposite ;
@@ -56,20 +57,21 @@ public class ToolbarComposite extends Composite {
 	Label lblCurrentMemberName = new Label();
 
 	public ToolbarComposite() {
- 
-		userDataComposite = new UserDataComposite();
-
-		fillPanelComposite = new FillPanelComposite();
-		
-		RootPanel rootPanel = RootPanel.get();
-		rootPanel.clear();
-
+ 	
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
 
 		VerticalPanel vPanel = new VerticalPanel();
 
 		HorizontalPanel hPanel = new HorizontalPanel();
 
+		
+
+		userDataComposite = new UserDataComposite();
+
+		fillPanelComposite = new FillPanelComposite();
+		
+		
+		
 		hPanel.add(lblCurrentMemberName);
 		lblCurrentMemberName.setStyleName("gwt-login-label");
 
@@ -93,10 +95,8 @@ public class ToolbarComposite extends Composite {
 		vPanel.add(userDataComposite);
 		userDataComposite.setVisible(true);
 
-		rootPanel.add(vPanel);
-		
-		initWidget(rootPanel);
-		//initWidget(vPanel);
+	
+		initWidget(vPanel);
 	}
 
 	class AsyncCallbackGetCurrentMember implements AsyncCallback<Member> {

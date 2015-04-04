@@ -59,8 +59,10 @@ public class Login extends Composite {
 	 */
 	private final UserServiceAsync authService = GWT.create(UserService.class);
 
-	public Login() {
+	private final GasFillBook parent;
 
+	public Login(GasFillBook gasFillBook) {
+		parent = gasFillBook;
 		authService.getAllMembersNames(new AsyncCallbackAllMembers());
 
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -102,6 +104,15 @@ public class Login extends Composite {
 
 		textBoxPassword = new PasswordTextBox();
 		flexTable.setWidget(2, 1, textBoxPassword);
+		textBoxPassword.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				authService.authenticate(
+						Integer.parseInt(textBoxMemberNumber.getText()),
+						textBoxPassword.getText(),
+						new AsyncCallbackAuthenticate());	
+			}
+		});
 
 		Button btnSignIn = new Button("Sign In");
 		btnSignIn.addClickHandler(new ClickHandler() {
@@ -194,10 +205,10 @@ public class Login extends Composite {
 		}
 
 		public void onSuccess(Boolean result) {
-			if (result) {				
-				
-				new ToolbarComposite();
-				
+			if (result) {
+
+				parent.userAuthenticated();
+
 			} else {
 				DialogBox dialogBox = new DialogBox();
 				dialogBox.setTitle("Authentication failed");
