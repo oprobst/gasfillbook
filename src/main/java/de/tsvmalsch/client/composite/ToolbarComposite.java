@@ -4,14 +4,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import de.tsvmalsch.client.UserService;
@@ -28,79 +28,49 @@ public class ToolbarComposite extends Composite {
 
 	Logger logger = Logger.getLogger(ToolbarComposite.class.getCanonicalName());
 
-	
-	FillPanelComposite fillPanelComposite ;
+	FillPanelComposite fillPanelComposite;
 
-	UserDataComposite userDataComposite ;
-	
-	private class FillCylinderClickHandler implements ClickHandler {
-		@Override
-		public void onClick(ClickEvent event) {
-			fillPanelComposite.setVisible(true);
-			userDataComposite.setVisible(false);
-		}
-	};
-
-	private class UserDataClickHandler implements ClickHandler {
-		@Override
-		public void onClick(ClickEvent event) {
-			fillPanelComposite.setVisible(false);
-			userDataComposite.setVisible(true);
-		}
-	};
-
-	Button btnFillPanel = new Button();
-
-	Button btnUserData = new Button();
-	Button btnFillHistory = new Button();
-	Button btnCylinderOverview= new Button();
+	UserDataComposite userDataComposite;
 
 	Label lblCurrentMemberName = new Label();
 
+	Label lblCurrentAccountBalance = new Label("Account balance: 13,82 €");
+
+	TabLayoutPanel tp;
+
 	public ToolbarComposite() {
- 	
+
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
 
 		VerticalPanel vPanel = new VerticalPanel();
 
+		tp = new TabLayoutPanel(2.1, Unit.EM);
+		tp.setAnimationDuration(200);
+		tp.setHeight("550px");
+		tp.setWidth("550px");
+
 		HorizontalPanel hPanel = new HorizontalPanel();
 
-		
+		hPanel.add(lblCurrentMemberName);
+
+		hPanel.add(lblCurrentAccountBalance);
+		vPanel.add(hPanel);
+
+		lblCurrentMemberName.setStyleName("gwt-login-label");
 
 		userDataComposite = new UserDataComposite();
 
 		fillPanelComposite = new FillPanelComposite();
-		
-		
-		
-		hPanel.add(lblCurrentMemberName);
-		lblCurrentMemberName.setStyleName("gwt-login-label");
 
-		hPanel.add(btnFillPanel);
-		btnFillPanel.setText("Fill Cylinder");
-		hPanel.add(btnFillHistory);
-		btnFillHistory.setText("Fill History");
-		
-		hPanel.add(btnCylinderOverview);
-		btnCylinderOverview.setText("Cylinder Overview");
-		
-		hPanel.add(btnUserData);
-		btnUserData.setText("Personal Data");
+		tp.add(fillPanelComposite, "Gas Blender");
 
-		btnFillPanel.addClickHandler(new FillCylinderClickHandler());
-		btnUserData.addClickHandler(new UserDataClickHandler());
+		tp.add(new Label("TODO"), "Hist	ory");
+		tp.add(new Label("TODO"), "Cylinders");
+		tp.add(userDataComposite, "You");
+		tp.add(new Label("TODO"), "Admin");
 
-		vPanel.add(hPanel);
+		vPanel.add(tp);
 
-
-		vPanel.add(fillPanelComposite);
-		
-		fillPanelComposite.setVisible(true);
-		
-		vPanel.add(userDataComposite);
-		userDataComposite.setVisible(false);
-
-	
 		initWidget(vPanel);
 	}
 
