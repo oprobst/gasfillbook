@@ -82,9 +82,13 @@ public class FillPanelComposite extends Composite {
 
 		vp.add(selectOtherMemberComposite);
 		vp.add(cylinderSelectComposite);
-
+		
+		tp = new TabLayoutPanel(2.1, Unit.EM); 
+		tp.setAnimationDuration(200);
+		tp.setHeight("250px");
 		vp.add(tp);
-
+ 
+		   
 		selectOtherMemberComposite.setVisible(false);
 		cylinderSelectComposite.setVisible(true);
 		userService.setMemberToFillFor(-2,
@@ -95,16 +99,17 @@ public class FillPanelComposite extends Composite {
 
 	}
 
-	TabLayoutPanel tp = new TabLayoutPanel(2.5, Unit.EM);
-
+	private TabLayoutPanel tp;
+	
+	   
 	CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
 	SelectOtherMemberComposite selectOtherMemberComposite = new SelectOtherMemberComposite();
 
-	class AsyncCallbackSetMemberToFillFor extends DefaultAsyncCallback<Void> {
+	class AsyncCallbackSetMemberToFillFor extends DefaultAsyncCallback<Member> {
 
 		@Override
-		public void onSuccess(Void result) {
-			// fine...
+		public void onSuccess(Member result) {
+
 		}
 
 	}
@@ -114,19 +119,22 @@ public class FillPanelComposite extends Composite {
 		public void onSuccess(Member result) {
 			UserRights userRights = result.getRights();
 
-			if (userRights.isAllowedToFillAir()){
-				tp.add(new GasBlendingComposite(BlendingType.AIR),"Air");
+			if (userRights.isAllowedToFillAir()) {
+				tp.add(new GasBlendingComposite(BlendingType.AIR), "Air");
 			}
-			if (userRights.isAllowedToFillNx40()){
-				tp.add(new GasBlendingComposite(BlendingType.NX40_CASCADE),"Nx40 Cascade");
+			if (userRights.isAllowedToFillNx40()) {
+				tp.add(new GasBlendingComposite(BlendingType.NX40_CASCADE),
+						"Nx40 Cascade");
 			}
-			if (userRights.isAllowedToFillPartial()){
-				tp.add(new GasBlendingComposite(BlendingType.PARTIAL_METHOD),"Partial Method");
+			if (userRights.isAllowedToFillPartial()) {
+				tp.add(new GasBlendingComposite(BlendingType.PARTIAL_METHOD),
+						"Partial Method");
 			}
-			if (userRights.isAllowedToFillMixer() ){
-				tp.add(new GasBlendingComposite(BlendingType.MIXER),"Mixer");
-			} 	
+			if (userRights.isAllowedToFillMixer()) {
+				tp.add(new GasBlendingComposite(BlendingType.MIXER), "Mixer");
+			}
 		};
 	}
+
 
 }

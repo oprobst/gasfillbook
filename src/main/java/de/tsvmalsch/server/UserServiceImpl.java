@@ -150,7 +150,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void setMemberToFillFor(int memberNumber)
+	public Member setMemberToFillFor(int memberNumber)
 			throws IllegalArgumentException {
 
 		// create session and store memberToFill
@@ -158,7 +158,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 		HttpSession session = request.getSession(true);
 		Member m = this.getMemberByNumber(memberNumber);
 		session.setAttribute("memberToFillFor", m);
-
+		return m;
 	}
 
 	@Override

@@ -98,7 +98,7 @@ public class ToolbarComposite extends Composite {
 		fillPanelComposite.setVisible(true);
 		
 		vPanel.add(userDataComposite);
-		userDataComposite.setVisible(true);
+		userDataComposite.setVisible(false);
 
 	
 		initWidget(vPanel);

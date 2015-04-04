@@ -27,7 +27,7 @@ public class SelectOtherMemberComposite extends Composite {
 	private SuggestBox suggestBox = null;
 	private TextBox textBoxMemberNumber = null;
 
-	private RadioButton rbtOwnAccount = new RadioButton("creditor", "Me");
+	private RadioButton rbtownAccount = new RadioButton("creditor", "Me");
 	private RadioButton rbtCylinderOwnersAccount = new RadioButton("creditor",
 			"Owner");
 
@@ -59,9 +59,9 @@ public class SelectOtherMemberComposite extends Composite {
 		hp.add(textBoxMemberNumber);
 
 		Label lblCharge = new Label("Charge ");
-		rbtOwnAccount.setValue(true);
+		rbtownAccount.setValue(true);
 		hp.add(lblCharge);
-		hp.add(rbtOwnAccount);
+		hp.add(rbtownAccount);
 		hp.add(rbtCylinderOwnersAccount);
 
 		initWidget(hp);
@@ -112,10 +112,10 @@ public class SelectOtherMemberComposite extends Composite {
 		}
 	};
 
-	Member cylinderFromMember = null;
+	private Member cylinderOfMember = null;
 
 	protected void setCurrentMember(Member member) {
-		this.cylinderFromMember = member;
+		this.cylinderOfMember = member;
 		textBoxMemberNumber.setText("" + member.getMemberNumber());
 		suggestBox.setText(member.getFirstName() + " " + member.getLastName());
 	}

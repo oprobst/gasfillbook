@@ -33,5 +33,5 @@ public interface UserService extends RemoteService {
 	 *            charged. On -2 The current logged in member will be charged.
 	 * @return
 	 */
-	void setMemberToFillFor(int number);
+	Member setMemberToFillFor(int number);
 }

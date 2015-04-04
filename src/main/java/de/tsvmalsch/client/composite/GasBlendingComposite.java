@@ -21,7 +21,9 @@ public class GasBlendingComposite extends Composite {
 
 		VerticalPanel vp = new VerticalPanel();
 		//HorizontalPanel hp = new HorizontalPanel();
-		vp.add(new Label("type " + blendingType));
+		Label lbl = new Label();
+		lbl.setText("type " + blendingType);
+		vp.add(lbl);
 		//vp.add(hp);
 
 		initWidget(vp);
