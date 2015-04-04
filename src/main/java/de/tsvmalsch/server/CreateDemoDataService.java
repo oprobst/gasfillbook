@@ -8,6 +8,7 @@ import java.util.Set;
 
 import de.tsvmalsch.shared.model.BlendingType;
 import de.tsvmalsch.shared.model.Cylinder;
+import de.tsvmalsch.shared.model.CylinderType;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
 import de.tsvmalsch.shared.model.UserRights;
@@ -130,18 +131,18 @@ public class CreateDemoDataService {
 			m.setLastName(CreateDemoDataService.getLastName(i % 94));
 			m.setMemberNumber(i);
 			m.setEncodedPassword("1");
-			
+
 			m.setEmail(CreateDemoDataService.getFirstName(i % 250) + "."
 					+ CreateDemoDataService.getLastName(i % 94)
 					+ "@tsv-malsch.de");
 			m.setRights(new UserRights());
 			m.getRights().setBlendingAuthorization((int) (Math.random() * 4));
-			
-			if (i < 6){
+
+			if (i < 6) {
 				m.setIsAdmin(true);
 				m.getRights().setBlendingAuthorization(4);
-			}			
-			
+			}
+
 			long month = 60000 * 60 * 24 * 30;
 			m.getRights().setLastBriefing(
 					new Date(System.currentTimeMillis() - month * 14
@@ -155,7 +156,7 @@ public class CreateDemoDataService {
 			cy.setMaximumPreasure(300);
 			cy.setNextInspectionDate(new Date(System.currentTimeMillis() + 1000
 					* 60 * 24 * 360 * 1000));
-			cy.setSizeInLiter(12.0f);
+			cy.setSizeInLiter(12.0d);
 			cy.setOwner(m);
 			cy.setSerialNumber("0000124124" + i);
 			cset.add(cy);
@@ -164,7 +165,7 @@ public class CreateDemoDataService {
 			cy2.setMaximumPreasure(300);
 			cy2.setNextInspectionDate(new Date(System.currentTimeMillis()
 					+ 1000 * 60 * 24 * 360 * 1000));
-			cy2.setSizeInLiter(12.0f);
+			cy2.setSizeInLiter(12.0d);
 			cy2.setOwner(m);
 			cy2.setSerialNumber("0000124125" + i);
 			cy2.setTwinSetPartner(cy);
@@ -178,9 +179,10 @@ public class CreateDemoDataService {
 				cy3.setMaximumPreasure(232);
 				cy3.setNextInspectionDate(new Date(System.currentTimeMillis()
 						+ 60000 * 60 * 24 * 30 * (j - 2)));
-				cy3.setSizeInLiter(11.1f);
+				cy3.setSizeInLiter(11.1d);
 				cy3.setOwner(m);
 				cy3.setSerialNumber("MES123" + i + "" + j);
+				cy3.setGasType(CylinderType.OXYCLEAN);
 				cset.add(cy3);
 			}
 			m.setCylinders(cset);
@@ -213,7 +215,7 @@ public class CreateDemoDataService {
 			cy3.setMaximumPreasure(232);
 			cy3.setNextInspectionDate(new Date(System.currentTimeMillis()
 					+ 60000 * 60 * 24 * 30 * (j - 2)));
-			cy3.setSizeInLiter(12.0f);
+			cy3.setSizeInLiter(12.0d);
 			cy3.setOwner(m);
 			cy3.setSerialNumber("0815" + j);
 			cset.add(cy3);

@@ -89,7 +89,7 @@ public class Cylinder implements Serializable {
 	 * Size of the cylinder
 	 */
 	@NotNull
-	private Float sizeInLiter;
+	private Double sizeInLiter;
 
 	/**
 	 * Null for mono cylinder. If this cylinder is used in a twin set, the other
@@ -136,7 +136,7 @@ public class Cylinder implements Serializable {
 		return serialNumber;
 	}
 
-	public Float getSizeInLiter() {
+	public Double getSizeInLiter() {
 		return sizeInLiter;
 	}
 
@@ -180,7 +180,7 @@ public class Cylinder implements Serializable {
 		this.serialNumber = serialNumber;
 	}
 
-	public void setSizeInLiter(Float sizeInLiter) {
+	public void setSizeInLiter(Double sizeInLiter) {
 		this.sizeInLiter = sizeInLiter;
 	}
 

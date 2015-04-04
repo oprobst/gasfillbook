@@ -6,11 +6,10 @@ h1 {
 	text-align: center;
 }
 
-body {
-	padding: 20px;
-	padding-left: 5px;
+. {
 	text-align: left;
 	font-family: verdana, sans-serif;
+	background-color: #ddecff;
 }
 
 .gwt-Label {

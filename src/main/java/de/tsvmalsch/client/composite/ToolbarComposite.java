@@ -35,6 +35,7 @@ public class ToolbarComposite extends Composite {
 	Label lblCurrentAccountBalance = new Label("Account balance: 13,82 €");
 
 	TabLayoutPanel tp;
+	CylinderDataComposite cylinderDataComposite;
 
 	public ToolbarComposite() {
 
@@ -59,11 +60,12 @@ public class ToolbarComposite extends Composite {
 		userDataComposite = new UserDataComposite();
 
 		fillPanelComposite = new FillPanelComposite();
+		cylinderDataComposite = new CylinderDataComposite();
 
 		tp.add(fillPanelComposite, "Gas Blender");
 
 		tp.add(new Label("TODO"), "History");
-		tp.add(new Label("TODO"), "Cylinders");
+		tp.add(cylinderDataComposite, "Cylinders");
 		tp.add(userDataComposite, "You");
 
 		vPanel.add(tp);

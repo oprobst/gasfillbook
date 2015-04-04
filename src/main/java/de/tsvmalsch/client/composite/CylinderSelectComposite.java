@@ -3,13 +3,13 @@ package de.tsvmalsch.client.composite;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -39,32 +39,48 @@ public class CylinderSelectComposite extends Composite {
 		public void onChange(ChangeEvent event) {
 
 			lblInspectionWarning.setStyleName("label-warning");
-			lblInspectionWarning.setText("TÜV ");
 
 			String key = cboSelectCylinder.getSelectedItemText();
+
 			Cylinder c = cylinderOfMember.get(key);
-			cylinderService.setSelectedCylinder(c, null);
+			cylinderService.setSelectedCylinder(c, new AsyncCallback<Void>() {
 
-			Date nextInsp = c.getNextInspectionDate();
-			Date today = new Date();
+				@Override
+				public void onSuccess(Void result) {
+					// TODO Auto-generated method stub
 
-			String pattern = "MM/yyyy";
-			DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
-			DateTimeFormat dtf = new DateTimeFormat(pattern, info) {
-			};
+				}
 
-			if (today.compareTo(nextInsp) > 0) {
-				lblInspectionWarning.setStyleName("label-warning");
-				lblInspectionWarning.setText("TÜV invalid: "
-						+ dtf.format(nextInsp));
-			} else {
-				lblInspectionWarning.setStyleName("label-ok");
-				lblInspectionWarning.setText("TÜV till: "
-						+ dtf.format(nextInsp));
-			}
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+			updateInspectionLabel(c);
 		}
 
 	};
+
+	private void updateInspectionLabel(Cylinder c) {
+
+		Date nextInsp = c.getNextInspectionDate();
+		Date today = new Date();
+
+		String pattern = "MM/yyyy";
+		DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
+		DateTimeFormat dtf = new DateTimeFormat(pattern, info) {
+		};
+
+		if (today.compareTo(nextInsp) > 0) {
+			lblInspectionWarning.setStyleName("label-warning");
+			lblInspectionWarning
+					.setText("TÜV invalid: " + dtf.format(nextInsp));
+		} else {
+			lblInspectionWarning.setStyleName("label-ok");
+			lblInspectionWarning.setText("TÜV till: " + dtf.format(nextInsp));
+		}
+	}
 
 	ListBox cboSelectCylinder = new ListBox();
 
@@ -85,18 +101,6 @@ public class CylinderSelectComposite extends Composite {
 
 		initWidget(hp);
 
-	}
-
-	class AsyncCallbackGetAllCylinders extends
-			DefaultAsyncCallback<Set<Cylinder>> {
-		@Override
-		public void onSuccess(Set<Cylinder> cylinders) {
-
-			for (String key : cylinderOfMember.keySet()) {
-				cboSelectCylinder.addItem(key);
-			}
-
-		}
 	}
 
 	class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
