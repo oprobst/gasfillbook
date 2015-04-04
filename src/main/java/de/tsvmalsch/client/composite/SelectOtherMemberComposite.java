@@ -39,7 +39,6 @@ public class SelectOtherMemberComposite extends Composite {
 		HorizontalPanel hp = new HorizontalPanel();
 
 		Label lblUsername = new Label("Name:");
-		lblUsername.setStyleName("gwt-Label-Login");
 		hp.add(lblUsername);
 
 		suggestBox = new SuggestBox(suggestBoxContent);
@@ -48,8 +47,7 @@ public class SelectOtherMemberComposite extends Composite {
 		suggestBox.addValueChangeHandler(new TextBoxMemberNameChangeHandler());
 		hp.add(suggestBox);
 
-		Label lblNumber = new Label("or Memberno.:");
-		lblNumber.setStyleName("gwt-Label-Login");
+		Label lblNumber = new Label("or Number:");
 		hp.add(lblNumber);
 
 		textBoxMemberNumber = new TextBox();

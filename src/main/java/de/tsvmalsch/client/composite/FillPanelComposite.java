@@ -85,7 +85,7 @@ public class FillPanelComposite extends Composite {
 		
 		tp = new TabLayoutPanel(2.1, Unit.EM); 
 		tp.setAnimationDuration(200);
-		tp.setHeight("250px");
+		tp.setHeight("350px");
 		vp.add(tp);
  
 		   
