@@ -3,9 +3,12 @@ package de.tsvmalsch.client.composite;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -13,7 +16,9 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -130,8 +135,21 @@ public class CylinderDataComposite extends Composite {
 					public void onSelectionChange(SelectionChangeEvent event) {
 						Cylinder selected = selectionModel.getSelectedObject();
 						if (selected != null) {
-							Window.alert("TODO: Configuration Dialog for \n "
-									+ selected.getName());
+							final DialogBox dialogBox = new DialogBox();
+							dialogBox.setTitle("Todo");
+							dialogBox.setText("TODO: Dialog for configuring "
+									+ selected.getSerialNumber());
+
+							dialogBox.center();
+
+							Button ok = new Button("OK");
+							ok.addClickHandler(new ClickHandler() {
+								public void onClick(ClickEvent event) {
+									dialogBox.hide();
+								}
+							});
+
+							dialogBox.add(ok);
 						}
 					}
 				});
