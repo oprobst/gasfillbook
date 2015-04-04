@@ -54,9 +54,9 @@ public class UserDataComposite extends Composite {
 
 	public UserDataComposite() {
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
-
+	
 		VerticalPanel vp = new VerticalPanel();
-
+		vp.setWidth("600px");
 		vp.add(lblHeader);
 		FlexTable t = new FlexTable();
 
