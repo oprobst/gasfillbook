@@ -47,11 +47,13 @@ public class SelectOtherMemberComposite extends Composite {
 		suggestBox.addValueChangeHandler(new TextBoxMemberNameChangeHandler());
 		hp.add(suggestBox);
 
-		Label lblNumber = new Label(" oder Mitgl.Nr.:");
+		Label lblNumber = new Label("Mitgl.Nr.:");
 		hp.add(lblNumber);
 
 		textBoxMemberNumber = new TextBox();
 
+		textBoxMemberNumber.setStyleName("txt-3digit");
+		
 		textBoxMemberNumber
 				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
 		hp.add(textBoxMemberNumber);
