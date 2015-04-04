@@ -79,7 +79,7 @@ public class CylinderDataComposite extends Composite {
 		};
 
 		dateColumn.setSortable(true);
-		table.addColumn(dateColumn, "Next TÜV");
+		table.addColumn(dateColumn, "TÜV");
 
 		TextColumn<Cylinder> serialColumn = new TextColumn<Cylinder>() {
 			@Override
@@ -87,7 +87,7 @@ public class CylinderDataComposite extends Composite {
 				return object.getSerialNumber();
 			}
 		};
-		table.addColumn(serialColumn, "S.No.");
+		table.addColumn(serialColumn, "S.Nr.");
 
 		TextColumn<Cylinder> sizeColumn = new TextColumn<Cylinder>() {
 			@Override
@@ -95,7 +95,7 @@ public class CylinderDataComposite extends Composite {
 				return Double.toString(object.getSizeInLiter());
 			}
 		};
-		table.addColumn(sizeColumn, "Size");
+		table.addColumn(sizeColumn, "Gr.");
 
 		TextColumn<Cylinder> gasType = new TextColumn<Cylinder>() {
 			@Override
@@ -114,7 +114,7 @@ public class CylinderDataComposite extends Composite {
 				return object.getNote();
 			}
 		};
-		table.addColumn(note, "Note");
+		table.addColumn(note, "Notiz");
 
 		TextColumn<Cylinder> twin = new TextColumn<Cylinder>() {
 			@Override
@@ -125,7 +125,7 @@ public class CylinderDataComposite extends Composite {
 				return "";
 			}
 		};
-		table.addColumn(twin, "TwinSet");
+		table.addColumn(twin, "Doppel");
 
 		// Add a selection model to handle user selection.
 		final SingleSelectionModel<Cylinder> selectionModel = new SingleSelectionModel<Cylinder>();

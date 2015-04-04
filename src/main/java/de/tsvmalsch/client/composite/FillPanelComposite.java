@@ -69,13 +69,13 @@ public class FillPanelComposite extends Composite {
 
 		vp = new VerticalPanel();
 		HorizontalPanel hp = new HorizontalPanel();
-		Label lblSelectAction = new Label("I'd like to ");
+		Label lblSelectAction = new Label("Ich möchte ");
 		hp.add(lblSelectAction);
 
 		cboChooseAction.addChangeHandler(new UserDataClickHandler());
-		cboChooseAction.addItem("fill an own cylinder");
-		cboChooseAction.addItem("fill a club cylinder");
-		cboChooseAction.addItem("fill a cylinder of another member");
+		cboChooseAction.addItem("meine eigene Flasche füllen.");
+		cboChooseAction.addItem("eine Vereinsflasche füllen.");
+		cboChooseAction.addItem("die Flasche eines anderen Mitglieds füllen.");
 		hp.add(cboChooseAction);
 
 		vp.add(hp);
@@ -120,15 +120,15 @@ public class FillPanelComposite extends Composite {
 			UserRights userRights = result.getRights();
 
 			if (userRights.isAllowedToFillAir()) {
-				tp.add(new GasBlendingComposite(BlendingType.AIR), "Air");
+				tp.add(new GasBlendingComposite(BlendingType.AIR), "Luft");
 			}
 			if (userRights.isAllowedToFillNx40()) {
 				tp.add(new GasBlendingComposite(BlendingType.NX40_CASCADE),
-						"Nx40 Cascade");
+						"Nx40 Kascade");
 			}
 			if (userRights.isAllowedToFillPartial()) {
 				tp.add(new GasBlendingComposite(BlendingType.PARTIAL_METHOD),
-						"Partial Method");
+						"Partial Methode");
 			}
 			if (userRights.isAllowedToFillMixer()) {
 				//tp.add(new GasBlendingComposite(BlendingType.MIXER), "Mixer");

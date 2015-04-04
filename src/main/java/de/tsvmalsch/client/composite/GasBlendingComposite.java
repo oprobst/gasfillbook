@@ -14,28 +14,28 @@ import de.tsvmalsch.shared.model.BlendingType;
 public class GasBlendingComposite extends Composite {
 
 	private HTML lblBlendingHint = new HTML(
-			"<p> This is an example blending hint<br/> "
-					+ "<ul> <li> Release 39bar</li>"
-					+ "<li> Add 40bar Nx40 from cascade</li>"
-					+ "<li> Top with Air</li></ul></p>");
+			"<p> Dies ist ein Beispieltext<br/> "
+					+ "<ul> <li> 39bar ablassen</li>"
+					+ "<li> 40bar Nx40 aus der Kaskade füllen (auf 120bar)</li>"
+					+ "<li> Mit Luft füllen</li></ul></p>");
 	/*
 	 * private final UserServiceAsync userService =
 	 * GWT.create(UserService.class); private final CylinderServiceAsync
 	 * cylinderService = GWT .create(CylinderService.class);
 	 */
 
-	private Label lblRemainingPressure = new Label("Remaining pressure");
+	private Label lblRemainingPressure = new Label("Restdruck");
 	private Label lblBarRemainingPressure = new Label("bar");
 
 	private Label lblPercentRemainingO2 = new Label("% O2");
 	private Label lblPercentRemainingHe = new Label("% He");
 
-	private Label lblTargetPressure = new Label("Target pressure");
+	private Label lblTargetPressure = new Label("Zieldruck");
 	private Label lblBarTargetPressure = new Label("bar");
 	private Label lblPercentTargetO2 = new Label("% O2");
 	private Label lblPercentTargetHe = new Label("% He");
 
-	private Label lblFinalBlending = new Label("Finally filled: ");
+	private Label lblFinalBlending = new Label("Tatsächlich gefüllt: ");
 	private Label lblBarTargetO2Pressure = new Label("bar O2");
 	private Label lblBarTargetHePressure = new Label("bar He");
 
@@ -48,7 +48,7 @@ public class GasBlendingComposite extends Composite {
 	private TextBox txbBarReallyFilledO2 = new TextBox();
 	private TextBox txbBarReallyFilledHe = new TextBox();
 
-	private Label lblFillingCost = new Label("Cost: 12,34 Euro");
+	private Label lblFillingCost = new Label("Füllkosten: 12,34 Euro");
 	private Button btnAccount = new Button();
 
 	private final int blendingType;
@@ -137,7 +137,7 @@ public class GasBlendingComposite extends Composite {
 
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(lblFillingCost);
-		btnAccount.setText("Book filling!");
+		btnAccount.setText("Füllung abrechnen!");
 		hp.add(btnAccount);
 		vp.add(hp);
 		formatWidgets();

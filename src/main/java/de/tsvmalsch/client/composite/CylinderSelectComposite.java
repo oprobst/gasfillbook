@@ -75,10 +75,10 @@ public class CylinderSelectComposite extends Composite {
 		if (today.compareTo(nextInsp) > 0) {
 			lblInspectionWarning.setStyleName("label-warning");
 			lblInspectionWarning
-					.setText("TÜV invalid: " + dtf.format(nextInsp));
+					.setText("TÜV abglaufen: " + dtf.format(nextInsp));
 		} else {
 			lblInspectionWarning.setStyleName("label-ok");
-			lblInspectionWarning.setText("TÜV till: " + dtf.format(nextInsp));
+			lblInspectionWarning.setText("TÜV bis: " + dtf.format(nextInsp));
 		}
 	}
 
@@ -87,7 +87,7 @@ public class CylinderSelectComposite extends Composite {
 	public CylinderSelectComposite() {
 		hp = new HorizontalPanel();
 
-		Label lblSelectAction = new Label("Fill Cylinder ");
+		Label lblSelectAction = new Label("Fülle Flasche ");
 		hp.add(lblSelectAction);
 
 		cboSelectCylinder.addChangeHandler(new CylinderClickHandler());

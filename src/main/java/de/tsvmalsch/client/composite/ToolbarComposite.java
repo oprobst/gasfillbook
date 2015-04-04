@@ -32,7 +32,7 @@ public class ToolbarComposite extends Composite {
 
 	Label lblCurrentMemberName = new Label();
 
-	Label lblCurrentAccountBalance = new Label("Account balance: 13,82 €");
+	Label lblCurrentAccountBalance = new Label("Kontostand: 13,82 €");
 
 	TabLayoutPanel tp;
 	CylinderDataComposite cylinderDataComposite;
@@ -62,11 +62,11 @@ public class ToolbarComposite extends Composite {
 		fillPanelComposite = new FillPanelComposite();
 		cylinderDataComposite = new CylinderDataComposite();
 
-		tp.add(fillPanelComposite, "Gas Blender");
+		tp.add(fillPanelComposite, "Füllen");
 
-		tp.add(new Label("TODO"), "History");
-		tp.add(cylinderDataComposite, "Cylinders");
-		tp.add(userDataComposite, "You");
+		tp.add(new Label("TODO"), "Abrechnung");
+		tp.add(cylinderDataComposite, "Flaschen");
+		tp.add(userDataComposite, "Stammdaten");
 
 		vPanel.add(tp);
 
@@ -82,7 +82,7 @@ public class ToolbarComposite extends Composite {
 		}
 
 		public void onSuccess(Member result) {
-			lblCurrentMemberName.setText("Hi " + result.getFirstName());
+			lblCurrentMemberName.setText("Hallo " + result.getFirstName());
 			if (result.getIsAdmin()) {
 				tp.add(new Label("TODO"), "Admin");
 			}

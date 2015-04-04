@@ -27,9 +27,9 @@ public class SelectOtherMemberComposite extends Composite {
 	private SuggestBox suggestBox = null;
 	private TextBox textBoxMemberNumber = null;
 
-	private RadioButton rbtownAccount = new RadioButton("creditor", "Me");
+	private RadioButton rbtownAccount = new RadioButton("creditor", "Ich");
 	private RadioButton rbtCylinderOwnersAccount = new RadioButton("creditor",
-			"Owner");
+			"Besitzer");
 
 	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();
 
@@ -47,7 +47,7 @@ public class SelectOtherMemberComposite extends Composite {
 		suggestBox.addValueChangeHandler(new TextBoxMemberNameChangeHandler());
 		hp.add(suggestBox);
 
-		Label lblNumber = new Label("or Number:");
+		Label lblNumber = new Label(" oder Mitgl.Nr.:");
 		hp.add(lblNumber);
 
 		textBoxMemberNumber = new TextBox();
@@ -56,7 +56,7 @@ public class SelectOtherMemberComposite extends Composite {
 				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
 		hp.add(textBoxMemberNumber);
 
-		Label lblCharge = new Label("Charge ");
+		Label lblCharge = new Label("Es zahlt ");
 		rbtownAccount.setValue(true);
 		hp.add(lblCharge);
 		hp.add(rbtownAccount);

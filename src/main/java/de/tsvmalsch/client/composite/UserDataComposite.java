@@ -21,19 +21,19 @@ import de.tsvmalsch.shared.model.UserRights;
 
 public class UserDataComposite extends Composite {
 
-	private Label lblHeader = new Label("User Data");
+	private Label lblHeader = new Label("Benutzerdaten");
 	private Label lblEMail = new Label("E-Mail");
-	private Label lblFirstName = new Label("First name");
-	private Label lblLastName = new Label("Last name");
-	private Label lblMaximumDebt = new Label("Max. debt");
-	private Label lblNewPassword = new Label("New password");
-	private Label lblNewPassword2 = new Label("Confirm password");
-	private Label lblHasGasBlender = new Label("Has gas blender brevet");
-	private Label lblLastBriefing = new Label("Last briefing");
-	private Label lblIsAuthFillAir = new Label("Authorization to fill air");
-	private Label lblIsAuthFillNx40 = new Label("Authorization partial Nx40");
-	private Label lblIsAuthFillO2 = new Label("Authorization partial O2");
-	private Label lblIsAuthFillMix = new Label("Authorization use Mixer");
+	private Label lblFirstName = new Label("Vorname");
+	private Label lblLastName = new Label("Nachname");
+	private Label lblMaximumDebt = new Label("Max. Kontostand");
+	private Label lblNewPassword = new Label("Neues Passwort");
+	private Label lblNewPassword2 = new Label("Passwort bestätigen");
+	private Label lblHasGasBlender = new Label("Hat Gasblender Brevet");
+	private Label lblLastBriefing = new Label("Letzte Unterweisung");
+	private Label lblIsAuthFillAir = new Label("Authorisiert zur Luftfüllung");
+	private Label lblIsAuthFillNx40 = new Label("Authorisiert zur Nx40 Kaskade");
+	private Label lblIsAuthFillO2 = new Label("Authorisiert zur Partial Methode");
+	private Label lblIsAuthFillMix = new Label("Authorisiert zur Mixer Nutzung");
 
 	private TextBox txbEmail = new TextBox();
 	private TextBox txbFirstName = new TextBox();
@@ -49,7 +49,7 @@ public class UserDataComposite extends Composite {
 	private CheckBox chkIsAuthFillO2 = new CheckBox();
 	private CheckBox chkIsAuthFillMix = new CheckBox();
 
-	Button btnConfirm = new Button("Confirm");
+	Button btnConfirm = new Button("Ändern");
 	Button btnReset = new Button("Reset");
 
 	public UserDataComposite() {
