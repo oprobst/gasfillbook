@@ -70,6 +70,20 @@ public class Member implements Serializable {
 	private Boolean isActive = true;
 
 	/**
+	 * User with admin access can configure the application and provide
+	 * briefings.
+	 */
+	private Boolean isAdmin = false;
+
+	public Boolean getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	/**
 	 * Flag indicating if the user has a gas blenber brevet and is allowed to
 	 * fill with the partitial blending method in general.
 	 */

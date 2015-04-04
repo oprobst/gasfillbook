@@ -29,36 +29,6 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 
 	public UserServiceImpl() throws Exception {
 
-		Member m = new Member();
-		m.setFirstName("Oliver");
-		m.setLastName("Probst");
-		m.setMemberNumber(1);
-		m.setEncodedPassword("1");
-		m.setEmail("me@tsv-malsch.de");
-		m.setIsActive(true);
-		m.setHasGasblenderBrevet(true);
-		allMembers.put("Oliver Probst", m);
-
-		m = new Member();
-		m.setFirstName("Oliver");
-		m.setLastName("Patzelt");
-		m.setMemberNumber(2);
-		m.setEncodedPassword("1");
-		m.setEmail("me@tsv-malsch.de");
-		m.setIsActive(true);
-		m.setHasGasblenderBrevet(true);
-		allMembers.put("Oliver Patzelt", m);
-
-		m = new Member();
-		m.setFirstName("Olivia");
-		m.setLastName("Patzelt");
-		m.setMemberNumber(3);
-		m.setEncodedPassword("1");
-		m.setEmail("me@tsv-malsch.de");
-		m.setIsActive(true);
-		m.setHasGasblenderBrevet(true);
-		allMembers.put("Olivia Patzelt", m);
-
 		Collection<Member> moreDummys = CreateDemoDataService
 				.createDummyMembers();
 		for (Member dmem : moreDummys) {

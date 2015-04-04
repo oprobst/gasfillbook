@@ -128,13 +128,20 @@ public class CreateDemoDataService {
 			mlist.add(m);
 			m.setFirstName(CreateDemoDataService.getFirstName(i % 250));
 			m.setLastName(CreateDemoDataService.getLastName(i % 94));
-			m.setMemberNumber(i + 10);
+			m.setMemberNumber(i);
 			m.setEncodedPassword("1");
+			
 			m.setEmail(CreateDemoDataService.getFirstName(i % 250) + "."
 					+ CreateDemoDataService.getLastName(i % 94)
 					+ "@tsv-malsch.de");
 			m.setRights(new UserRights());
 			m.getRights().setBlendingAuthorization((int) (Math.random() * 4));
+			
+			if (i < 6){
+				m.setIsAdmin(true);
+				m.getRights().setBlendingAuthorization(4);
+			}			
+			
 			long month = 60000 * 60 * 24 * 30;
 			m.getRights().setLastBriefing(
 					new Date(System.currentTimeMillis() - month * 14

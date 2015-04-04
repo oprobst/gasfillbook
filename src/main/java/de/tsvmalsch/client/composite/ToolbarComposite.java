@@ -64,10 +64,9 @@ public class ToolbarComposite extends Composite {
 
 		tp.add(fillPanelComposite, "Gas Blender");
 
-		tp.add(new Label("TODO"), "Hist	ory");
+		tp.add(new Label("TODO"), "History");
 		tp.add(new Label("TODO"), "Cylinders");
 		tp.add(userDataComposite, "You");
-		tp.add(new Label("TODO"), "Admin");
 
 		vPanel.add(tp);
 
@@ -84,6 +83,9 @@ public class ToolbarComposite extends Composite {
 
 		public void onSuccess(Member result) {
 			lblCurrentMemberName.setText("Hi " + result.getFirstName());
+			if (result.getIsAdmin()) {
+				tp.add(new Label("TODO"), "Admin");
+			}
 		};
 	}
 
