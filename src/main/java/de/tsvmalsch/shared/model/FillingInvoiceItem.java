@@ -46,8 +46,7 @@ public class FillingInvoiceItem implements Serializable {
 	 * Which kind of blending was executed.
 	 */
 	@NotNull
-	@Enumerated(EnumType.STRING)
-	private BlendingType blendingType;
+	private int blendingType;
 
 	/**
 	 * The creditor, which shall be accounted. The member filling the cylinder
@@ -71,7 +70,6 @@ public class FillingInvoiceItem implements Serializable {
 	 * Pressure in cylinder when starting gas blending
 	 */
 	private int startPressure;
-
 
 	/**
 	 * The date when the cylinder was filled.
@@ -121,12 +119,12 @@ public class FillingInvoiceItem implements Serializable {
 	public void setStartPressure(int startPressure) {
 		this.startPressure = startPressure;
 	}
-	
+
 	public FillingInvoiceItem getAdjustmentEntryFor() {
 		return adjustmentEntryFor;
 	}
 
-	public BlendingType getBlendingType() {
+	public int getBlendingType() {
 		return blendingType;
 	}
 
@@ -174,8 +172,8 @@ public class FillingInvoiceItem implements Serializable {
 		this.adjustmentEntryFor = adjustmentEntryOf;
 	}
 
-	public void setBlendingType(BlendingType blendingType) {
-		this.blendingType = blendingType;
+	public void setBlendingType(int air) {
+		this.blendingType = air;
 	}
 
 	public void setCreditor(Member creditor) {

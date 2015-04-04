@@ -10,6 +10,7 @@ import de.tsvmalsch.shared.model.BlendingType;
 import de.tsvmalsch.shared.model.Cylinder;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
+import de.tsvmalsch.shared.model.UserRights;
 
 public class InitDBWithDemoData {
 	private static String getFirstName(int i) {
@@ -131,6 +132,11 @@ public class InitDBWithDemoData {
 					+ InitDBWithDemoData.getLastName(i) + "@tsv-malsch.de");
 			m.setIsActive(true);
 			m.setHasGasblenderBrevet(true);
+			m.setRights(new UserRights());
+			m.getRights().setBlendingAuthorization((int) Math.random() * 5);
+			m.getRights().setLastBriefing(
+					new Date(System.currentTimeMillis() + 60000 * 60 * 24 * 30
+							* ((int) Math.random() * 15) - 5));
 			session.save(m);
 
 			Cylinder cy = new Cylinder();

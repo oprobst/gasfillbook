@@ -47,7 +47,7 @@ public class CylinderSelectComposite extends Composite {
 			Date nextInsp = c.getNextInspectionDate();
 			Date today = new Date();
 
-			String pattern = "mm/yyyy";
+			String pattern = "MM/yyyy";
 			DefaultDateTimeFormatInfo info = new DefaultDateTimeFormatInfo();
 			DateTimeFormat dtf = new DateTimeFormat(pattern, info) {
 			};

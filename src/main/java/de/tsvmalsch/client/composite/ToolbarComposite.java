@@ -28,20 +28,23 @@ public class ToolbarComposite extends Composite {
 
 	Logger logger = Logger.getLogger(ToolbarComposite.class.getCanonicalName());
 
-	FillPanelComposite fillPanelComposite = null;
+	FillPanelComposite fillPanelComposite ;
 
+	UserDataComposite userDataComposite ;
+	
 	private class FillCylinderClickHandler implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			fillPanelComposite.setVisible(false);
+			fillPanelComposite.setVisible(true);
+			userDataComposite.setVisible(false);
 		}
 	};
 
 	private class UserDataClickHandler implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			fillPanelComposite.setVisible(true);
-
+			fillPanelComposite.setVisible(false);
+			userDataComposite.setVisible(true);
 		}
 	};
 
@@ -53,7 +56,11 @@ public class ToolbarComposite extends Composite {
 	Label lblCurrentMemberName = new Label();
 
 	public ToolbarComposite() {
+ 
+		userDataComposite = new UserDataComposite();
 
+		fillPanelComposite = new FillPanelComposite();
+		
 		RootPanel rootPanel = RootPanel.get();
 		rootPanel.clear();
 
@@ -79,11 +86,12 @@ public class ToolbarComposite extends Composite {
 		vPanel.add(hPanel);
 
 
-		fillPanelComposite = new FillPanelComposite();
 		vPanel.add(fillPanelComposite);
 		
 		fillPanelComposite.setVisible(true);
 		
+		vPanel.add(userDataComposite);
+		userDataComposite.setVisible(true);
 
 		rootPanel.add(vPanel);
 		

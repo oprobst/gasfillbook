@@ -10,6 +10,7 @@ import de.tsvmalsch.shared.model.BlendingType;
 import de.tsvmalsch.shared.model.Cylinder;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
+import de.tsvmalsch.shared.model.UserRights;
 
 public class CreateDemoDataService {
 	private static String getFirstName(int i) {
@@ -120,7 +121,7 @@ public class CreateDemoDataService {
 	public static Collection<Member> createDummyMembers() {
 		Collection<Member> mlist = new LinkedList<>();
 
-		for (int i = 0; i < 250; i++) {
+		for (int i = 0; i < 500; i++) {
 			Member m = new Member();
 			mlist.add(m);
 			m.setFirstName(CreateDemoDataService.getFirstName(i % 250));
@@ -130,6 +131,12 @@ public class CreateDemoDataService {
 			m.setEmail(CreateDemoDataService.getFirstName(i % 250) + "."
 					+ CreateDemoDataService.getLastName(i % 94)
 					+ "@tsv-malsch.de");
+			m.setRights(new UserRights());
+			m.getRights().setBlendingAuthorization((int) (Math.random() * 4));
+			long month = 60000 * 60 * 24 * 30;
+			m.getRights().setLastBriefing(
+					new Date(System.currentTimeMillis() - month * 14
+							+ (int) (Math.random() * 5) * month));
 			m.setIsActive(true);
 			m.setHasGasblenderBrevet(true);
 
