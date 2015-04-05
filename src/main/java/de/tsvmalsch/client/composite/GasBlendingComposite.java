@@ -30,7 +30,7 @@ public class GasBlendingComposite extends Composite {
 	private Label lblPercentRemainingO2 = new Label("% O2");
 	private Label lblPercentRemainingHe = new Label("% He");
 
-	private Label lblTargetPressure = new Label("Zieldruck");
+	private Label lblTargetPressure = new Label("Enddruck");
 	private Label lblBarTargetPressure = new Label("bar");
 	private Label lblPercentTargetO2 = new Label("% O2");
 	private Label lblPercentTargetHe = new Label("% He");
@@ -128,7 +128,7 @@ public class GasBlendingComposite extends Composite {
 
 		t.getFlexCellFormatter().setColSpan(2, 0, 6);
 		t.setWidget(2, 0, lblBlendingHint);
- 
+
 		t.setWidget(3, 0, lblFinalBlending);
 		t.setWidget(3, 3, txbBarReallyFilledO2);
 		t.setWidget(3, 4, lblBarTargetO2Pressure);
