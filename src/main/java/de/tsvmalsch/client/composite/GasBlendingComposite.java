@@ -1,14 +1,23 @@
 package de.tsvmalsch.client.composite;
 
+import java.text.ParseException;
+
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.blend.CylinderContents;
+import de.tsvmalsch.client.blend.DiveGasCalculator;
+import de.tsvmalsch.client.blend.DiveGasCalculator.CalcResult;
 import de.tsvmalsch.shared.model.BlendingType;
 
 public class GasBlendingComposite extends Composite {
@@ -39,14 +48,14 @@ public class GasBlendingComposite extends Composite {
 	private Label lblBarTargetO2Pressure = new Label("bar O2");
 	private Label lblBarTargetHePressure = new Label("bar He");
 
-	private TextBox txbRemainingPressure = new TextBox();
-	private TextBox txbRemainingO2 = new TextBox();
-	private TextBox txbRemainingHe = new TextBox();
-	private TextBox txbTargetPressure = new TextBox();
-	private TextBox txbTargetO2Percent = new TextBox();
-	private TextBox txbTargetHePercent = new TextBox();
-	private TextBox txbBarReallyFilledO2 = new TextBox();
-	private TextBox txbBarReallyFilledHe = new TextBox();
+	private DoubleBox txbRemainingPressure = new DoubleBox();
+	private DoubleBox txbRemainingO2 = new DoubleBox();
+	private DoubleBox txbRemainingHe = new DoubleBox();
+	private DoubleBox txbTargetPressure = new DoubleBox();
+	private DoubleBox txbTargetO2Percent = new DoubleBox();
+	private DoubleBox txbTargetHePercent = new DoubleBox();
+	private DoubleBox txbBarReallyFilledO2 = new DoubleBox();
+	private DoubleBox txbBarReallyFilledHe = new DoubleBox();
 
 	private Label lblFillingCost = new Label("Füllkosten: 12,34 Euro");
 	private Button btnAccount = new Button();
@@ -58,7 +67,15 @@ public class GasBlendingComposite extends Composite {
 		lblBlendingHint.setStyleName("blending-hint");
 		btnAccount.setStyleName("button-book-filling");
 
-		txbRemainingO2.setStyleName("txt-3digit");
+		txbRemainingPressure.setValue(50.0);
+		txbRemainingO2.setValue(20.9d);
+		txbRemainingHe.setValue(0d);
+		txbTargetPressure.setValue(230.0d);
+		txbTargetO2Percent.setValue(32.0d);
+		txbTargetHePercent.setValue(0.0d);
+		txbBarReallyFilledO2.setValue(0.0d);
+		txbBarReallyFilledHe.setValue(0.0d);
+
 		txbRemainingPressure.setStyleName("txt-3digit");
 		txbRemainingO2.setStyleName("txt-3digit");
 		txbRemainingHe.setStyleName("txt-3digit");
@@ -68,14 +85,22 @@ public class GasBlendingComposite extends Composite {
 		txbBarReallyFilledO2.setStyleName("txt-3digit");
 		txbBarReallyFilledHe.setStyleName("txt-3digit");
 
-		txbRemainingPressure.setMaxLength(3);
-		txbRemainingO2.setMaxLength(3);
-		txbRemainingHe.setMaxLength(3);
-		txbTargetPressure.setMaxLength(3);
-		txbTargetO2Percent.setMaxLength(3);
-		txbTargetHePercent.setMaxLength(3);
-		txbBarReallyFilledO2.setMaxLength(3);
-		txbBarReallyFilledHe.setMaxLength(3);
+		txbRemainingPressure.setMaxLength(4);
+		txbRemainingO2.setMaxLength(5);
+		txbRemainingHe.setMaxLength(5);
+		txbTargetPressure.setMaxLength(5);
+		txbTargetO2Percent.setMaxLength(5);
+		txbTargetHePercent.setMaxLength(5);
+		txbBarReallyFilledO2.setMaxLength(5);
+		txbBarReallyFilledHe.setMaxLength(5);
+
+		CalculateBlendingHandler blurHandler = new CalculateBlendingHandler();
+		txbRemainingPressure.addChangeHandler(blurHandler);
+		txbRemainingO2.addChangeHandler(blurHandler);
+		txbRemainingHe.addChangeHandler(blurHandler);
+		txbTargetPressure.addChangeHandler(blurHandler);
+		txbTargetO2Percent.addChangeHandler(blurHandler);
+		txbTargetHePercent.addChangeHandler(blurHandler);
 
 		if (blendingType != BlendingType.NX40_CASCADE
 				&& blendingType != BlendingType.PARTIAL_METHOD) {
@@ -98,6 +123,46 @@ public class GasBlendingComposite extends Composite {
 			lblPercentRemainingHe.setVisible(false);
 			txbTargetHePercent.setVisible(false);
 			txbRemainingHe.setVisible(false);
+		}
+	}
+
+	class CalculateBlendingHandler implements ChangeHandler {
+
+		@Override
+		public void onChange(ChangeEvent event) {
+
+			CylinderContents start = new CylinderContents();
+			CylinderContents target = new CylinderContents();
+			start.Pressure = txbRemainingPressure.getValue();
+			start.FO2 = txbRemainingO2.getValue();
+			start.FHe = txbRemainingHe.getValue();
+			target.Pressure = txbTargetPressure.getValue();
+			target.FO2 = txbTargetO2Percent.getValue();
+			target.FHe = txbTargetHePercent.getValue();
+
+			if (target.Pressure == null || target.FO2 == null
+					|| target.FHe == null || start.Pressure == null
+					|| start.FO2 == null || start.FHe == null) {
+
+				txbBarReallyFilledO2.setValue(0.0);
+				txbBarReallyFilledHe.setValue(0.0);
+				lblBlendingHint
+						.setHTML("<b>Bitte Felder vollständig füllen.</b>");
+				return;
+			}
+
+			// TODO Request remaining Values
+			CalcResult r = new DiveGasCalculator().calc(start, target, 12, 21,
+					true);
+
+			lblBlendingHint.setHTML("" + "<p>Start pressure " + r.StartPressure
+					+ " bar<br/>" + "Top He " + r.HeAdded + " bar<br/>"
+					+ "Top O2 " + r.O2Added + " bar<br/>" + "Top with AIR to "
+					+ r.EndPressure + " bar. </p>");
+			
+			txbBarReallyFilledHe.setValue(r.HeAdded);
+			txbBarReallyFilledO2.setValue(r.O2Added);
+
 		}
 	}
 
