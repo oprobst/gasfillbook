@@ -168,6 +168,7 @@ public class CylinderDataComposite extends Composite {
 
 		public void onSuccess(Member member) {
 
+			cylinder.clear();
 			cylinder.addAll(member.getCylinders());
 
 			table.setRowData(cylinder);
