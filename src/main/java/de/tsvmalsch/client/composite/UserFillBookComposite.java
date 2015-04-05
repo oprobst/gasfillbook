@@ -12,15 +12,12 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 
-import de.tsvmalsch.client.CylinderService;
-import de.tsvmalsch.client.CylinderServiceAsync;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
@@ -31,9 +28,18 @@ import de.tsvmalsch.shared.model.Member;
 
 public class UserFillBookComposite extends Composite {
 
+	private Label lblCurrentDebt = new Label("Akt. Kontostand: 32,12 Euro");
+	private Label lblAccountCondition = new Label(
+			"Nächster Bankeinzug bei 100 Euro oder im Dez 2015");
+
 	public UserFillBookComposite() {
 
 		VerticalPanel vp = new VerticalPanel();
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(lblCurrentDebt);
+		hp.add(lblAccountCondition);
+		vp.add(hp);
+
 		initTable();
 		vp.add(table);
 
@@ -145,27 +151,23 @@ public class UserFillBookComposite extends Composite {
 		};
 		table.addColumn(blenderColumn, "Füller");
 
-		// Invoice Date
-
-		TextColumn<FillingInvoiceItem> invoiceColumn = new TextColumn<FillingInvoiceItem>() {
-			@Override
-			public String getValue(FillingInvoiceItem object) {
-				if (object.calculatePrice() == 0) {
-					return "free";
-				}
-				if (object.getInvoicingDate() == null) {
-					return "offen";
-				}
-				return dtf.format(object.getInvoicingDate());
-			}
-		};
-		table.addColumn(invoiceColumn, "Rechnung");
-
+		/*
+		 * // Invoice Date
+		 * 
+		 * TextColumn<FillingInvoiceItem> invoiceColumn = new
+		 * TextColumn<FillingInvoiceItem>() {
+		 * 
+		 * @Override public String getValue(FillingInvoiceItem object) { if
+		 * (object.calculatePrice() == 0) { return "free"; } if
+		 * (object.getInvoicingDate() == null) { return "offen"; } return
+		 * dtf.format(object.getInvoicingDate()); } };
+		 * table.addColumn(invoiceColumn, "Rechnung");
+		 */
 		TextColumn<FillingInvoiceItem> paymentColumn = new TextColumn<FillingInvoiceItem>() {
 			@Override
 			public String getValue(FillingInvoiceItem object) {
 				if (object.calculatePrice() == 0) {
-					return "free";
+					return "frei";
 				}
 				if (object.getPaymentReceiptDate() == null) {
 					return "offen";

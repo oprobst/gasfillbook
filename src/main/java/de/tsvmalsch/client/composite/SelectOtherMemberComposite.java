@@ -7,11 +7,6 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.thirdparty.guava.common.util.concurrent.Service.Listener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IntegerBox;
@@ -99,7 +94,7 @@ public class SelectOtherMemberComposite extends Composite {
 			String name = suggestBox.getText();
 			authService.getMemberByName(name, new AsyncCallbackMemberByName());
 		}
-	}; 
+	};
 
 	class AsyncCallbackMemberByNumber extends DefaultAsyncCallback<Member> {
 
