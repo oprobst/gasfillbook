@@ -155,12 +155,6 @@ public class GasBlendingComposite extends Composite {
 			target.FHe = target.FHe / 100;
 			target.FO2 = target.FO2 / 100;
 
-			start.FO2 = txbRemainingO2.getValue();
-			start.FHe = txbRemainingHe.getValue();
-			target.Pressure = txbTargetPressure.getValue();
-			target.FO2 = txbTargetO2Percent.getValue();
-			target.FHe = txbTargetHePercent.getValue();
-
 			// TODO Request remaining Values
 			gasBlenderService.calc(start, target, 12.0, 21, true,
 					new GasBlenderCallback());
@@ -181,9 +175,10 @@ public class GasBlendingComposite extends Composite {
 				txbBarReallyFilledHe.setValue(r.HeAdded);
 				txbBarReallyFilledO2.setValue(r.O2Added);
 
-				lblFillingCost.setText("Füllkosten: "
-						+ (r.HeAdded * 12 * 0.0175 + r.O2Added * 12 * 0.0055)
-						+ " Euro");
+				lblFillingCost
+						.setText("Füllkosten: "
+								+ Math.round((int) ((r.HeAdded * 12 * 0.0175 + r.O2Added * 12 * 0.0055) * 100))
+								/ 100f + " Euro");
 
 			} else {
 				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
