@@ -1,4 +1,4 @@
-package de.tsvmalsch.server;
+package de.tsvmalsch.shared;
 
 import java.util.Collection;
 import java.util.Date;
@@ -231,13 +231,74 @@ public class CreateDemoDataService {
 		for (int j = 0; j < 3; j++) {
 			FillingInvoiceItem fii = new FillingInvoiceItem();
 			fii.setBlendingType(BlendingType.AIR);
-			fii.setCreditor(m);
+			fii.setBlendingMember(m);
+			fii.setLiterAirFilled(1000 + j * 100);
+			fii.setDateOfFilling(new Date(System.currentTimeMillis() - j * 1000
+					* 60 * 60 * 24 * 2));
+			fii.setId((long) 0 + j);
+			HashSet<Cylinder> tank = new HashSet<Cylinder>();
+			tank.add(m.getCylinders().iterator().next());
+			fii.setFilledCylinder(tank);
+			fii.setPricePerLiterOxygen(0.0055f);
+
+			mlist.add(fii);
+		}
+
+		for (int j = 0; j < 4; j++) {
+			FillingInvoiceItem fii = new FillingInvoiceItem();
+			fii.setBlendingType(BlendingType.NX40_CASCADE);
+			fii.setLiterOxygenFilled(288 + j * 123);
+			fii.setLiterAirFilled(800 + j * 112);
+			fii.setId((long) 12 + j);
+			fii.setBlendingMember(m);
 			fii.setDateOfFilling(new Date(System.currentTimeMillis() - j * 1000
 					* 60 * 60 * 24 * 2));
 			HashSet<Cylinder> tank = new HashSet<Cylinder>();
 			tank.add(m.getCylinders().iterator().next());
 			fii.setFilledCylinder(tank);
+			fii.setPricePerLiterOxygen(0.0055d);
+			fii.setPricePerLiterHelium(0.0175d);
+			mlist.add(fii);
 		}
+
+		FillingInvoiceItem fii = new FillingInvoiceItem();
+		fii.setBlendingType(BlendingType.NX40_CASCADE);
+		fii.setPricePerLiterHelium(0.0175f);
+		fii.setPricePerLiterOxygen(0.0055f);
+		fii.setLiterOxygenFilled(340);
+		fii.setLiterAirFilled(2142);
+		fii.setLiterHeliumFilled(1292);
+		fii.setId(815l);
+		fii.setBlendingMember(m);
+		fii.setDateOfFilling(new Date(System.currentTimeMillis() - 12 * 1000
+				* 60 * 60 * 24 * 2));
+		fii.setInvoicingDate(new Date(System.currentTimeMillis() - 8 * 1000
+				* 60 * 60 * 24 * 2));
+		HashSet<Cylinder> tank = new HashSet<Cylinder>();
+		tank.add(m.getCylinders().iterator().next());
+		fii.setFilledCylinder(tank);
+		mlist.add(fii);
+
+		
+		fii = new FillingInvoiceItem();
+		fii.setBlendingType(BlendingType.PARTIAL_METHOD);
+		fii.setPricePerLiterHelium(0.0175f);
+		fii.setPricePerLiterOxygen(0.0055f);
+		fii.setLiterOxygenFilled(221);
+		fii.setLiterAirFilled(1403);
+		fii.setLiterHeliumFilled(3232);
+		fii.setId(819l);
+		fii.setBlendingMember(m);
+		fii.setDateOfFilling(new Date(System.currentTimeMillis() - 8 * 1000
+				* 60 * 60 * 24 * 2));
+		fii.setInvoicingDate(new Date(System.currentTimeMillis() - 1 * 1000
+				* 60 * 60 * 24 * 2));
+		fii.setPaymentReceiptDate(new Date(System.currentTimeMillis() - 0 * 1000
+				* 60 * 60 * 24 * 2));
+		tank.add(m.getCylinders().iterator().next());
+		fii.setFilledCylinder(tank);
+		mlist.add(fii);
+		
 		return mlist;
 	}
 }

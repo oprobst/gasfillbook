@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
 import de.tsvmalsch.shared.model.Member;
@@ -29,6 +30,7 @@ public class ToolbarComposite extends Composite {
 	FillPanelComposite fillPanelComposite;
 
 	UserDataComposite userDataComposite;
+	UserFillBookComposite userFillBookComposite;
 
 	Label lblCurrentMemberName = new Label();
 
@@ -45,9 +47,11 @@ public class ToolbarComposite extends Composite {
 
 		tp = new TabLayoutPanel(2.1, Unit.EM);
 		tp.setAnimationDuration(200);
-		tp.setHeight("440px");
-		tp.setWidth("600px");
-
+		 
+		tp.setHeight(Constants.GLOBAL_HEIGHT_STRING);
+		tp.setWidth(Constants.GLOBAL_WIDTH_STRING);
+		
+		
 		HorizontalPanel hPanel = new HorizontalPanel();
 
 		hPanel.add(lblCurrentMemberName);
@@ -61,10 +65,10 @@ public class ToolbarComposite extends Composite {
 
 		fillPanelComposite = new FillPanelComposite();
 		cylinderDataComposite = new CylinderDataComposite();
-
+		userFillBookComposite = new UserFillBookComposite();
 		tp.add(fillPanelComposite, "Füllen");
 
-		tp.add(new Label("TODO"), "Abrechnung");
+		tp.add(userFillBookComposite, "Abrechnung");
 		tp.add(cylinderDataComposite, "Flaschen");
 		tp.add(userDataComposite, "Stammdaten");
 

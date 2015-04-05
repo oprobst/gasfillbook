@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.tsvmalsch.client.UserService;
+import de.tsvmalsch.shared.CreateDemoDataService;
 import de.tsvmalsch.shared.model.Member;
 
 @SuppressWarnings("serial")

@@ -47,22 +47,21 @@ public class FillingInvoiceItem implements Serializable {
 	private int blendingType;
 
 	/**
-	 * The creditor, which shall be accounted. The member filling the cylinder
-	 * can be a different one that the one who pays the bill.
+	 * The blender who made the mix.
 	 */
 	@ManyToOne
 	@NotNull
-	private Member creditor;
+	private Member blendingMember;
 
 	/**
 	 * The price per liter He when executing the gas blending
 	 */
-	private float pricePerLiterHelium;
+	private double pricePerLiterHelium;
 
 	/**
 	 * The price per liter O2 when executing the gas blending
 	 */
-	private float pricePerLiterOxygen;
+	private double pricePerLiterOxygen;
 
 	/**
 	 * Pressure in cylinder when starting gas blending
@@ -99,7 +98,7 @@ public class FillingInvoiceItem implements Serializable {
 	/**
 	 * The amount of liter filled.
 	 */
-	private int literAirFilled;
+	private int literAirFilled = 0;
 
 	public int getLiterAirFilled() {
 		return literAirFilled;
@@ -112,11 +111,11 @@ public class FillingInvoiceItem implements Serializable {
 	/**
 	 * The amount of liter filled.
 	 */
-	private int literHeliumFilled;
+	private int literHeliumFilled = 0;
 	/**
 	 * The amount of liter Oxygen filled.
 	 */
-	private int literOxygenFilled;
+	private int literOxygenFilled = 0;
 
 	/**
 	 * The date when the payment was received.
@@ -139,8 +138,8 @@ public class FillingInvoiceItem implements Serializable {
 		return blendingType;
 	}
 
-	public Member getCreditor() {
-		return creditor;
+	public Member getBlendingMember() {
+		return blendingMember;
 	}
 
 	public Date getDateOfFilling() {
@@ -171,11 +170,11 @@ public class FillingInvoiceItem implements Serializable {
 		return paymentReceiptDate;
 	}
 
-	public float getPricePerLiterHelium() {
+	public double getPricePerLiterHelium() {
 		return pricePerLiterHelium;
 	}
 
-	public float getPricePerLiterOxygen() {
+	public double getPricePerLiterOxygen() {
 		return pricePerLiterOxygen;
 	}
 
@@ -187,8 +186,8 @@ public class FillingInvoiceItem implements Serializable {
 		this.blendingType = air;
 	}
 
-	public void setCreditor(Member creditor) {
-		this.creditor = creditor;
+	public void setBlendingMember(Member member) {
+		this.blendingMember = member;
 	}
 
 	public void setDateOfFilling(Date dateOfFilling) {
@@ -219,12 +218,19 @@ public class FillingInvoiceItem implements Serializable {
 		this.paymentReceiptDate = paymentReceiptDate;
 	}
 
-	public void setPricePerLiterHelium(float pricePerLiterHelium) {
+	public void setPricePerLiterHelium(double pricePerLiterHelium) {
 		this.pricePerLiterHelium = pricePerLiterHelium;
 	}
 
-	public void setPricePerLiterOxygen(float pricePerLiterOxygen) {
+	public void setPricePerLiterOxygen(double pricePerLiterOxygen) {
 		this.pricePerLiterOxygen = pricePerLiterOxygen;
 	}
 
+	public double calculatePrice() {
+		double price = getPricePerLiterHelium() * getLiterHeliumFilled()
+				+ getPricePerLiterOxygen() * getLiterOxygenFilled();
+
+		double rounded = (double) (int) ((price + 0.005) * 100) / 100;
+		return rounded;
+	}
 }

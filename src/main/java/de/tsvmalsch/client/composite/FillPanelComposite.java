@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
@@ -86,8 +87,9 @@ public class FillPanelComposite extends Composite {
 		tp = new TabLayoutPanel(2.1, Unit.EM);
 		tp.setAnimationDuration(200);
 
-		tp.setHeight("380px");
-		tp.setWidth("600px");
+		tp.setHeight(Constants.GLOBAL_HEIGHT_STRING);
+		tp.setWidth(Constants.GLOBAL_WIDTH_STRING);
+		
 		vp.add(tp);
 
 		selectOtherMemberComposite.setVisible(false);
@@ -131,7 +133,8 @@ public class FillPanelComposite extends Composite {
 						"Partial Methode");
 			}
 			if (userRights.isAllowedToFillMixer()) {
-				//tp.add(new GasBlendingComposite(BlendingType.MIXER), "Mixer");
+				// tp.add(new GasBlendingComposite(BlendingType.MIXER),
+				// "Mixer");
 			}
 		};
 	}

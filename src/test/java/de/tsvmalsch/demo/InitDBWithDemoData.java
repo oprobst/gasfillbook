@@ -174,7 +174,7 @@ public class InitDBWithDemoData {
 			for (int j = 0; j < 3; j++) {
 				FillingInvoiceItem fii = new FillingInvoiceItem();
 				fii.setBlendingType(BlendingType.AIR);
-				fii.setCreditor(m);
+				fii.setBlendingMember(m);
 				fii.setDateOfFilling(new Date(System.currentTimeMillis() - j
 						* 1000 * 60 * 60 * 24 * 2));
 				HashSet<Cylinder> tank = new HashSet<Cylinder>();
