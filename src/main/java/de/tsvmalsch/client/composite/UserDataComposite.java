@@ -32,7 +32,8 @@ public class UserDataComposite extends Composite {
 	private Label lblLastBriefing = new Label("Letzte Unterweisung");
 	private Label lblIsAuthFillAir = new Label("Authorisiert zur Luftfüllung");
 	private Label lblIsAuthFillNx40 = new Label("Authorisiert zur Nx40 Kaskade");
-	private Label lblIsAuthFillO2 = new Label("Authorisiert zur Partial Methode");
+	private Label lblIsAuthFillO2 = new Label(
+			"Authorisiert zur Partial Methode");
 	private Label lblIsAuthFillMix = new Label("Authorisiert zur Mixer Nutzung");
 
 	private TextBox txbEmail = new TextBox();
@@ -62,9 +63,17 @@ public class UserDataComposite extends Composite {
 
 		vp.add(t);
 
-		t.setWidget(0, 0, lblEMail);
-		t.setWidget(1, 0, lblFirstName);
-		t.setWidget(2, 0, lblLastName);
+		txbEmail.setStyleName("txbUserData");
+		txbFirstName.setStyleName("txbUserData");
+		txbLastBriefing.setStyleName("txbUserData");
+		txbLastName.setStyleName("txbUserData");
+		txbMaximumDebt.setStyleName("txt-3digit");
+		txbNewPassword.setStyleName("txbUserData");
+		txbNewPassword2.setStyleName("txbUserData");
+
+		t.setWidget(0, 0, lblFirstName);
+		t.setWidget(1, 0, lblLastName);
+		t.setWidget(2, 0, lblEMail);
 		t.setWidget(3, 0, lblMaximumDebt);
 		t.setWidget(4, 0, lblHasGasBlender);
 		t.setWidget(5, 0, lblNewPassword);
@@ -97,7 +106,7 @@ public class UserDataComposite extends Composite {
 
 		HorizontalPanel hpButtons = new HorizontalPanel();
 		hpButtons.add(btnConfirm);
-		hpButtons.add(btnReset); 
+		hpButtons.add(btnReset);
 		vp.add(hpButtons);
 		initWidget(vp);
 	}

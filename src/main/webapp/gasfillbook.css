@@ -22,6 +22,10 @@ h1 {
 	width: 30px;
 }
 
+.txbUserData{
+	width: 130px;
+}
+
 .blending-hint {
 	border: 1px;
 	border-style: solid;

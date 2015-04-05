@@ -5,6 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -17,15 +19,14 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.IntegerBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import de.tsvmalsch.client.composite.ToolbarComposite;
 import de.tsvmalsch.shared.model.Member;
 
 public class Login extends Composite {
@@ -45,7 +46,7 @@ public class Login extends Composite {
 
 	private Member currentMember;
 
-	private TextBox textBoxMemberNumber;
+	private IntegerBox textBoxMemberNumber;
 	private TextBox textBoxPassword;
 	private Label lblWelcome = new Label("Hallo,");
 	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();
@@ -86,17 +87,21 @@ public class Login extends Composite {
 
 		suggestBox = new SuggestBox(suggestBoxContent);
 		suggestBox.ensureDebugId("cwSuggestBox");
-		suggestBox.addValueChangeHandler(new TextBoxMemberNameChangeHandler());
+
+		suggestBox.getValueBox().addBlurHandler(
+				new TextBoxMemberNameChangeHandler());
 		flexTable.setWidget(0, 1, suggestBox);
 
 		Label lblNumber = new Label("Mitgliedsnr:");
 		lblNumber.setStyleName("gwt-Label-Login");
 		flexTable.setWidget(1, 0, lblNumber);
 
-		textBoxMemberNumber = new TextBox();
+		textBoxMemberNumber = new IntegerBox();
 		flexTable.setWidget(1, 1, textBoxMemberNumber);
 		textBoxMemberNumber
 				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
+		textBoxMemberNumber.setMaxLength(4);
+		textBoxMemberNumber.setStyleName(".txt-3digit");
 
 		Label lblPassword = new Label("Password:");
 		lblPassword.setStyleName("gwt-Label-Login");
@@ -107,10 +112,9 @@ public class Login extends Composite {
 		textBoxPassword.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				authService.authenticate(
-						Integer.parseInt(textBoxMemberNumber.getText()),
+				authService.authenticate(textBoxMemberNumber.getValue(),
 						textBoxPassword.getText(),
-						new AsyncCallbackAuthenticate());	
+						new AsyncCallbackAuthenticate());
 			}
 		});
 
@@ -122,8 +126,7 @@ public class Login extends Composite {
 					Window.alert("Username or password is empty.");
 				}
 
-				authService.authenticate(
-						Integer.parseInt(textBoxMemberNumber.getText()),
+				authService.authenticate(textBoxMemberNumber.getValue(),
 						textBoxPassword.getText(),
 						new AsyncCallbackAuthenticate());
 
@@ -223,23 +226,18 @@ public class Login extends Composite {
 	class TextBoxMemberNumberChangeHandler implements ChangeHandler {
 		@Override
 		public void onChange(ChangeEvent event) {
-			try {
-				int i = Integer.parseInt(textBoxMemberNumber.getText());
-				authService.getMemberByNumber(i,
-						new AsyncCallbackMemberByNumber());
-			} catch (NumberFormatException e) {
-				return;
-			}
-
+			int i = textBoxMemberNumber.getValue();
+			authService.getMemberByNumber(i, new AsyncCallbackMemberByNumber());
 		}
 	};
 
-	class TextBoxMemberNameChangeHandler implements ValueChangeHandler<String> {
+	class TextBoxMemberNameChangeHandler implements BlurHandler {
 
 		@Override
-		public void onValueChange(ValueChangeEvent<String> event) {
-			String name = event.getValue();
+		public void onBlur(BlurEvent event) {
+			String name = suggestBox.getText();
 			authService.getMemberByName(name, new AsyncCallbackMemberByName());
 		}
 	};
+
 }

@@ -3,17 +3,22 @@ package de.tsvmalsch.client.composite;
 import java.util.Collection;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.thirdparty.guava.common.util.concurrent.Service.Listener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IntegerBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.TextBox;
 
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
@@ -25,7 +30,7 @@ public class SelectOtherMemberComposite extends Composite {
 	private final UserServiceAsync authService = GWT.create(UserService.class);
 
 	private SuggestBox suggestBox = null;
-	private TextBox textBoxMemberNumber = null;
+	private IntegerBox textBoxMemberNumber = null;
 
 	private RadioButton rbtownAccount = new RadioButton("creditor", "Ich");
 	private RadioButton rbtCylinderOwnersAccount = new RadioButton("creditor",
@@ -44,16 +49,19 @@ public class SelectOtherMemberComposite extends Composite {
 		suggestBox = new SuggestBox(suggestBoxContent);
 
 		suggestBox.ensureDebugId("cwSuggestBox");
-		suggestBox.addValueChangeHandler(new TextBoxMemberNameChangeHandler());
+
+		suggestBox.getValueBox().addBlurHandler(
+				new TextBoxMemberNameChangeHandler());
+
 		hp.add(suggestBox);
 
 		Label lblNumber = new Label("Mitgl.Nr.:");
 		hp.add(lblNumber);
 
-		textBoxMemberNumber = new TextBox();
+		textBoxMemberNumber = new IntegerBox();
 
 		textBoxMemberNumber.setStyleName("txt-3digit");
-		
+
 		textBoxMemberNumber
 				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
 		hp.add(textBoxMemberNumber);
@@ -78,25 +86,20 @@ public class SelectOtherMemberComposite extends Composite {
 	class TextBoxMemberNumberChangeHandler implements ChangeHandler {
 		@Override
 		public void onChange(ChangeEvent event) {
-			try {
-				int i = Integer.parseInt(textBoxMemberNumber.getText());
-				authService.getMemberByNumber(i,
-						new AsyncCallbackMemberByNumber());
-			} catch (NumberFormatException e) {
-				return;
-			}
+			int i = textBoxMemberNumber.getValue();
+			authService.getMemberByNumber(i, new AsyncCallbackMemberByNumber());
 
 		}
 	};
 
-	class TextBoxMemberNameChangeHandler implements ValueChangeHandler<String> {
+	class TextBoxMemberNameChangeHandler implements BlurHandler {
 
 		@Override
-		public void onValueChange(ValueChangeEvent<String> event) {
-			String name = event.getValue();
+		public void onBlur(BlurEvent event) {
+			String name = suggestBox.getText();
 			authService.getMemberByName(name, new AsyncCallbackMemberByName());
 		}
-	};
+	}; 
 
 	class AsyncCallbackMemberByNumber extends DefaultAsyncCallback<Member> {
 
@@ -108,7 +111,9 @@ public class SelectOtherMemberComposite extends Composite {
 	class AsyncCallbackMemberByName extends DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member result) {
-			setCurrentMember(result);
+			if (result != null) {
+				setCurrentMember(result);
+			}
 		}
 	};
 
