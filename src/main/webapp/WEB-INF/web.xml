@@ -14,8 +14,13 @@
 		<servlet-name>userServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.UserServiceImpl</servlet-class>
 	</servlet>
+	
+	  	<servlet>
+		<servlet-name>calcServlet</servlet-name>
+		<servlet-class>de.tsvmalsch.server.blend.GasBlenderServiceImpl</servlet-class>
+	</servlet>
 
-	 
+	 calc
 	 
 	<servlet-mapping>
 		<servlet-name>cylinderServlet</servlet-name>
@@ -24,6 +29,10 @@
 	<servlet-mapping>
 		<servlet-name>userServlet</servlet-name>
 		<url-pattern>/gasfillbook/user</url-pattern>
+	</servlet-mapping> 
+	<servlet-mapping>
+		<servlet-name>calcServlet</servlet-name>
+		<url-pattern>/gasfillbook/calc</url-pattern>
 	</servlet-mapping>
 
 

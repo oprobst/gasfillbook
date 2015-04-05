@@ -1,24 +1,15 @@
-/*  DiveGas for Google Android - Nitrox and Trimix gas blending using VdW
-    Copyright (C) 2009 David Pye    <davidmpye@gmail.com  - UI + porting 
-                       Nigel Hewitt <nigelh@combro.co.uk> - Algorithms 
+package de.tsvmalsch.server.blend;
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+import de.tsvmalsch.client.GasBlenderService;
+import de.tsvmalsch.shared.CalcResult;
+import de.tsvmalsch.shared.CylinderContents;
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+@SuppressWarnings("serial")
+public class GasBlenderServiceImpl extends RemoteServiceServlet implements
+		GasBlenderService {
 
-package de.tsvmalsch.client.blend;
-
-public class DiveGasCalculator {
 	// R gas constant
 	static final double R = 0.0831451;
 	// A and B values for our constituent gases
@@ -32,20 +23,6 @@ public class DiveGasCalculator {
 	static final double O2inAir = 0.2095;
 	// The offset to convert 'C into 'K. (roughly..)
 	static final double KelvinOffset = 273.15;
-
-	public class CalcResult {
-		public int StartPressure; // Might not be the same as what you expected,
-		// if the calculator determined a bleed-down was
-		// required.
-		public double EndPressure;
-		public double O2Added;
-		public double HeAdded;
-		public double AirAdded;
-		// These %s are useful if you are using an analyser to check
-		// each stage of the mix.
-		public double peakHePercent;
-		public double peakO2Percent;
-	}
 
 	// This class represents a and b value pair, as returned by the CalcABVals
 	// method.
@@ -109,6 +86,7 @@ public class DiveGasCalculator {
 		return n * R * (TempKelvin) / (V - n * b) - n * n * a / (V * V);
 	}
 
+	@Override
 	public CalcResult calc(CylinderContents StartCyl,
 			CylinderContents TargetCyl, double CylVolume, int TempCelcius,
 			boolean AddHeFirst) {
@@ -139,8 +117,10 @@ public class DiveGasCalculator {
 		// Sanity check our arguments.
 
 		if (startFHe + startFO2 > 1.0 || targetFHe + targetFO2 > 1.0) {
-			throw new IllegalArgumentException(
-					"Helium and oxygen fractions cannot add up to more than 100%");
+			CalcResult r = new CalcResult();
+			r.successfull = false;
+			r.failureSting = "Helium and oxygen fractions cannot add up to more than 100%";
+			return r;
 		}
 
 		if (startPressure > targetPressure) {
@@ -199,8 +179,11 @@ public class DiveGasCalculator {
 				// e.g. start with 1 bar nitrox 32. Attempt to blend to
 				// nitrox 21. Not going to ever be exactly 21%.
 
-				throw new IllegalArgumentException(
-						"It is not possible to blend this mixture without emptying the cylinder first.");
+				CalcResult r = new CalcResult();
+				r.successfull = false;
+				r.failureSting = "It is not possible to blend this mixture without emptying the cylin	der first.";
+
+				return r;
 			}
 		}
 
@@ -272,4 +255,5 @@ public class DiveGasCalculator {
 		// start pressure
 		return result;
 	}
+
 }

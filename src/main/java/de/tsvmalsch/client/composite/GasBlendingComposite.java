@@ -1,9 +1,6 @@
 package de.tsvmalsch.client.composite;
 
-import java.text.ParseException;
-
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -15,9 +12,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import de.tsvmalsch.client.blend.CylinderContents;
-import de.tsvmalsch.client.blend.DiveGasCalculator;
-import de.tsvmalsch.client.blend.DiveGasCalculator.CalcResult;
+import de.tsvmalsch.client.DefaultAsyncCallback;
+import de.tsvmalsch.client.GasBlenderService;
+import de.tsvmalsch.client.GasBlenderServiceAsync;
+import de.tsvmalsch.shared.CalcResult;
+import de.tsvmalsch.shared.CylinderContents;
 import de.tsvmalsch.shared.model.BlendingType;
 
 public class GasBlendingComposite extends Composite {
@@ -151,18 +150,45 @@ public class GasBlendingComposite extends Composite {
 				return;
 			}
 
+			start.FO2 = start.FO2 / 100;
+			start.FHe = start.FHe / 100;
+			target.FHe = target.FHe / 100;
+			target.FO2 = target.FO2 / 100;
+
+			start.FO2 = txbRemainingO2.getValue();
+			start.FHe = txbRemainingHe.getValue();
+			target.Pressure = txbTargetPressure.getValue();
+			target.FO2 = txbTargetO2Percent.getValue();
+			target.FHe = txbTargetHePercent.getValue();
+
 			// TODO Request remaining Values
-			CalcResult r = new DiveGasCalculator().calc(start, target, 12, 21,
-					true);
+			gasBlenderService.calc(start, target, 12.0, 21, true,
+					new GasBlenderCallback());
 
-			lblBlendingHint.setHTML("" + "<p>Start pressure " + r.StartPressure
-					+ " bar<br/>" + "Top He " + r.HeAdded + " bar<br/>"
-					+ "Top O2 " + r.O2Added + " bar<br/>" + "Top with AIR to "
-					+ r.EndPressure + " bar. </p>");
-			
-			txbBarReallyFilledHe.setValue(r.HeAdded);
-			txbBarReallyFilledO2.setValue(r.O2Added);
+		}
+	}
 
+	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
+
+		public void onSuccess(CalcResult r) {
+
+			if (r.successfull) {
+				lblBlendingHint.setHTML("" + "<p>Start pressure "
+						+ r.StartPressure + " bar<br/>" + "Top He " + r.HeAdded
+						+ " bar<br/>" + "Top O2 " + r.O2Added + " bar<br/>"
+						+ "Top with AIR to " + r.EndPressure + " bar. </p>");
+
+				txbBarReallyFilledHe.setValue(r.HeAdded);
+				txbBarReallyFilledO2.setValue(r.O2Added);
+
+				lblFillingCost.setText("Füllkosten: "
+						+ (r.HeAdded * 12 * 0.0175 + r.O2Added * 12 * 0.0055)
+						+ " Euro");
+
+			} else {
+				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
+
+			}
 		}
 	}
 
@@ -208,4 +234,7 @@ public class GasBlendingComposite extends Composite {
 		formatWidgets();
 		initWidget(vp);
 	}
+
+	private final GasBlenderServiceAsync gasBlenderService = GWT
+			.create(GasBlenderService.class);
 }
