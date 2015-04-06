@@ -148,9 +148,8 @@ public class GasBlendingComposite extends Composite implements
 		target.Pressure = txbTargetPressure.getValue();
 		target.FO2 = txbTargetO2Percent.getValue();
 		target.FHe = txbTargetHePercent.getValue();
-		// Integer temperatur = txbTemperature.getValue();
-		Integer temperatur = 2;
-
+		Integer temperatur = txbTemperature.getValue();
+	
 		if (target.Pressure == null || target.FO2 == null || target.FHe == null
 				|| start.Pressure == null || start.FO2 == null
 				|| start.FHe == null || temperatur == null) {
