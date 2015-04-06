@@ -32,6 +32,12 @@ public class CylinderSelectComposite extends Composite {
 
 	public void addCylinderSelectedListener(CurrentCylinderListener l) {
 		cylinderListeners.add(l);
+
+		String cid = cboSelectCylinder.getValue(0);
+		if (cid != null) {
+			l.cylinderSelected(cylinderOfMember.get(cid));
+		}
+
 	}
 
 	private HorizontalPanel hp = null;

@@ -177,17 +177,29 @@ public class GasBlendingComposite extends Composite implements
 		public void onSuccess(CalcResult r) {
 
 			if (r.successfull) {
-				lblBlendingHint.setHTML("" + "<p>Start pressure "
-						+ r.StartPressure + " bar ("
-						+ currentCylinder.getTwinSetSizeInLiter()
-						* r.StartPressure + "l)<br/>" + "Top He " + r.HeAdded
-						+ " bar (" + currentCylinder.getTwinSetSizeInLiter()
-						* r.HeAdded + "l)<br/>" + "Top O2 " + r.O2Added
-						+ " bar  (" + currentCylinder.getTwinSetSizeInLiter()
-						* r.O2Added + "l)<br/>" + "Top with AIR to "
-						+ r.EndPressure + " bar. ("
-						+ currentCylinder.getTwinSetSizeInLiter()
-						* r.EndPressure + "l)</p>");
+				lblBlendingHint
+						.setHTML(""
+								+ "<p>Start pressure "
+								+ r.StartPressure
+								+ " bar (="
+								+ currentCylinder.getTwinSetSizeInLiter()
+								* r.StartPressure
+								+ " liter)<br/>"
+								+ "Top He "
+								+ r.HeAdded
+								+ " bar (="
+								+ (int) (currentCylinder
+										.getTwinSetSizeInLiter() * r.HeAdded)
+								+ " liter)<br/>"
+								+ "Top O2 "
+								+ r.O2Added
+								+ " bar  (="
+								+ (int) (currentCylinder
+										.getTwinSetSizeInLiter() * r.O2Added)
+								+ " liter)<br/>" + "Top with AIR to "
+								+ r.EndPressure + " bar. (="
+								+ currentCylinder.getTwinSetSizeInLiter()
+								* r.EndPressure + " liter)</p>");
 
 				txbBarReallyFilledHe.setValue(r.HeAdded);
 				txbBarReallyFilledO2.setValue(r.O2Added);
