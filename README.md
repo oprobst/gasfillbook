@@ -5,7 +5,7 @@ Software to maintain cost calculation and execution log of filling scuba cylinde
 Details see github [project wiki](https://github.com/oprobst/gasfillbook/wiki).
 
 
-## Licence and other sources
+## License and other sources
 
 Released under the terms of the GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
