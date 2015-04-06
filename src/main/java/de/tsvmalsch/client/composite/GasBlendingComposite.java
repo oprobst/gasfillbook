@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IntegerBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -24,24 +25,15 @@ import de.tsvmalsch.shared.model.Cylinder;
 public class GasBlendingComposite extends Composite implements
 		CurrentCylinderListener {
 
-	private HTML lblBlendingHint = new HTML(
-			"<p> Dies ist ein Beispieltext<br/> "
-					+ "<ul> <li> 39bar ablassen</li>"
-					+ "<li> 40bar Nx40 aus der Kaskade füllen (auf 120bar)</li>"
-					+ "<li> Mit Luft füllen</li></ul></p>");
-	/*
-	 * private final UserServiceAsync userService =
-	 * GWT.create(UserService.class); private final CylinderServiceAsync
-	 * cylinderService = GWT .create(CylinderService.class);
-	 */
+	private HTML lblBlendingHint = new HTML("<p>Gas Blending </p>");
 
-	private Label lblRemainingPressure = new Label("Restdruck");
+	private Label lblRemainingPressure = new Label("Restdruck: ");
 	private Label lblBarRemainingPressure = new Label("bar");
 
 	private Label lblPercentRemainingO2 = new Label("% O2");
 	private Label lblPercentRemainingHe = new Label("% He");
 
-	private Label lblTargetPressure = new Label("Enddruck");
+	private Label lblTargetPressure = new Label("Enddruck: ");
 	private Label lblBarTargetPressure = new Label("bar");
 	private Label lblPercentTargetO2 = new Label("% O2");
 	private Label lblPercentTargetHe = new Label("% He");
@@ -49,6 +41,8 @@ public class GasBlendingComposite extends Composite implements
 	private Label lblFinalBlending = new Label("Tatsächlich gefüllt: ");
 	private Label lblBarTargetO2Pressure = new Label("bar O2");
 	private Label lblBarTargetHePressure = new Label("bar He");
+
+	private Label lblTemperature = new Label("Temperature (°C): ");
 
 	private DoubleBox txbRemainingPressure = new DoubleBox();
 	private DoubleBox txbRemainingO2 = new DoubleBox();
@@ -58,8 +52,9 @@ public class GasBlendingComposite extends Composite implements
 	private DoubleBox txbTargetHePercent = new DoubleBox();
 	private DoubleBox txbBarReallyFilledO2 = new DoubleBox();
 	private DoubleBox txbBarReallyFilledHe = new DoubleBox();
+	private IntegerBox txbTemperature = new IntegerBox();
 
-	private Label lblFillingCost = new Label("Füllkosten: 12,34 Euro");
+	private Label lblFillingCost = new Label("Füllkosten: 0,00 Euro");
 	private Button btnAccount = new Button();
 
 	private final int blendingType;
@@ -77,6 +72,7 @@ public class GasBlendingComposite extends Composite implements
 		txbTargetHePercent.setValue(0.0d);
 		txbBarReallyFilledO2.setValue(0.0d);
 		txbBarReallyFilledHe.setValue(0.0d);
+		txbTemperature.setValue(20);
 
 		txbRemainingPressure.setStyleName("txt-3digit");
 		txbRemainingO2.setStyleName("txt-3digit");
@@ -86,6 +82,7 @@ public class GasBlendingComposite extends Composite implements
 		txbTargetHePercent.setStyleName("txt-3digit");
 		txbBarReallyFilledO2.setStyleName("txt-3digit");
 		txbBarReallyFilledHe.setStyleName("txt-3digit");
+		txbTemperature.setStyleName("txt-3digit");
 
 		txbRemainingPressure.setMaxLength(4);
 		txbRemainingO2.setMaxLength(5);
@@ -95,6 +92,7 @@ public class GasBlendingComposite extends Composite implements
 		txbTargetHePercent.setMaxLength(5);
 		txbBarReallyFilledO2.setMaxLength(5);
 		txbBarReallyFilledHe.setMaxLength(5);
+		txbTemperature.setMaxLength(3);
 
 		CalculateBlendingHandler blurHandler = new CalculateBlendingHandler();
 		txbRemainingPressure.addChangeHandler(blurHandler);
@@ -103,6 +101,7 @@ public class GasBlendingComposite extends Composite implements
 		txbTargetPressure.addChangeHandler(blurHandler);
 		txbTargetO2Percent.addChangeHandler(blurHandler);
 		txbTargetHePercent.addChangeHandler(blurHandler);
+		txbTemperature.addChangeHandler(blurHandler);
 
 		if (blendingType != BlendingType.NX40_CASCADE
 				&& blendingType != BlendingType.PARTIAL_METHOD) {
@@ -116,6 +115,8 @@ public class GasBlendingComposite extends Composite implements
 			lblBlendingHint.setVisible(false);
 			lblFinalBlending.setVisible(false);
 			lblFillingCost.setVisible(false);
+			lblTemperature.setVisible(false);
+			txbTemperature.setVisible(false);
 
 		}
 		if (blendingType != BlendingType.PARTIAL_METHOD) {
@@ -125,6 +126,8 @@ public class GasBlendingComposite extends Composite implements
 			lblPercentRemainingHe.setVisible(false);
 			txbTargetHePercent.setVisible(false);
 			txbRemainingHe.setVisible(false);
+			lblTemperature.setVisible(false);
+			txbTemperature.setVisible(false);
 		}
 	}
 
@@ -145,10 +148,12 @@ public class GasBlendingComposite extends Composite implements
 		target.Pressure = txbTargetPressure.getValue();
 		target.FO2 = txbTargetO2Percent.getValue();
 		target.FHe = txbTargetHePercent.getValue();
+		// Integer temperatur = txbTemperature.getValue();
+		Integer temperatur = 2;
 
 		if (target.Pressure == null || target.FO2 == null || target.FHe == null
 				|| start.Pressure == null || start.FO2 == null
-				|| start.FHe == null) {
+				|| start.FHe == null || temperatur == null) {
 
 			txbBarReallyFilledO2.setValue(0.0);
 			txbBarReallyFilledHe.setValue(0.0);
@@ -162,9 +167,9 @@ public class GasBlendingComposite extends Composite implements
 		target.FO2 = target.FO2 / 100;
 
 		double size = currentCylinder.getTwinSetSizeInLiter();
-		// TODO Request remaining Values
-		gasBlenderService.calc(start, target, size, 21, true,
-				new GasBlenderCallback());
+
+		gasBlenderService.calc(start, target, size, temperatur.intValue(),
+				true, new GasBlenderCallback());
 	}
 
 	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
@@ -173,17 +178,26 @@ public class GasBlendingComposite extends Composite implements
 
 			if (r.successfull) {
 				lblBlendingHint.setHTML("" + "<p>Start pressure "
-						+ r.StartPressure + " bar<br/>" + "Top He " + r.HeAdded
-						+ " bar<br/>" + "Top O2 " + r.O2Added + " bar<br/>"
-						+ "Top with AIR to " + r.EndPressure + " bar. </p>");
+						+ r.StartPressure + " bar ("
+						+ currentCylinder.getTwinSetSizeInLiter()
+						* r.StartPressure + "l)<br/>" + "Top He " + r.HeAdded
+						+ " bar (" + currentCylinder.getTwinSetSizeInLiter()
+						* r.HeAdded + "l)<br/>" + "Top O2 " + r.O2Added
+						+ " bar  (" + currentCylinder.getTwinSetSizeInLiter()
+						* r.O2Added + "l)<br/>" + "Top with AIR to "
+						+ r.EndPressure + " bar. ("
+						+ currentCylinder.getTwinSetSizeInLiter()
+						* r.EndPressure + "l)</p>");
 
 				txbBarReallyFilledHe.setValue(r.HeAdded);
 				txbBarReallyFilledO2.setValue(r.O2Added);
 
-				lblFillingCost
-						.setText("Füllkosten: "
-								+ Math.round((int) ((r.HeAdded * 12 * 0.0175 + r.O2Added * 12 * 0.0055) * 100))
-								/ 100f + " Euro");
+				lblFillingCost.setText("Füllkosten: "
+						+ Math.round((int) ((r.HeAdded
+								* currentCylinder.getTwinSetSizeInLiter()
+								* 0.0175 + r.O2Added
+								* currentCylinder.getTwinSetSizeInLiter()
+								* 0.0055) * 100)) / 100f + " Euro");
 
 			} else {
 				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
@@ -217,14 +231,18 @@ public class GasBlendingComposite extends Composite implements
 		t.setWidget(1, 5, txbTargetHePercent);
 		t.setWidget(1, 6, lblPercentTargetHe);
 
-		t.getFlexCellFormatter().setColSpan(2, 0, 6);
-		t.setWidget(2, 0, lblBlendingHint);
+		t.setWidget(2, 0, lblTemperature);
+		t.setWidget(2, 1, txbTemperature);
 
-		t.setWidget(3, 0, lblFinalBlending);
-		t.setWidget(3, 3, txbBarReallyFilledO2);
-		t.setWidget(3, 4, lblBarTargetO2Pressure);
-		t.setWidget(3, 5, txbBarReallyFilledHe);
-		t.setWidget(3, 6, lblBarTargetHePressure);
+		t.getFlexCellFormatter().setColSpan(3, 0, 6);
+		t.setWidget(3, 0, lblBlendingHint);
+
+		t.setWidget(4, 0, lblFinalBlending);
+
+		t.setWidget(4, 3, txbBarReallyFilledO2);
+		t.setWidget(4, 4, lblBarTargetO2Pressure);
+		t.setWidget(4, 5, txbBarReallyFilledHe);
+		t.setWidget(4, 6, lblBarTargetHePressure);
 
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(lblFillingCost);
@@ -233,6 +251,7 @@ public class GasBlendingComposite extends Composite implements
 		vp.add(hp);
 		formatWidgets();
 		initWidget(vp);
+
 	}
 
 	private final GasBlenderServiceAsync gasBlenderService = GWT
