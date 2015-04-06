@@ -44,6 +44,24 @@ public class CylinderSelectComposite extends Composite {
 	private final CylinderServiceAsync cylinderService = GWT
 			.create(CylinderService.class);
 
+	public void setCurrentMember(Member m) {
+		cylinderOfMember.clear();
+		cboSelectCylinder.clear();
+
+		boolean first = true;
+		for (Cylinder c : m.getCylinders()) {
+			if (first) {
+				updateInspectionLabel(c);
+				first = false;
+			}
+			if (!cylinderOfMember.containsKey(c.getUiIdentifier())) {
+				cboSelectCylinder.addItem(c.getUiIdentifier());
+				cylinderOfMember.put(c.getUiIdentifier(), c);
+			}
+		}
+
+	}
+
 	class CylinderClickHandler implements ChangeHandler {
 
 		@Override
@@ -80,7 +98,7 @@ public class CylinderSelectComposite extends Composite {
 
 	private void updateInspectionLabel(Cylinder c) {
 
-		Date nextInsp = c.getNextInspectionDate();
+		Date nextInsp = c.getNextInspectionDateTwinSet();
 		Date today = new Date();
 
 		String pattern = "MM/yyyy";
@@ -96,7 +114,7 @@ public class CylinderSelectComposite extends Composite {
 			lblInspectionWarning.setStyleName("label-ok");
 			lblInspectionWarning.setText("TÜV bis: " + dtf.format(nextInsp));
 		}
-		lblCylinderSize.setText(c.getTwinSetSizeInLiter() + " liter");
+		lblCylinderSize.setText("(" + c.getTwinSetSizeInLiter() + " liter)");
 	}
 
 	ListBox cboSelectCylinder = new ListBox();
@@ -124,14 +142,7 @@ public class CylinderSelectComposite extends Composite {
 	class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member result) {
-			cylinderOfMember.clear();
-			cboSelectCylinder.clear();
-			for (Cylinder c : result.getCylinders()) {
-				if (!cylinderOfMember.containsKey(c.getUiIdentifier())) {
-					cboSelectCylinder.addItem(c.getUiIdentifier());
-					cylinderOfMember.put(c.getUiIdentifier(), c);
-				}
-			}
+			setCurrentMember(result);
 		};
 	}
 

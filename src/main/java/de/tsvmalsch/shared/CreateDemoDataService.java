@@ -152,17 +152,19 @@ public class CreateDemoDataService {
 
 			Set<Cylinder> cset = new HashSet<Cylinder>();
 			Cylinder cy = new Cylinder();
-			cy.setName("D12-a");
+			cy.setName("D12-" + m.getFirstName().charAt(0)
+					+ m.getLastName().charAt(0));
 			cy.setMaximumPreasure(300);
 			cy.setNextInspectionDate(new Date(System.currentTimeMillis() + 1000
 					* 60 * 24 * 360 * 1000));
 			cy.setSizeInLiter(12.0d);
 			cy.setOwner(m);
-		
+
 			cy.setSerialNumber("0000124124" + i);
 			cset.add(cy);
 			Cylinder cy2 = new Cylinder();
-			cy2.setName("D12-a");
+			cy2.setName("D12-" + m.getFirstName().charAt(0)
+					+ m.getLastName().charAt(0));
 			cy2.setMaximumPreasure(300);
 			cy2.setNextInspectionDate(new Date(System.currentTimeMillis()
 					+ 1000 * 60 * 24 * 360 * 1000));
@@ -280,7 +282,6 @@ public class CreateDemoDataService {
 		fii.setFilledCylinder(tank);
 		mlist.add(fii);
 
-		
 		fii = new FillingInvoiceItem();
 		fii.setBlendingType(BlendingType.PARTIAL_METHOD);
 		fii.setPricePerLiterHelium(0.0175f);
@@ -294,12 +295,12 @@ public class CreateDemoDataService {
 				* 60 * 60 * 24 * 2));
 		fii.setInvoicingDate(new Date(System.currentTimeMillis() - 1 * 1000
 				* 60 * 60 * 24 * 2));
-		fii.setPaymentReceiptDate(new Date(System.currentTimeMillis() - 0 * 1000
-				* 60 * 60 * 24 * 2));
+		fii.setPaymentReceiptDate(new Date(System.currentTimeMillis() - 0
+				* 1000 * 60 * 60 * 24 * 2));
 		tank.add(m.getCylinders().iterator().next());
 		fii.setFilledCylinder(tank);
 		mlist.add(fii);
-		
+
 		return mlist;
 	}
 }

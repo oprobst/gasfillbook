@@ -105,7 +105,8 @@ public class FillPanelComposite extends Composite {
 	private TabLayoutPanel tp;
 
 	CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
-	SelectOtherMemberComposite selectOtherMemberComposite = new SelectOtherMemberComposite();
+	SelectOtherMemberComposite selectOtherMemberComposite = new SelectOtherMemberComposite(
+			cylinderSelectComposite);
 
 	class AsyncCallbackSetMemberToFillFor extends DefaultAsyncCallback<Member> {
 
@@ -138,7 +139,7 @@ public class FillPanelComposite extends Composite {
 						BlendingType.PARTIAL_METHOD);
 				tp.add(gbc, "Partial Methode");
 				cylinderSelectComposite.addCylinderSelectedListener(gbc);
-				 
+
 			}
 			if (userRights.isAllowedToFillMixer()) {
 				// tp.add(new GasBlendingComposite(BlendingType.MIXER),

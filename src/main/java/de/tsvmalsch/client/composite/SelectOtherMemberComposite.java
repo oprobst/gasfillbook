@@ -33,7 +33,16 @@ public class SelectOtherMemberComposite extends Composite {
 
 	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();
 
-	public SelectOtherMemberComposite() {
+	private final CylinderSelectComposite cylinderSelectComposite;
+
+	/**
+	 * @param cylinderSelectComposite
+	 *            Will be notified if member to fill for changed.
+	 */
+	public SelectOtherMemberComposite(
+			CylinderSelectComposite cylinderSelectComposite) {
+
+		this.cylinderSelectComposite = cylinderSelectComposite;
 		authService.getAllMembersNames(new AsyncCallbackAllMembers());
 
 		HorizontalPanel hp = new HorizontalPanel();
@@ -112,12 +121,10 @@ public class SelectOtherMemberComposite extends Composite {
 		}
 	};
 
-	private Member cylinderOfMember = null;
-
 	protected void setCurrentMember(Member member) {
-		this.cylinderOfMember = member;
 		textBoxMemberNumber.setText("" + member.getMemberNumber());
 		suggestBox.setText(member.getFirstName() + " " + member.getLastName());
+		cylinderSelectComposite.setCurrentMember(member);
 	}
 
 }

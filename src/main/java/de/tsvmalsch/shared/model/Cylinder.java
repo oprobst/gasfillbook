@@ -124,6 +124,16 @@ public class Cylinder implements Serializable {
 		return nextInspectionDate;
 	}
 
+	public Date getNextInspectionDateTwinSet() {
+		if (twinSetPartner != null) {
+			if (twinSetPartner.getNextInspectionDate().compareTo(
+					nextInspectionDate) < 0) {
+				return twinSetPartner.nextInspectionDate;
+			}
+		}
+		return nextInspectionDate;
+	}
+
 	public String getNote() {
 		return note;
 	}
