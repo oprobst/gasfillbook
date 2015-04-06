@@ -140,6 +140,52 @@ public class Cylinder implements Serializable {
 		return sizeInLiter;
 	}
 
+	public Double getTwinSetSizeInLiter() {
+		if (twinSetPartner != null) {
+			return this.sizeInLiter + twinSetPartner.sizeInLiter;
+		}
+		return sizeInLiter;
+	}
+
+	public String getUiIdentifier() {
+
+		if (getTwinSetPartner() == null) {
+			if (name != null) {
+				return name;
+			} else {
+				return serialNumber;
+			}
+		} else {
+			if (name != null) {
+				if (twinSetPartner.getName() != null) {
+
+					if (twinSetPartner.name.trim().compareToIgnoreCase(
+							this.name.trim()) == 0) {
+						return name;
+					} else {
+						if (twinSetPartner.name.compareTo(name) >= 0) {
+							return twinSetPartner.name + "|" + name;
+						} else {
+							return name + "|" + twinSetPartner.name;
+						}
+					}
+				} else {
+					return name;
+				}
+			} else {
+				if (twinSetPartner.getName() != null) {
+					return twinSetPartner.getName();
+				} else {
+					if (twinSetPartner.serialNumber.compareTo(serialNumber) >= 0) {
+						return twinSetPartner.serialNumber + "|" + serialNumber;
+					} else {
+						return serialNumber + "|" + twinSetPartner.serialNumber;
+					}
+				}
+			}
+		}
+	}
+
 	public Cylinder getTwinSetPartner() {
 		return twinSetPartner;
 	}
@@ -186,6 +232,9 @@ public class Cylinder implements Serializable {
 
 	public void setTwinSetPartner(Cylinder twinSetPartner) {
 		this.twinSetPartner = twinSetPartner;
+		if (twinSetPartner != null) {
+			twinSetPartner.twinSetPartner = this;
+		}
 	}
 
 	public void setValveKit(String valveKit) {

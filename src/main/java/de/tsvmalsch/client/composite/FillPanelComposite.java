@@ -89,7 +89,7 @@ public class FillPanelComposite extends Composite {
 
 		tp.setHeight(Constants.GLOBAL_HEIGHT_STRING);
 		tp.setWidth(Constants.GLOBAL_WIDTH_STRING);
-		
+
 		vp.add(tp);
 
 		selectOtherMemberComposite.setVisible(false);
@@ -122,15 +122,23 @@ public class FillPanelComposite extends Composite {
 			UserRights userRights = result.getRights();
 
 			if (userRights.isAllowedToFillAir()) {
-				tp.add(new GasBlendingComposite(BlendingType.AIR), "Luft");
+				GasBlendingComposite gbc = new GasBlendingComposite(
+						BlendingType.AIR);
+				tp.add(gbc, "Luft");
+				cylinderSelectComposite.addCylinderSelectedListener(gbc);
 			}
 			if (userRights.isAllowedToFillNx40()) {
-				tp.add(new GasBlendingComposite(BlendingType.NX40_CASCADE),
-						"Nx40 Kascade");
+				GasBlendingComposite gbc = new GasBlendingComposite(
+						BlendingType.NX40_CASCADE);
+				tp.add(gbc, "Nx40 Kaskade");
+				cylinderSelectComposite.addCylinderSelectedListener(gbc);
 			}
 			if (userRights.isAllowedToFillPartial()) {
-				tp.add(new GasBlendingComposite(BlendingType.PARTIAL_METHOD),
-						"Partial Methode");
+				GasBlendingComposite gbc = new GasBlendingComposite(
+						BlendingType.PARTIAL_METHOD);
+				tp.add(gbc, "Partial Methode");
+				cylinderSelectComposite.addCylinderSelectedListener(gbc);
+				 
 			}
 			if (userRights.isAllowedToFillMixer()) {
 				// tp.add(new GasBlendingComposite(BlendingType.MIXER),

@@ -1,7 +1,9 @@
 package de.tsvmalsch.client.composite;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
@@ -20,14 +22,23 @@ import de.tsvmalsch.client.CylinderServiceAsync;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
+import de.tsvmalsch.client.listener.CurrentCylinderListener;
 import de.tsvmalsch.shared.model.Cylinder;
 import de.tsvmalsch.shared.model.Member;
 
 public class CylinderSelectComposite extends Composite {
 
+	private Collection<CurrentCylinderListener> cylinderListeners = new LinkedList<>();
+
+	public void addCylinderSelectedListener(CurrentCylinderListener l) {
+		cylinderListeners.add(l);
+	}
+
 	private HorizontalPanel hp = null;
 
 	private final Label lblInspectionWarning = new Label();
+
+	private final Label lblCylinderSize = new Label();
 
 	private final UserServiceAsync userService = GWT.create(UserService.class);
 	private final CylinderServiceAsync cylinderService = GWT
@@ -43,6 +54,11 @@ public class CylinderSelectComposite extends Composite {
 			String key = cboSelectCylinder.getSelectedItemText();
 
 			Cylinder c = cylinderOfMember.get(key);
+
+			for (CurrentCylinderListener l : cylinderListeners) {
+				l.cylinderSelected(c);
+			}
+
 			cylinderService.setSelectedCylinder(c, new AsyncCallback<Void>() {
 
 				@Override
@@ -74,12 +90,13 @@ public class CylinderSelectComposite extends Composite {
 
 		if (today.compareTo(nextInsp) > 0) {
 			lblInspectionWarning.setStyleName("label-warning");
-			lblInspectionWarning
-					.setText("TÜV abglaufen: " + dtf.format(nextInsp));
+			lblInspectionWarning.setText("TÜV abglaufen: "
+					+ dtf.format(nextInsp));
 		} else {
 			lblInspectionWarning.setStyleName("label-ok");
 			lblInspectionWarning.setText("TÜV bis: " + dtf.format(nextInsp));
 		}
+		lblCylinderSize.setText(c.getTwinSetSizeInLiter() + " liter");
 	}
 
 	ListBox cboSelectCylinder = new ListBox();
@@ -93,6 +110,7 @@ public class CylinderSelectComposite extends Composite {
 		cboSelectCylinder.addChangeHandler(new CylinderClickHandler());
 
 		hp.add(cboSelectCylinder);
+		hp.add(lblCylinderSize);
 
 		hp.add(lblInspectionWarning);
 		lblInspectionWarning.setStyleName("label-warning");
@@ -106,18 +124,12 @@ public class CylinderSelectComposite extends Composite {
 	class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member result) {
-
+			cylinderOfMember.clear();
+			cboSelectCylinder.clear();
 			for (Cylinder c : result.getCylinders()) {
-				if (c.getTwinSetPartner() != null
-						&& cylinderOfMember
-								.containsValue(c.getTwinSetPartner())) {
-					// we're fine
-				} else if (c.getName() != null && !c.getName().trim().isEmpty()) {
-					cylinderOfMember.put(c.getName(), c);
-					cboSelectCylinder.addItem(c.getName());
-				} else {
-					cylinderOfMember.put(c.getSerialNumber(), c);
-					cboSelectCylinder.addItem(c.getSerialNumber());
+				if (!cylinderOfMember.containsKey(c.getUiIdentifier())) {
+					cboSelectCylinder.addItem(c.getUiIdentifier());
+					cylinderOfMember.put(c.getUiIdentifier(), c);
 				}
 			}
 		};

@@ -15,11 +15,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.GasBlenderService;
 import de.tsvmalsch.client.GasBlenderServiceAsync;
+import de.tsvmalsch.client.listener.CurrentCylinderListener;
 import de.tsvmalsch.shared.CalcResult;
 import de.tsvmalsch.shared.CylinderContents;
 import de.tsvmalsch.shared.model.BlendingType;
+import de.tsvmalsch.shared.model.Cylinder;
 
-public class GasBlendingComposite extends Composite {
+public class GasBlendingComposite extends Composite implements
+		CurrentCylinderListener {
 
 	private HTML lblBlendingHint = new HTML(
 			"<p> Dies ist ein Beispieltext<br/> "
@@ -129,37 +132,39 @@ public class GasBlendingComposite extends Composite {
 
 		@Override
 		public void onChange(ChangeEvent event) {
-
-			CylinderContents start = new CylinderContents();
-			CylinderContents target = new CylinderContents();
-			start.Pressure = txbRemainingPressure.getValue();
-			start.FO2 = txbRemainingO2.getValue();
-			start.FHe = txbRemainingHe.getValue();
-			target.Pressure = txbTargetPressure.getValue();
-			target.FO2 = txbTargetO2Percent.getValue();
-			target.FHe = txbTargetHePercent.getValue();
-
-			if (target.Pressure == null || target.FO2 == null
-					|| target.FHe == null || start.Pressure == null
-					|| start.FO2 == null || start.FHe == null) {
-
-				txbBarReallyFilledO2.setValue(0.0);
-				txbBarReallyFilledHe.setValue(0.0);
-				lblBlendingHint
-						.setHTML("<b>Bitte Felder vollständig füllen.</b>");
-				return;
-			}
-
-			start.FO2 = start.FO2 / 100;
-			start.FHe = start.FHe / 100;
-			target.FHe = target.FHe / 100;
-			target.FO2 = target.FO2 / 100;
-
-			// TODO Request remaining Values
-			gasBlenderService.calc(start, target, 12.0, 21, true,
-					new GasBlenderCallback());
-
+			calculateBlending();
 		}
+	}
+
+	private void calculateBlending() {
+		CylinderContents start = new CylinderContents();
+		CylinderContents target = new CylinderContents();
+		start.Pressure = txbRemainingPressure.getValue();
+		start.FO2 = txbRemainingO2.getValue();
+		start.FHe = txbRemainingHe.getValue();
+		target.Pressure = txbTargetPressure.getValue();
+		target.FO2 = txbTargetO2Percent.getValue();
+		target.FHe = txbTargetHePercent.getValue();
+
+		if (target.Pressure == null || target.FO2 == null || target.FHe == null
+				|| start.Pressure == null || start.FO2 == null
+				|| start.FHe == null) {
+
+			txbBarReallyFilledO2.setValue(0.0);
+			txbBarReallyFilledHe.setValue(0.0);
+			lblBlendingHint.setHTML("<b>Bitte Felder vollständig füllen.</b>");
+			return;
+		}
+
+		start.FO2 = start.FO2 / 100;
+		start.FHe = start.FHe / 100;
+		target.FHe = target.FHe / 100;
+		target.FO2 = target.FO2 / 100;
+
+		double size = currentCylinder.getTwinSetSizeInLiter();
+		// TODO Request remaining Values
+		gasBlenderService.calc(start, target, size, 21, true,
+				new GasBlenderCallback());
 	}
 
 	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
@@ -232,4 +237,12 @@ public class GasBlendingComposite extends Composite {
 
 	private final GasBlenderServiceAsync gasBlenderService = GWT
 			.create(GasBlenderService.class);
+
+	private Cylinder currentCylinder = null;
+
+	@Override
+	public void cylinderSelected(Cylinder currentOne) {
+		currentCylinder = currentOne;
+		calculateBlending();
+	}
 }
