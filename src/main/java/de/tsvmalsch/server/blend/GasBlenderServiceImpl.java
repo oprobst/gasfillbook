@@ -119,7 +119,9 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		if (startFHe + startFO2 > 1.0 || targetFHe + targetFO2 > 1.0) {
 			CalcResult r = new CalcResult();
 			r.successfull = false;
-			r.failureSting = "Helium and oxygen fractions cannot add up to more than 100%";
+			r.failureSting = "Ein Gas mit " + targetFHe * 100 + "% He und "
+					+ targetFO2 + "% O2 Anteil (Summe= " + (targetFHe + targetFO2)
+					* 100 + "%) kann nur von User 'Chuck Norris' gemischt werden!";
 			return r;
 		}
 
@@ -175,15 +177,14 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 				// achievable.
 				startPressure -= 1.0;
 			} else {
-				// Not possible to blend from this start point.
-				// e.g. start with 1 bar nitrox 32. Attempt to blend to
-				// nitrox 21. Not going to ever be exactly 21%.
 
-				CalcResult r = new CalcResult();
-				r.successfull = false;
-				r.failureSting = "It is not possible to blend this mixture without emptying the cylin	der first.";
+				// Well, not the most elegant way, but suitable for the first
+				// approach.
 
-				return r;
+				StartCyl.Pressure -= 1;
+				return calc(StartCyl, TargetCyl, CylVolume, TempCelcius,
+						AddHeFirst);
+
 			}
 		}
 
@@ -255,5 +256,4 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		// start pressure
 		return result;
 	}
-
 }
