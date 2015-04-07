@@ -51,8 +51,9 @@ background-color
 	border: 2px;
 	border-color:#0000bf;
 	border-style: solid;
-	font-size: 1.5em;
+	font-size: 1.2em;
 	color: #110000;  
+	padding: 5px;
 }
 
 .button-book-filling {
