@@ -10,50 +10,12 @@ import de.tsvmalsch.shared.CylinderContents;
 public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		GasBlenderService {
 
-	// R gas constant
-	static final double R = 0.0831451;
-	// A and B values for our constituent gases
-	static final double O2a = 1.382;
-	static final double O2b = 0.03186;
-	static final double N2a = 1.370;
-	static final double N2b = 0.03870;
-	static final double Hea = 0.0346;
-	static final double Heb = 0.02380;
-	// % of O2 in Air
-	static final double O2inAir = 0.2095;
-	// The offset to convert 'C into 'K. (roughly..)
-	static final double KelvinOffset = 273.15;
-
 	// This class represents a and b value pair, as returned by the CalcABVals
 	// method.
 	private class ABValPair {
 		public double a;
 		public double b;
 	}
-
-	// put in the ratios of the gases and get back mixed a,b
-	private ABValPair CalcABVals(double o2Ratio, double n2Ratio, double heRatio) {
-		double total = o2Ratio + n2Ratio + heRatio;
-		double[] fractionMols = new double[3];
-		fractionMols[0] = o2Ratio / total;
-		fractionMols[1] = n2Ratio / total;
-		fractionMols[2] = heRatio / total;
-
-		double[] AVals = { O2a, N2a, Hea };
-		double[] BVals = { O2b, N2b, Heb };
-		ABValPair results = new ABValPair();
-
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				results.a += Math.sqrt(AVals[i] * AVals[j]) * fractionMols[i]
-						* fractionMols[j];
-				results.b += Math.sqrt(BVals[i] * BVals[j]) * fractionMols[i]
-						* fractionMols[j];
-			}
-		}
-		return results;
-	}
-
 	// put in volume, pressure, temp (abs) plus the a,b constants
 	// and get back mols
 	static double Mols(double Volume, double Pressure, double TempKelvin,
@@ -80,32 +42,48 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 	}
-
 	static double pressure(double V, double n, double TempKelvin, double a,
 			double b) {
 		return n * R * (TempKelvin) / (V - n * b) - n * n * a / (V * V);
 	}
+	// R gas constant
+	static final double R = 0.0831451;
+	// A and B values for our constituent gases
+	static final double O2a = 1.382;
+	static final double O2b = 0.03186;
+	static final double N2a = 1.370;
+	static final double N2b = 0.03870;
+	static final double Hea = 0.0346;
+
+	static final double Heb = 0.02380;
+
+	// % of O2 in Air
+	static final double O2inAir = 0.2095;
+
+	// The offset to convert 'C into 'K. (roughly..)
+	static final double KelvinOffset = 273.15;
 
 	@Override
-	public CalcResult calc(CylinderContents StartCyl,
-			CylinderContents TargetCyl, double CylVolume, int TempCelcius,
-			boolean AddHeFirst) {
+	public CalcResult calc(CylinderContents startCyl,
+			CylinderContents targetCyl, double cylVolume, int tempCelcius,
+			boolean addHeFirst) {
 		// We start with an amount of gas already in the tank so we can factor
 		// it
 		// Remember that 1 mol of oxygen + 1 mol of nitrogen give a 50% mix
 		// which
 		// is why we work in mols even though the volume cancels out.
-		double startFHe = StartCyl.FHe;
-		double startFO2 = StartCyl.FO2; // we will start off with one bar of
-										// air.
-		double startPressure = StartCyl.Pressure;
+		double startFHe = startCyl.getfHe();
+		double startFO2 = startCyl.getfO2(); // we will start off with one bar
+												// of
+		// air.
+		double startPressure = startCyl.getPressure();
 
-		double targetFHe = TargetCyl.FHe;
-		double targetFO2 = TargetCyl.FO2;
-		double targetPressure = TargetCyl.Pressure;
+		double targetFHe = targetCyl.getfHe();
+		double targetFO2 = targetCyl.getfO2();
+		double targetPressure = targetCyl.getPressure();
 
 		// Everything internal works in Kelvin
-		double TempKelvin = TempCelcius + KelvinOffset;
+		double TempKelvin = tempCelcius + KelvinOffset;
 
 		// Mols in cylinder currently, mols we want.
 		double startMols, targetMols;
@@ -120,8 +98,9 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 			CalcResult r = new CalcResult();
 			r.successfull = false;
 			r.failureSting = "Ein Gas mit " + targetFHe * 100 + "% He und "
-					+ targetFO2 + "% O2 Anteil (Summe= " + (targetFHe + targetFO2)
-					* 100 + "%) kann nur von User 'Chuck Norris' gemischt werden!";
+					+ targetFO2 + "% O2 Anteil (Summe= "
+					+ (targetFHe + targetFO2) * 100
+					+ "%) kann nur von User 'Chuck Norris' gemischt werden!";
 			return r;
 		}
 
@@ -134,12 +113,12 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		// Calculate a + b and mols values for initial mix
 		results = CalcABVals(startFO2, 1 - startFO2 - startFHe, startFHe);
 		// get a and b for this mix
-		startMols = Mols(CylVolume, startPressure, TempKelvin, results.a,
+		startMols = Mols(cylVolume, startPressure, TempKelvin, results.a,
 				results.b); // get the initial mols
 		// Same for our target mix
 		results = CalcABVals(targetFO2, 1 - targetFO2 - targetFHe, targetFHe);
 		// a and b for this trimix mix
-		targetMols = Mols(CylVolume, targetPressure, TempKelvin, results.a,
+		targetMols = Mols(cylVolume, targetPressure, TempKelvin, results.a,
 				results.b); // get the final mols
 
 		while (true) {
@@ -181,9 +160,9 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 				// Well, not the most elegant way, but suitable for the first
 				// approach.
 
-				StartCyl.Pressure -= 1;
-				return calc(StartCyl, TargetCyl, CylVolume, TempCelcius,
-						AddHeFirst);
+				startCyl.setPressure(startCyl.getPressure() - 1);
+				return calc(startCyl, targetCyl, cylVolume, tempCelcius,
+						addHeFirst);
 
 			}
 		}
@@ -199,7 +178,7 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		double gasPercent1, gasPercent2; // Peak %s of each gas.
 
 		// Add our first gas
-		if (AddHeFirst) {
+		if (addHeFirst) {
 			totalMolsHe += molsHe;
 			gasPercent1 = totalMolsHe * 100
 					/ (totalMolsO2 + totalMolsN2 + totalMolsHe); // peak %He
@@ -211,11 +190,11 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		results = CalcABVals(totalMolsO2, totalMolsN2, totalMolsHe); // get the
 																		// mix
 																		// coeficients
-		double p3 = pressure(CylVolume,
+		double p3 = pressure(cylVolume,
 				totalMolsO2 + totalMolsN2 + totalMolsHe, TempKelvin, results.a,
 				results.b); // first fill pressure
 		// Now add the other gas
-		if (AddHeFirst) { // ie: oxygen last
+		if (addHeFirst) { // ie: oxygen last
 			totalMolsO2 += molsO2;
 			gasPercent2 = totalMolsO2 * 100
 					/ (totalMolsO2 + totalMolsN2 + totalMolsHe);
@@ -225,21 +204,21 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 					/ (totalMolsO2 + totalMolsN2 + totalMolsHe);
 		}
 		results = CalcABVals(totalMolsO2, totalMolsN2, totalMolsHe);
-		double p4 = pressure(CylVolume,
+		double p4 = pressure(cylVolume,
 				totalMolsO2 + totalMolsN2 + totalMolsHe, TempKelvin, results.a,
 				results.b); // gives second fill pressure
 		// Add the air top that we planned earlier
 		totalMolsN2 += molsN2;
 		totalMolsO2 += molsN2 * O2inAir / (1 - O2inAir);
 		results = CalcABVals(totalMolsO2, totalMolsN2, totalMolsHe);
-		double p5 = pressure(CylVolume,
+		double p5 = pressure(cylVolume,
 				totalMolsO2 + totalMolsN2 + totalMolsHe, TempKelvin, results.a,
 				results.b); // gives final pressure
 
 		// Put everything into the result struct and return it
 		CalcResult result = new CalcResult();
 		result.StartPressure = (int) startPressure;
-		if (AddHeFirst) {
+		if (addHeFirst) {
 			result.HeAdded = Math.round((p3 - startPressure) * 10) / 10.0;
 			result.O2Added = Math.round((p4 - p3) * 10) / 10.0;
 			result.peakHePercent = gasPercent1;
@@ -255,5 +234,28 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		// Brief sanity check - the EndPressure we reached should equal the
 		// start pressure
 		return result;
+	}
+
+	// put in the ratios of the gases and get back mixed a,b
+	private ABValPair CalcABVals(double o2Ratio, double n2Ratio, double heRatio) {
+		double total = o2Ratio + n2Ratio + heRatio;
+		double[] fractionMols = new double[3];
+		fractionMols[0] = o2Ratio / total;
+		fractionMols[1] = n2Ratio / total;
+		fractionMols[2] = heRatio / total;
+
+		double[] AVals = { O2a, N2a, Hea };
+		double[] BVals = { O2b, N2b, Heb };
+		ABValPair results = new ABValPair();
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				results.a += Math.sqrt(AVals[i] * AVals[j]) * fractionMols[i]
+						* fractionMols[j];
+				results.b += Math.sqrt(BVals[i] * BVals[j]) * fractionMols[i]
+						* fractionMols[j];
+			}
+		}
+		return results;
 	}
 }

@@ -25,6 +25,136 @@ import de.tsvmalsch.shared.model.Cylinder;
 public class GasBlendingComposite extends Composite implements
 		CurrentCylinderListener {
 
+	class CalculateBlendingHandler implements ChangeHandler {
+
+		@Override
+		public void onChange(ChangeEvent event) {
+			calculateBlending();
+		}
+	}
+
+	boolean startWithHe = true;
+
+	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
+
+		public void onSuccess(CalcResult r) {
+
+			if (r.successfull) {
+				generateBlendingHint(r);
+
+				txbBarReallyFilledHe.setValue(r.HeAdded);
+				txbBarReallyFilledO2.setValue(r.O2Added);
+
+				lblFillingCost.setText("Füllkosten: "
+						+ Math.round((int) ((r.HeAdded
+								* currentCylinder.getTwinSetSizeInLiter()
+								* 0.0175 + r.O2Added
+								* currentCylinder.getTwinSetSizeInLiter()
+								* 0.0055) * 100)) / 100f + " Euro");
+
+			} else {
+				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
+
+			}
+		}
+
+		private String formatDouble(double d) {
+			return Float.toString((int) ((d + 0.05) * 10) / 10.0f);
+		}
+
+		private void generateBlendingHint(CalcResult r) {
+
+			double cPress = txbRemainingPressure.getValue();
+			double size = currentCylinder.getTwinSetSizeInLiter();
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("<p><ul>");
+			if (r.StartPressure < txbRemainingPressure.getValue()) {
+				sb.append("<li>Aktuellen Druck von ");
+				sb.append(formatDouble(cPress));
+				sb.append(" bar (=");
+				sb.append((int) (cPress * size));
+				sb.append("barL) <b>auf ");
+				sb.append(formatDouble(r.StartPressure));
+				sb.append("bar </b>(=");
+				sb.append(formatDouble(r.StartPressure * size));
+				sb.append("barL) <b>ablassen</b>.</li>");
+			} else {
+				sb.append("<li>Anfänglicher Flaschendruck von ");
+				sb.append(formatDouble(cPress));
+				sb.append(" bar (=");
+				sb.append((int) (cPress * size));
+				sb.append("barL).</li>");
+			}
+			cPress = r.StartPressure;
+
+			if (startWithHe) {
+
+				cPress += r.HeAdded;
+				sb.append(generateHeString(cPress, r));
+				cPress += r.O2Added;
+				sb.append(generateO2String(cPress, r));
+
+			} else {
+
+				cPress += r.O2Added;
+				sb.append(generateO2String(cPress, r));
+
+				cPress += r.HeAdded;
+				sb.append(generateHeString(cPress, r));
+
+			}
+
+			sb.append("<li>Toppe mit ");
+			sb.append(formatDouble(r.EndPressure - cPress));
+			sb.append(" bar (=");
+			sb.append(formatDouble(r.EndPressure - cPress * size));
+			sb.append("barL) <b>Pressluft bis ");
+			sb.append((int) (r.EndPressure));
+			sb.append(" bar</b></b> (=");
+			sb.append(formatDouble(r.EndPressure * size));
+			sb.append("barL).</li></ul>");
+
+			lblBlendingHint.setHTML(sb.toString());
+
+		}
+
+		private String generateHeString(double cPress, CalcResult r) {
+			if (r.HeAdded == 0) {
+				return "";
+			}
+			StringBuilder sb = new StringBuilder();
+			sb.append("<li>Fülle ");
+			sb.append(formatDouble(r.HeAdded));
+			sb.append(" bar (=");
+			sb.append((int) r.HeAdded * currentCylinder.getTwinSetSizeInLiter());
+			sb.append("barL) <b>Helium bis ");
+			sb.append(formatDouble(cPress));
+			sb.append(" bar</b> (=");
+			sb.append((int) cPress * currentCylinder.getTwinSetSizeInLiter());
+			sb.append("barL).</li>");
+			return sb.toString();
+		}
+
+		private String generateO2String(double cPress, CalcResult r) {
+			if (r.O2Added == 0) {
+				return "";
+			}
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("<li>Fülle ");
+			sb.append(r.O2Added);
+			sb.append(" bar (=");
+			sb.append((int) r.O2Added * currentCylinder.getTwinSetSizeInLiter());
+			sb.append("barL) <b>Sauerstoff bis ");
+			sb.append(cPress);
+			sb.append(" bar</b> (=");
+			sb.append((int) (cPress * currentCylinder.getTwinSetSizeInLiter()));
+			sb.append("barL).</li>");
+			return sb.toString();
+		}
+	}
+
 	private HTML lblBlendingHint = new HTML("<p>Gas Blending </p>");
 
 	private Label lblRemainingPressure = new Label("Restdruck: ");
@@ -32,18 +162,17 @@ public class GasBlendingComposite extends Composite implements
 
 	private Label lblPercentRemainingO2 = new Label("% O2");
 	private Label lblPercentRemainingHe = new Label("% He");
-
 	private Label lblTargetPressure = new Label("Enddruck: ");
 	private Label lblBarTargetPressure = new Label("bar");
+
 	private Label lblPercentTargetO2 = new Label("% O2");
 	private Label lblPercentTargetHe = new Label("% He");
-
 	private Label lblFinalBlending = new Label("Tatsächlich gefüllt: ");
+
 	private Label lblBarTargetO2Pressure = new Label("bar O2");
+
 	private Label lblBarTargetHePressure = new Label("bar He");
-
 	private Label lblTemperature = new Label("Temperature (°C): ");
-
 	private DoubleBox txbRemainingPressure = new DoubleBox();
 	private DoubleBox txbRemainingO2 = new DoubleBox();
 	private DoubleBox txbRemainingHe = new DoubleBox();
@@ -51,13 +180,107 @@ public class GasBlendingComposite extends Composite implements
 	private DoubleBox txbTargetO2Percent = new DoubleBox();
 	private DoubleBox txbTargetHePercent = new DoubleBox();
 	private DoubleBox txbBarReallyFilledO2 = new DoubleBox();
+
 	private DoubleBox txbBarReallyFilledHe = new DoubleBox();
 	private IntegerBox txbTemperature = new IntegerBox();
 
 	private Label lblFillingCost = new Label("Füllkosten: 0,00 Euro");
+
 	private Button btnAccount = new Button();
 
 	private final int blendingType;
+
+	private final GasBlenderServiceAsync gasBlenderService = GWT
+			.create(GasBlenderService.class);
+
+	private Cylinder currentCylinder = null;
+
+	public GasBlendingComposite(int blendingType) {
+
+		this.blendingType = blendingType;
+		VerticalPanel vp = new VerticalPanel();
+
+		FlexTable t = new FlexTable();
+
+		vp.add(t);
+
+		t.setWidget(0, 0, lblRemainingPressure);
+		t.setWidget(0, 1, txbRemainingPressure);
+		t.setWidget(0, 2, lblBarRemainingPressure);
+		t.setWidget(0, 3, txbRemainingO2);
+		t.setWidget(0, 4, lblPercentRemainingO2);
+		t.setWidget(0, 5, txbRemainingHe);
+		t.setWidget(0, 6, lblPercentRemainingHe);
+
+		t.setWidget(1, 0, lblTargetPressure);
+		t.setWidget(1, 1, txbTargetPressure);
+		t.setWidget(1, 2, lblBarTargetPressure);
+		t.setWidget(1, 3, txbTargetO2Percent);
+		t.setWidget(1, 4, lblPercentTargetO2);
+		t.setWidget(1, 5, txbTargetHePercent);
+		t.setWidget(1, 6, lblPercentTargetHe);
+
+		t.setWidget(2, 0, lblTemperature);
+		t.setWidget(2, 1, txbTemperature);
+
+		t.getFlexCellFormatter().setColSpan(3, 0, 6);
+		t.setWidget(3, 0, lblBlendingHint);
+
+		t.setWidget(4, 0, lblFinalBlending);
+
+		t.setWidget(4, 3, txbBarReallyFilledO2);
+		t.setWidget(4, 4, lblBarTargetO2Pressure);
+		t.setWidget(4, 5, txbBarReallyFilledHe);
+		t.setWidget(4, 6, lblBarTargetHePressure);
+
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(lblFillingCost);
+		btnAccount.setText("Füllung abrechnen!");
+		hp.add(btnAccount);
+		vp.add(hp);
+		formatWidgets();
+		initWidget(vp);
+
+	}
+
+	private void calculateBlending() {
+		CylinderContents start = new CylinderContents();
+		CylinderContents target = new CylinderContents();
+		start.setPressure(txbRemainingPressure.getValue());
+		start.setfO2(txbRemainingO2.getValue());
+		start.setfHe(txbRemainingHe.getValue());
+		target.setPressure(txbTargetPressure.getValue());
+		target.setfO2(txbTargetO2Percent.getValue());
+		target.setfHe(txbTargetHePercent.getValue());
+		Integer temperatur = txbTemperature.getValue();
+
+		if (target.getPressure() == null || target.getfO2() == null
+				|| target.getfHe() == null || start.getPressure() == null
+				|| start.getfO2() == null || start.getfHe() == null
+				|| temperatur == null) {
+
+			txbBarReallyFilledO2.setValue(0.0);
+			txbBarReallyFilledHe.setValue(0.0);
+			lblBlendingHint.setHTML("<b>Bitte Felder vollständig füllen.</b>");
+			return;
+		}
+
+		start.setfO2(start.getfO2() / 100);
+		start.setfHe(start.getfHe() / 100);
+		target.setfHe(target.getfHe() / 100);
+		target.setfO2(target.getfO2() / 100);
+
+		double size = currentCylinder.getTwinSetSizeInLiter();
+
+		gasBlenderService.calc(start, target, size, temperatur.intValue(),
+				true, new GasBlenderCallback());
+	}
+
+	@Override
+	public void cylinderSelected(Cylinder currentOne) {
+		currentCylinder = currentOne;
+		calculateBlending();
+	}
 
 	private void formatWidgets() {
 
@@ -129,150 +352,5 @@ public class GasBlendingComposite extends Composite implements
 			lblTemperature.setVisible(false);
 			txbTemperature.setVisible(false);
 		}
-	}
-
-	class CalculateBlendingHandler implements ChangeHandler {
-
-		@Override
-		public void onChange(ChangeEvent event) {
-			calculateBlending();
-		}
-	}
-
-	private void calculateBlending() {
-		CylinderContents start = new CylinderContents();
-		CylinderContents target = new CylinderContents();
-		start.Pressure = txbRemainingPressure.getValue();
-		start.FO2 = txbRemainingO2.getValue();
-		start.FHe = txbRemainingHe.getValue();
-		target.Pressure = txbTargetPressure.getValue();
-		target.FO2 = txbTargetO2Percent.getValue();
-		target.FHe = txbTargetHePercent.getValue();
-		Integer temperatur = txbTemperature.getValue();
-	
-		if (target.Pressure == null || target.FO2 == null || target.FHe == null
-				|| start.Pressure == null || start.FO2 == null
-				|| start.FHe == null || temperatur == null) {
-
-			txbBarReallyFilledO2.setValue(0.0);
-			txbBarReallyFilledHe.setValue(0.0);
-			lblBlendingHint.setHTML("<b>Bitte Felder vollständig füllen.</b>");
-			return;
-		}
-
-		start.FO2 = start.FO2 / 100;
-		start.FHe = start.FHe / 100;
-		target.FHe = target.FHe / 100;
-		target.FO2 = target.FO2 / 100;
-
-		double size = currentCylinder.getTwinSetSizeInLiter();
-
-		gasBlenderService.calc(start, target, size, temperatur.intValue(),
-				true, new GasBlenderCallback());
-	}
-
-	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
-
-		public void onSuccess(CalcResult r) {
-
-			if (r.successfull) {
-				lblBlendingHint
-						.setHTML(""
-								+ "<p>Start pressure "
-								+ r.StartPressure
-								+ " bar (="
-								+ currentCylinder.getTwinSetSizeInLiter()
-								* r.StartPressure
-								+ " liter)<br/>"
-								+ "Top He "
-								+ r.HeAdded
-								+ " bar (="
-								+ (int) (currentCylinder
-										.getTwinSetSizeInLiter() * r.HeAdded)
-								+ " liter)<br/>"
-								+ "Top O2 "
-								+ r.O2Added
-								+ " bar  (="
-								+ (int) (currentCylinder
-										.getTwinSetSizeInLiter() * r.O2Added)
-								+ " liter)<br/>" + "Top with AIR to "
-								+ r.EndPressure + " bar. (="
-								+ currentCylinder.getTwinSetSizeInLiter()
-								* r.EndPressure + " liter)</p>");
-
-				txbBarReallyFilledHe.setValue(r.HeAdded);
-				txbBarReallyFilledO2.setValue(r.O2Added);
-
-				lblFillingCost.setText("Füllkosten: "
-						+ Math.round((int) ((r.HeAdded
-								* currentCylinder.getTwinSetSizeInLiter()
-								* 0.0175 + r.O2Added
-								* currentCylinder.getTwinSetSizeInLiter()
-								* 0.0055) * 100)) / 100f + " Euro");
-
-			} else {
-				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
-
-			}
-		}
-	}
-
-	public GasBlendingComposite(int blendingType) {
-
-		this.blendingType = blendingType;
-		VerticalPanel vp = new VerticalPanel();
-
-		FlexTable t = new FlexTable();
-
-		vp.add(t);
-
-		t.setWidget(0, 0, lblRemainingPressure);
-		t.setWidget(0, 1, txbRemainingPressure);
-		t.setWidget(0, 2, lblBarRemainingPressure);
-		t.setWidget(0, 3, txbRemainingO2);
-		t.setWidget(0, 4, lblPercentRemainingO2);
-		t.setWidget(0, 5, txbRemainingHe);
-		t.setWidget(0, 6, lblPercentRemainingHe);
-
-		t.setWidget(1, 0, lblTargetPressure);
-		t.setWidget(1, 1, txbTargetPressure);
-		t.setWidget(1, 2, lblBarTargetPressure);
-		t.setWidget(1, 3, txbTargetO2Percent);
-		t.setWidget(1, 4, lblPercentTargetO2);
-		t.setWidget(1, 5, txbTargetHePercent);
-		t.setWidget(1, 6, lblPercentTargetHe);
-
-		t.setWidget(2, 0, lblTemperature);
-		t.setWidget(2, 1, txbTemperature);
-
-		t.getFlexCellFormatter().setColSpan(3, 0, 6);
-		t.setWidget(3, 0, lblBlendingHint);
-
-		t.setWidget(4, 0, lblFinalBlending);
-
-		t.setWidget(4, 3, txbBarReallyFilledO2);
-		t.setWidget(4, 4, lblBarTargetO2Pressure);
-		t.setWidget(4, 5, txbBarReallyFilledHe);
-		t.setWidget(4, 6, lblBarTargetHePressure);
-
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.add(lblFillingCost);
-		btnAccount.setText("Füllung abrechnen!");
-		hp.add(btnAccount);
-		vp.add(hp);
-		formatWidgets();
-		initWidget(vp);
-
-	}
-
-	private final GasBlenderServiceAsync gasBlenderService = GWT
-			.create(GasBlenderService.class);
-
-	private Cylinder currentCylinder = null;
-
-	@Override
-	public void cylinderSelected(Cylinder currentOne) {
-		currentCylinder = currentOne;
-		calculateBlending();
 	}
 }

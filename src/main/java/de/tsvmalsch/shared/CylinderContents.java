@@ -20,9 +20,48 @@ import java.io.Serializable;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * 	// This class represents the contents of a diving gas cylinder.
+ *
+ */
 public class CylinderContents implements Serializable{
-	// This class represents the contents of a diving gas cylinder.
-	public Double FO2; // FO2 of the mix
-	public Double FHe; // FHe of the mix
-	public Double Pressure; // Fill pressure (bar)
+	/**
+	 * sUID
+	 */
+	private static final long serialVersionUID = 1377980628200745116L;
+	
+	/**
+	 * FO2 of the mix
+	 */
+	private Double fO2;  
+	
+	/**
+	 * fHe of the mix
+	 */
+	private Double fHe; // FHe of the mix
+	
+	
+	/**
+	 *  Fill pressure (bar)
+	 */
+	private Double pressure;
+	
+	public Double getfHe() {
+		return fHe;
+	}
+	public Double getfO2() {
+		return fO2;
+	}
+	public Double getPressure() {
+		return pressure;
+	}
+	public void setfHe(Double fHe) {
+		this.fHe = fHe;
+	}
+	public void setfO2(Double fO2) {
+		this.fO2 = fO2;
+	}
+	public void setPressure(Double pressure) {
+		this.pressure = pressure;
+	}
 }
