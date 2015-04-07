@@ -18,9 +18,7 @@
 	  	<servlet>
 		<servlet-name>calcServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.blend.GasBlenderServiceImpl</servlet-class>
-	</servlet>
-
-	 calc
+	</servlet> 
 	 
 	<servlet-mapping>
 		<servlet-name>cylinderServlet</servlet-name>
