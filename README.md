@@ -18,7 +18,10 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
     
 This application re-use parts of the Software "DiveGas for Google Android - Nitrox and Trimix gas blending using VdW"
 
-Copyright (C) 2009 David Pye    <davidmpye@gmail.com  - UI + porting 
-                   Nigel Hewitt <nigelh@combro.co.uk> - Algorithms
+Copyright (C) 2009
+
+David Pye davidmpye@gmail.com - UI + porting 
+
+Nigel Hewitt nigelh@combro.co.uk - Algorithms
                    
 Released under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.  
