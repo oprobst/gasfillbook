@@ -16,6 +16,7 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		public double a;
 		public double b;
 	}
+
 	// put in volume, pressure, temp (abs) plus the a,b constants
 	// and get back mols
 	static double Mols(double Volume, double Pressure, double TempKelvin,
@@ -42,10 +43,12 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 	}
+
 	static double pressure(double V, double n, double TempKelvin, double a,
 			double b) {
 		return n * R * (TempKelvin) / (V - n * b) - n * n * a / (V * V);
 	}
+
 	// R gas constant
 	static final double R = 0.0831451;
 	// A and B values for our constituent gases
@@ -97,10 +100,11 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		if (startFHe + startFO2 > 1.0 || targetFHe + targetFO2 > 1.0) {
 			CalcResult r = new CalcResult();
 			r.successfull = false;
-			r.failureSting = "Ein Gas mit " + targetFHe * 100 + "% He und "
-					+ targetFO2 + "% O2 Anteil (Summe= "
-					+ (targetFHe + targetFO2) * 100
-					+ "%) kann nur von User 'Chuck Norris' gemischt werden!";
+			r.failureSting = "Ein Gas mit " + (int) (targetFHe * 100)
+					+ "% He und " + (int) (targetFO2 * 100)
+					+ "% O2 Anteil (Summe= "
+					+ (int) ((targetFHe + targetFO2) * 100)
+					+ "%)<br/> kann nur von User '<b>Chuck Norris</b>' gemischt werden!";
 			return r;
 		}
 

@@ -1,8 +1,10 @@
 package de.tsvmalsch.client.composite;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DoubleBox;
@@ -11,6 +13,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IntegerBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import de.tsvmalsch.client.DefaultAsyncCallback;
@@ -25,39 +28,20 @@ import de.tsvmalsch.shared.model.Cylinder;
 public class GasBlendingComposite extends Composite implements
 		CurrentCylinderListener {
 
-	class CalculateBlendingHandler implements ChangeHandler {
+	class CalculateBlendingHandler implements ClickHandler, KeyUpHandler {
 
 		@Override
-		public void onChange(ChangeEvent event) {
+		public void onClick(ClickEvent arg0) {
+			calculateBlending();
+		}
+
+		@Override
+		public void onKeyUp(KeyUpEvent arg0) {
 			calculateBlending();
 		}
 	}
 
-	boolean startWithHe = true;
-
 	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
-
-		public void onSuccess(CalcResult r) {
-
-			if (r.successfull) {
-				generateBlendingHint(r);
-
-				txbBarReallyFilledHe.setValue(r.HeAdded);
-				txbBarReallyFilledO2.setValue(r.O2Added);
-
-				// TODO
-				lblFillingCost.setText("Füllkosten: "
-						+ Math.round((int) ((r.HeAdded
-								* currentCylinder.getTwinSetSizeInLiter()
-								* 0.0175 + r.O2Added
-								* currentCylinder.getTwinSetSizeInLiter()
-								* 0.0055) * 100)) / 100f + " Euro");
-
-			} else {
-				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
-
-			}
-		}
 
 		private String formatDouble(double d) {
 			return Float.toString((int) ((d + 0.05) * 10) / 10.0f);
@@ -87,7 +71,7 @@ public class GasBlendingComposite extends Composite implements
 			}
 			cPress = r.StartPressure;
 
-			if (startWithHe) {
+			if (heFirst) {
 
 				cPress += r.HeAdded;
 				sb.append(generateHeString(cPress, r));
@@ -148,6 +132,28 @@ public class GasBlendingComposite extends Composite implements
 			sb.append(" barL).</li>");
 			return sb.toString();
 		}
+
+		public void onSuccess(CalcResult r) {
+
+			if (r.successfull) {
+				generateBlendingHint(r);
+
+				txbBarReallyFilledHe.setValue(r.HeAdded);
+				txbBarReallyFilledO2.setValue(r.O2Added);
+
+				// TODO
+				lblFillingCost.setText("Füllkosten: "
+						+ Math.round((int) ((r.HeAdded
+								* currentCylinder.getTwinSetSizeInLiter()
+								* 0.0175 + r.O2Added
+								* currentCylinder.getTwinSetSizeInLiter()
+								* 0.0055) * 100)) / 100f + " Euro");
+
+			} else {
+				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
+
+			}
+		}
 	}
 
 	private HTML lblBlendingHint = new HTML("<p>Gas Blending </p>");
@@ -179,6 +185,10 @@ public class GasBlendingComposite extends Composite implements
 	private DoubleBox txbBarReallyFilledHe = new DoubleBox();
 	private IntegerBox txbTemperature = new IntegerBox();
 
+	private Label lblMixingOrder = new Label("Zuerst ");
+	private RadioButton rbtFirstHe = new RadioButton("mixingOrder", "He");
+	private RadioButton rbtFirstO2 = new RadioButton("mixingOrder", "O2");
+
 	private Label lblFillingCost = new Label("Füllkosten: 0,00 Euro");
 
 	private Button btnAccount = new Button();
@@ -189,6 +199,8 @@ public class GasBlendingComposite extends Composite implements
 			.create(GasBlenderService.class);
 
 	private Cylinder currentCylinder = null;
+
+	private boolean heFirst = true;
 
 	public GasBlendingComposite(int blendingType) {
 
@@ -217,6 +229,9 @@ public class GasBlendingComposite extends Composite implements
 
 		t.setWidget(2, 0, lblTemperature);
 		t.setWidget(2, 1, txbTemperature);
+		t.setWidget(2, 3, lblMixingOrder);
+		t.setWidget(2, 4, rbtFirstHe);
+		t.setWidget(2, 5, rbtFirstO2);
 
 		t.getFlexCellFormatter().setColSpan(3, 0, 6);
 		t.setWidget(3, 0, lblBlendingHint);
@@ -239,6 +254,8 @@ public class GasBlendingComposite extends Composite implements
 	}
 
 	private void calculateBlending() {
+
+		heFirst = rbtFirstHe.getValue();
 		CylinderContents start = new CylinderContents();
 		CylinderContents target = new CylinderContents();
 		start.setPressure(txbRemainingPressure.getValue());
@@ -281,6 +298,8 @@ public class GasBlendingComposite extends Composite implements
 
 		btnAccount.setStyleName("button-book-filling");
 
+		rbtFirstHe.setValue(true);
+
 		txbRemainingPressure.setValue(50.0);
 		txbRemainingO2.setValue(20.9d);
 		txbRemainingHe.setValue(0d);
@@ -312,13 +331,16 @@ public class GasBlendingComposite extends Composite implements
 		txbTemperature.setMaxLength(3);
 
 		CalculateBlendingHandler blurHandler = new CalculateBlendingHandler();
-		txbRemainingPressure.addChangeHandler(blurHandler);
-		txbRemainingO2.addChangeHandler(blurHandler);
-		txbRemainingHe.addChangeHandler(blurHandler);
-		txbTargetPressure.addChangeHandler(blurHandler);
-		txbTargetO2Percent.addChangeHandler(blurHandler);
-		txbTargetHePercent.addChangeHandler(blurHandler);
-		txbTemperature.addChangeHandler(blurHandler);
+		txbRemainingPressure.addKeyUpHandler(blurHandler);
+		txbRemainingO2.addKeyUpHandler(blurHandler);
+		txbRemainingHe.addKeyUpHandler(blurHandler);
+		txbTargetPressure.addKeyUpHandler(blurHandler);
+		txbTargetO2Percent.addKeyUpHandler(blurHandler);
+		txbTargetHePercent.addKeyUpHandler(blurHandler);
+		txbTemperature.addKeyUpHandler(blurHandler);
+
+		rbtFirstHe.addClickHandler(blurHandler);
+		rbtFirstO2.addClickHandler(blurHandler);
 
 		if (blendingType != BlendingType.NX40_CASCADE
 				&& blendingType != BlendingType.PARTIAL_METHOD) {
@@ -334,6 +356,9 @@ public class GasBlendingComposite extends Composite implements
 			lblFillingCost.setVisible(false);
 			lblTemperature.setVisible(false);
 			txbTemperature.setVisible(false);
+			lblMixingOrder.setVisible(false);
+			rbtFirstHe.setVisible(false);
+			rbtFirstO2.setVisible(false);
 
 		}
 		if (blendingType != BlendingType.PARTIAL_METHOD) {
@@ -345,6 +370,9 @@ public class GasBlendingComposite extends Composite implements
 			txbRemainingHe.setVisible(false);
 			lblTemperature.setVisible(false);
 			txbTemperature.setVisible(false);
+			lblMixingOrder.setVisible(false);
+			rbtFirstHe.setVisible(false);
+			rbtFirstO2.setVisible(false);
 		}
 	}
 }
