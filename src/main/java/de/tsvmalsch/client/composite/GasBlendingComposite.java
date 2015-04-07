@@ -61,7 +61,7 @@ public class GasBlendingComposite extends Composite implements
 				sb.append(formatDouble(r.StartPressure));
 				sb.append(" bar ablassen</b> (");
 				sb.append((int) (cPress - r.StartPressure * size));
-				sb.append("barL).</li>");
+				sb.append(" barL).</li>");
 			} else {
 				sb.append("<li>Anfänglicher Flaschendruck von ");
 				sb.append((int) (cPress));
