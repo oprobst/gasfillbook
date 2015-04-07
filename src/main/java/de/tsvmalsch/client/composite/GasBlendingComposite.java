@@ -45,6 +45,7 @@ public class GasBlendingComposite extends Composite implements
 				txbBarReallyFilledHe.setValue(r.HeAdded);
 				txbBarReallyFilledO2.setValue(r.O2Added);
 
+				// TODO
 				lblFillingCost.setText("Füllkosten: "
 						+ Math.round((int) ((r.HeAdded
 								* currentCylinder.getTwinSetSizeInLiter()
@@ -71,17 +72,13 @@ public class GasBlendingComposite extends Composite implements
 			sb.append("<p><ul>");
 			if (r.StartPressure < txbRemainingPressure.getValue()) {
 				sb.append("<li>Aktuellen Druck von ");
-				sb.append(formatDouble(cPress));
-				sb.append(" bar (=");
-				sb.append((int) (cPress * size));
-				sb.append("barL) <b>auf ");
+				sb.append((int) (cPress));
+				sb.append(" bar <b>auf ");
 				sb.append(formatDouble(r.StartPressure));
-				sb.append("bar </b>(=");
-				sb.append(formatDouble(r.StartPressure * size));
-				sb.append("barL) <b>ablassen</b>.</li>");
+				sb.append(" bar ablassen</b>.</li>");
 			} else {
 				sb.append("<li>Anfänglicher Flaschendruck von ");
-				sb.append(formatDouble(cPress));
+				sb.append((int) (cPress));
 				sb.append(" bar (=");
 				sb.append((int) (cPress * size));
 				sb.append("barL).</li>");
@@ -107,13 +104,9 @@ public class GasBlendingComposite extends Composite implements
 
 			sb.append("<li>Toppe mit ");
 			sb.append(formatDouble(r.EndPressure - cPress));
-			sb.append(" bar (=");
-			sb.append(formatDouble(r.EndPressure - cPress * size));
-			sb.append("barL) <b>Pressluft bis ");
+			sb.append(" bar <b>Pressluft bis ");
 			sb.append((int) (r.EndPressure));
-			sb.append(" bar</b></b> (=");
-			sb.append(formatDouble(r.EndPressure * size));
-			sb.append("barL).</li></ul>");
+			sb.append(" bar</b>.</li></ul></p>");
 
 			lblBlendingHint.setHTML(sb.toString());
 
@@ -126,13 +119,9 @@ public class GasBlendingComposite extends Composite implements
 			StringBuilder sb = new StringBuilder();
 			sb.append("<li>Fülle ");
 			sb.append(formatDouble(r.HeAdded));
-			sb.append(" bar (=");
-			sb.append((int) r.HeAdded * currentCylinder.getTwinSetSizeInLiter());
-			sb.append("barL) <b>Helium bis ");
+			sb.append(" bar <b>Helium bis ");
 			sb.append(formatDouble(cPress));
-			sb.append(" bar</b> (=");
-			sb.append((int) cPress * currentCylinder.getTwinSetSizeInLiter());
-			sb.append("barL).</li>");
+			sb.append(" bar</b>.</li>");
 			return sb.toString();
 		}
 
@@ -143,14 +132,10 @@ public class GasBlendingComposite extends Composite implements
 
 			StringBuilder sb = new StringBuilder();
 			sb.append("<li>Fülle ");
-			sb.append(r.O2Added);
-			sb.append(" bar (=");
-			sb.append((int) r.O2Added * currentCylinder.getTwinSetSizeInLiter());
-			sb.append("barL) <b>Sauerstoff bis ");
-			sb.append(cPress);
-			sb.append(" bar</b> (=");
-			sb.append((int) (cPress * currentCylinder.getTwinSetSizeInLiter()));
-			sb.append("barL).</li>");
+			sb.append(formatDouble(r.O2Added));
+			sb.append(" bar <b>Sauerstoff bis ");
+			sb.append(formatDouble(cPress));
+			sb.append(" bar</b>.</li>");
 			return sb.toString();
 		}
 	}

@@ -6,29 +6,53 @@ h1 {
 	text-align: center;
 }
 
-. {
-	text-align: left;
-	font-family: verdana, sans-serif;
-	background-color: #ddecff;
-}
+.
+{
+text-align
+:
+ 
+left
+;
 
+	
+font-family
+:
+ 
+verdana
+,
+sans-serif
+;
+
+	
+background-color
+:
+ 
+#ddecff
+;
+
+
+}
 .gwt-Label {
 	margin: 5px;
 	text-align: left;
 	font-family: verdana, sans-serif;
 }
 
+
 .txt-3digit {
 	width: 30px;
 }
 
-.txbUserData{
+.txbUserData {
 	width: 130px;
 }
 
 .blending-hint {
-	border: 1px;
+	border: 2px;
+	border-color:#0000bf;
 	border-style: solid;
+	font-size: 1.5em;
+	color: #110000;  
 }
 
 .button-book-filling {
