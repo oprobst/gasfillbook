@@ -17,6 +17,23 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		public double b;
 	}
 
+	static final double Hea = 0.0346;
+
+	static final double Heb = 0.02380;
+
+	// The offset to convert 'C into 'K. (roughly..)
+	static final double KelvinOffset = 273.15;
+	static final double N2a = 1.370;
+	static final double N2b = 0.03870;
+	// A and B values for our constituent gases
+	static final double O2a = 1.382;
+	static final double O2b = 0.03186;
+	// % of O2 in Air
+	static final double O2inAir = 0.2095;
+
+	// R gas constant
+	static final double R = 0.0831451;
+
 	// put in volume, pressure, temp (abs) plus the a,b constants
 	// and get back mols
 	static double Mols(double Volume, double Pressure, double TempKelvin,
@@ -49,25 +66,92 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		return n * R * (TempKelvin) / (V - n * b) - n * n * a / (V * V);
 	}
 
-	// R gas constant
-	static final double R = 0.0831451;
-	// A and B values for our constituent gases
-	static final double O2a = 1.382;
-	static final double O2b = 0.03186;
-	static final double N2a = 1.370;
-	static final double N2b = 0.03870;
-	static final double Hea = 0.0346;
+	// put in the ratios of the gases and get back mixed a,b
+	private ABValPair CalcABVals(double o2Ratio, double n2Ratio, double heRatio) {
+		double total = o2Ratio + n2Ratio + heRatio;
+		double[] fractionMols = new double[3];
+		fractionMols[0] = o2Ratio / total;
+		fractionMols[1] = n2Ratio / total;
+		fractionMols[2] = heRatio / total;
 
-	static final double Heb = 0.02380;
+		double[] AVals = { O2a, N2a, Hea };
+		double[] BVals = { O2b, N2b, Heb };
+		ABValPair results = new ABValPair();
 
-	// % of O2 in Air
-	static final double O2inAir = 0.2095;
-
-	// The offset to convert 'C into 'K. (roughly..)
-	static final double KelvinOffset = 273.15;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				results.a += Math.sqrt(AVals[i] * AVals[j]) * fractionMols[i]
+						* fractionMols[j];
+				results.b += Math.sqrt(BVals[i] * BVals[j]) * fractionMols[i]
+						* fractionMols[j];
+			}
+		}
+		return results;
+	}
 
 	@Override
-	public CalcResult calc(CylinderContents startCyl,
+	public CalcResult calcDalton(CylinderContents startCyl,
+			CylinderContents targetCyl, double cylVolume) {
+		return calcDalton(startCyl, targetCyl, 0.209, cylVolume);
+	}
+
+	@Override
+	public CalcResult calcDalton(CylinderContents startCyl,
+			CylinderContents targetCyl, double topUpO2Mix, double cylVolume) {
+
+		double startFHe = startCyl.getfHe();
+		double startFO2 = startCyl.getfO2();
+		double startFN = 1 - targetCyl.getfO2() - targetCyl.getfHe();
+		double startPressure = startCyl.getPressure();
+
+		double targetFHe = targetCyl.getfHe();
+		double targetFO2 = targetCyl.getfO2();
+		double targetFN = 1 - targetCyl.getfO2() - targetCyl.getfHe();
+		double targetPressure = targetCyl.getPressure();
+
+		double topUpNMix = 1 - topUpO2Mix;
+
+		if (startFHe > 0 || targetFHe > 0) {
+			CalcResult cr = new CalcResult();
+			cr.setSuccessfull(false);
+			cr.setFailureSting("Current ideal gas calculation does not implement HE calculation. Use calculation for real gases instead.");
+			return cr;
+		}
+		// TODO: Check out forumlar... Something is still wrong.
+//
+		int barLMax = (int) (cylVolume * targetPressure);
+		float barLO2Current = (float) (cylVolume * startFO2);
+
+		float barLO2toBeAdded = (float) (barLMax * targetFO2 - barLO2Current);
+
+		double airFO2 = 0.209;
+		double airFN = 0.789;
+
+		// double PA = targetPressure - startPressure - barAirToAdd...
+		// double barAirToAdd = (startPressure * startFO2 - startPressure *
+		// startFN - startPressure) / topUpNMix;
+		double F = (targetPressure * targetFO2 + targetPressure * targetFN
+				- startPressure * startFO2 - startPressure * startFN
+				- targetPressure * topUpO2Mix + startPressure * topUpO2Mix
+				- targetPressure * topUpNMix + startPressure * topUpNMix);
+		
+		double barAir = F / ( 1 - topUpNMix * topUpO2Mix );
+				
+
+		// barAir -= startPressure;
+		double barCascade = targetPressure - startPressure - barAir;
+		CalcResult res = new CalcResult();
+
+		res.setStartPressure((int) startPressure);
+		res.setEndPressure(targetPressure);
+		res.setHeAdded(0.0);
+		res.setO2Added(barCascade);
+		res.setAirAdded(barAir);
+		return res;
+	}
+
+	@Override
+	public CalcResult calcVanDerWaals(CylinderContents startCyl,
 			CylinderContents targetCyl, double cylVolume, int tempCelcius,
 			boolean addHeFirst) {
 		// We start with an amount of gas already in the tank so we can factor
@@ -100,8 +184,10 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		if (startFHe + startFO2 > 1.0 || targetFHe + targetFO2 > 1.0) {
 			CalcResult r = new CalcResult();
 			r.successfull = false;
-			r.failureSting = "Ein Gas mit " + (int) (targetFHe * 100)
-					+ "% He und " + (int) (targetFO2 * 100)
+			r.failureSting = "Ein Gas mit "
+					+ (int) (targetFHe * 100)
+					+ "% He und "
+					+ (int) (targetFO2 * 100)
 					+ "% O2 Anteil (Summe= "
 					+ (int) ((targetFHe + targetFO2) * 100)
 					+ "%)<br/> kann nur von User '<b>Chuck Norris</b>' gemischt werden!";
@@ -165,8 +251,8 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 				// approach.
 
 				startCyl.setPressure(startCyl.getPressure() - 1);
-				return calc(startCyl, targetCyl, cylVolume, tempCelcius,
-						addHeFirst);
+				return calcVanDerWaals(startCyl, targetCyl, cylVolume,
+						tempCelcius, addHeFirst);
 
 			}
 		}
@@ -238,28 +324,5 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 		// Brief sanity check - the EndPressure we reached should equal the
 		// start pressure
 		return result;
-	}
-
-	// put in the ratios of the gases and get back mixed a,b
-	private ABValPair CalcABVals(double o2Ratio, double n2Ratio, double heRatio) {
-		double total = o2Ratio + n2Ratio + heRatio;
-		double[] fractionMols = new double[3];
-		fractionMols[0] = o2Ratio / total;
-		fractionMols[1] = n2Ratio / total;
-		fractionMols[2] = heRatio / total;
-
-		double[] AVals = { O2a, N2a, Hea };
-		double[] BVals = { O2b, N2b, Heb };
-		ABValPair results = new ABValPair();
-
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				results.a += Math.sqrt(AVals[i] * AVals[j]) * fractionMols[i]
-						* fractionMols[j];
-				results.b += Math.sqrt(BVals[i] * BVals[j]) * fractionMols[i]
-						* fractionMols[j];
-			}
-		}
-		return results;
 	}
 }

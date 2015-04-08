@@ -284,7 +284,7 @@ public class GasBlendingComposite extends Composite implements
 
 		double size = currentCylinder.getTwinSetSizeInLiter();
 
-		gasBlenderService.calc(start, target, size, temperatur.intValue(),
+		gasBlenderService.calcVanDerWaals(start, target, size, temperatur.intValue(),
 				true, new GasBlenderCallback());
 	}
 

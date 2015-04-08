@@ -9,6 +9,12 @@ import de.tsvmalsch.shared.CylinderContents;
 @RemoteServiceRelativePath("calc")
 public interface GasBlenderService extends RemoteService {
 
-	CalcResult calc(CylinderContents StartCyl, CylinderContents TargetCyl,
+	CalcResult calcVanDerWaals(CylinderContents StartCyl, CylinderContents TargetCyl,
 			double CylVolume, int TempCelcius, boolean AddHeFirst);
+
+	CalcResult calcDalton(CylinderContents startCyl,
+			CylinderContents targetCyl, double cylVolume);
+
+	CalcResult calcDalton(CylinderContents startCyl,
+			CylinderContents targetCyl, double topUpO2Mix, double cylVolume);
 }
