@@ -44,7 +44,7 @@ public class GasBlendingComposite extends Composite implements
 	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
 
 		private String formatDouble(double d) {
-			return Float.toString((int) ((d + 0.05) * 10) / 10.0f);
+			 return Double.toString(d);// Float.toString(Math.round(d * 10) / 10.0f);
 		}
 
 		private void generateBlendingHint(CalcResult r) {
@@ -71,21 +71,27 @@ public class GasBlendingComposite extends Composite implements
 			}
 			cPress = r.StartPressure;
 
-			if (heFirst) {
+			if (blendingType == BlendingType.PARTIAL_METHOD) {
 
-				cPress += r.HeAdded;
-				sb.append(generateHeString(cPress, r));
-				cPress += r.O2Added;
-				sb.append(generateO2String(cPress, r));
+				if (heFirst) {
 
+					cPress += r.HeAdded;
+					sb.append(generateHeString(cPress, r));
+					cPress += r.O2Added;
+					sb.append(generateO2String(cPress, r));
+
+				} else {
+
+					cPress += r.O2Added;
+					sb.append(generateO2String(cPress, r));
+
+					cPress += r.HeAdded;
+					sb.append(generateHeString(cPress, r));
+
+				}
 			} else {
-
 				cPress += r.O2Added;
-				sb.append(generateO2String(cPress, r));
-
-				cPress += r.HeAdded;
-				sb.append(generateHeString(cPress, r));
-
+				sb.append(generateCascadeString(cPress, r));
 			}
 
 			sb.append("<li>Toppe mit ");
@@ -98,6 +104,20 @@ public class GasBlendingComposite extends Composite implements
 
 			lblBlendingHint.setHTML(sb.toString());
 
+		}
+
+		private String generateCascadeString(double cPress, CalcResult r) {
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("<li>Fülle ");
+			sb.append(formatDouble(r.O2Added));
+			sb.append(" bar <b>aus Nitrox Kaskade bis ");
+			sb.append(formatDouble(cPress));
+			sb.append(" bar</b> (+");
+			sb.append((int) (r.O2Added * currentCylinder
+					.getTwinSetSizeInLiter()));
+			sb.append(" barL).</li>");
+			return sb.toString();
 		}
 
 		private String generateHeString(double cPress, CalcResult r) {
@@ -142,12 +162,24 @@ public class GasBlendingComposite extends Composite implements
 				txbBarReallyFilledO2.setValue(r.O2Added);
 
 				// TODO
-				lblFillingCost.setText("Füllkosten: "
-						+ Math.round((int) ((r.HeAdded
-								* currentCylinder.getTwinSetSizeInLiter()
-								* 0.0175 + r.O2Added
-								* currentCylinder.getTwinSetSizeInLiter()
-								* 0.0055) * 100)) / 100f + " Euro");
+				if (blendingType == BlendingType.PARTIAL_METHOD) {
+					lblFillingCost.setText("Füllkosten: "
+							+ Math.round((int) ((r.HeAdded
+									* currentCylinder.getTwinSetSizeInLiter()
+									* 0.0175 + r.O2Added
+									* currentCylinder.getTwinSetSizeInLiter()
+									* 0.0055) * 100)) / 100f + " Euro");
+				} else {
+					lblFillingCost.setText("Füllkosten: "
+							+ Math.round((int) ((r.HeAdded
+									* currentCylinder.getTwinSetSizeInLiter()
+									* 0.0175 + r.O2Added
+									* currentCylinder.getTwinSetSizeInLiter()
+									// TODO Real oxygen content of cascade
+									// instead of .40
+									* 0.0055d * (.241d )) * 100)) / 100f 
+							+ " Euro");
+				}
 
 			} else {
 				lblBlendingHint.setHTML("" + "<p>" + r.failureSting + "</p>");
@@ -161,16 +193,16 @@ public class GasBlendingComposite extends Composite implements
 	private Label lblRemainingPressure = new Label("Restdruck: ");
 	private Label lblBarRemainingPressure = new Label("bar");
 
-	private Label lblPercentRemainingO2 = new Label("% O2");
+	private Label lblPercentRemainingO2 = new Label("% O₂");
 	private Label lblPercentRemainingHe = new Label("% He");
 	private Label lblTargetPressure = new Label("Enddruck: ");
 	private Label lblBarTargetPressure = new Label("bar");
 
-	private Label lblPercentTargetO2 = new Label("% O2");
+	private Label lblPercentTargetO2 = new Label("% O₂");
 	private Label lblPercentTargetHe = new Label("% He");
 	private Label lblFinalBlending = new Label("Tatsächlich gefüllt: ");
 
-	private Label lblBarTargetO2Pressure = new Label("bar O2");
+	private Label lblBarTargetO2Pressure = new Label("bar O₂");
 
 	private Label lblBarTargetHePressure = new Label("bar He");
 	private Label lblTemperature = new Label("Temperature (°C): ");
@@ -187,7 +219,7 @@ public class GasBlendingComposite extends Composite implements
 
 	private Label lblMixingOrder = new Label("Zuerst ");
 	private RadioButton rbtFirstHe = new RadioButton("mixingOrder", "He");
-	private RadioButton rbtFirstO2 = new RadioButton("mixingOrder", "O2");
+	private RadioButton rbtFirstO2 = new RadioButton("mixingOrder", "O₂");
 
 	private Label lblFillingCost = new Label("Füllkosten: 0,00 Euro");
 
@@ -284,8 +316,13 @@ public class GasBlendingComposite extends Composite implements
 
 		double size = currentCylinder.getTwinSetSizeInLiter();
 
-		gasBlenderService.calcVanDerWaals(start, target, size, temperatur.intValue(),
-				true, new GasBlenderCallback());
+		if (blendingType == BlendingType.NX40_CASCADE) {
+			gasBlenderService.calcIdeal(start, target, 0.4,
+					new GasBlenderCallback());
+		} else {
+			gasBlenderService.calcReal(start, target, size,
+					temperatur.intValue(), true, new GasBlenderCallback());
+		}
 	}
 
 	@Override
@@ -359,7 +396,6 @@ public class GasBlendingComposite extends Composite implements
 			lblMixingOrder.setVisible(false);
 			rbtFirstHe.setVisible(false);
 			rbtFirstO2.setVisible(false);
-
 		}
 		if (blendingType != BlendingType.PARTIAL_METHOD) {
 			txbBarReallyFilledHe.setVisible(false);
@@ -373,6 +409,9 @@ public class GasBlendingComposite extends Composite implements
 			lblMixingOrder.setVisible(false);
 			rbtFirstHe.setVisible(false);
 			rbtFirstO2.setVisible(false);
+
+			lblBarTargetO2Pressure.setText("bar Nx40");
+
 		}
 	}
 }

@@ -90,59 +90,65 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public CalcResult calcDalton(CylinderContents startCyl,
-			CylinderContents targetCyl, double cylVolume) {
-		return calcDalton(startCyl, targetCyl, 0.209, cylVolume);
+	public CalcResult calcIdeal(CylinderContents startCyl,
+			CylinderContents targetCyl) {
+		return calcIdeal(startCyl, targetCyl, 0.209);
 	}
 
 	@Override
-	public CalcResult calcDalton(CylinderContents startCyl,
-			CylinderContents targetCyl, double topUpO2Mix, double cylVolume) {
+	public CalcResult calcIdeal(CylinderContents startCyl,
+			CylinderContents targetCyl, double topUpO2Mix) {
+
+		if (startCyl.getPressure() < 0) {
+			CalcResult cr = new CalcResult();
+			cr.setSuccessfull(false);
+			cr.setFailureSting("Diese Gas kann ich nicht über die Nitrox Kaskade berechnen.<br/> "
+					+ " Bitte wähle einen O₂ Bereich zwischen 21% und 39.9% oder<br/>  "
+					+ "nutze die Partialdruck Methode im Schrank nebenan.");
+			return cr;
+		}
 
 		double startFHe = startCyl.getfHe();
 		double startFO2 = startCyl.getfO2();
-		double startFN = 1 - targetCyl.getfO2() - targetCyl.getfHe();
 		double startPressure = startCyl.getPressure();
 
 		double targetFHe = targetCyl.getfHe();
 		double targetFO2 = targetCyl.getfO2();
-		double targetFN = 1 - targetCyl.getfO2() - targetCyl.getfHe();
 		double targetPressure = targetCyl.getPressure();
-
-		double topUpNMix = 1 - topUpO2Mix;
 
 		if (startFHe > 0 || targetFHe > 0) {
 			CalcResult cr = new CalcResult();
 			cr.setSuccessfull(false);
-			cr.setFailureSting("Current ideal gas calculation does not implement HE calculation. Use calculation for real gases instead.");
+			cr.setFailureSting("Current ideal gas calculation does not implement HE calculation.<br/>"
+					+ " Use calculation for real gases instead.");
 			return cr;
 		}
-		// TODO: Check out forumlar... Something is still wrong.
-//
-		int barLMax = (int) (cylVolume * targetPressure);
-		float barLO2Current = (float) (cylVolume * startFO2);
 
-		float barLO2toBeAdded = (float) (barLMax * targetFO2 - barLO2Current);
+		double barAir = (targetPressure * (targetFO2 - topUpO2Mix) + startPressure
+				* (topUpO2Mix - startFO2))
+				/ (O2inAir - topUpO2Mix);
 
-		double airFO2 = 0.209;
-		double airFN = 0.789;
-
-		// double PA = targetPressure - startPressure - barAirToAdd...
-		// double barAirToAdd = (startPressure * startFO2 - startPressure *
-		// startFN - startPressure) / topUpNMix;
-		double F = (targetPressure * targetFO2 + targetPressure * targetFN
-				- startPressure * startFO2 - startPressure * startFN
-				- targetPressure * topUpO2Mix + startPressure * topUpO2Mix
-				- targetPressure * topUpNMix + startPressure * topUpNMix);
-		
-		double barAir = F / ( 1 - topUpNMix * topUpO2Mix );
-				
-
-		// barAir -= startPressure;
 		double barCascade = targetPressure - startPressure - barAir;
+
 		CalcResult res = new CalcResult();
 
-		res.setStartPressure((int) startPressure);
+		barAir = Math.round((barAir) * 10) / 10.0;
+		barCascade = Math.round((barCascade) * 10) / 10.0;
+
+		if (barCascade < 0 || barAir < 0) {
+
+			startCyl.setPressure(startCyl.getPressure()
+					+ Math.min(barCascade, barAir));
+
+			if (startCyl.getPressure() > 0 && startCyl.getPressure() < 1.5) {
+				// that's fine enough
+				startCyl.setPressure(0.0);
+			}
+
+			return calcIdeal(startCyl, targetCyl, topUpO2Mix);
+		}
+
+		res.setStartPressure((Math.round((startPressure) * 10) / 10.0));
 		res.setEndPressure(targetPressure);
 		res.setHeAdded(0.0);
 		res.setO2Added(barCascade);
@@ -151,7 +157,7 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public CalcResult calcVanDerWaals(CylinderContents startCyl,
+	public CalcResult calcReal(CylinderContents startCyl,
 			CylinderContents targetCyl, double cylVolume, int tempCelcius,
 			boolean addHeFirst) {
 		// We start with an amount of gas already in the tank so we can factor
@@ -251,8 +257,8 @@ public class GasBlenderServiceImpl extends RemoteServiceServlet implements
 				// approach.
 
 				startCyl.setPressure(startCyl.getPressure() - 1);
-				return calcVanDerWaals(startCyl, targetCyl, cylVolume,
-						tempCelcius, addHeFirst);
+				return calcReal(startCyl, targetCyl, cylVolume, tempCelcius,
+						addHeFirst);
 
 			}
 		}

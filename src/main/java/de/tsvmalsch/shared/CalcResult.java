@@ -27,7 +27,7 @@ public class CalcResult implements Serializable {
 	// each stage of the mix.
 	public double peakHePercent;
 	public double peakO2Percent;
-	public int StartPressure;
+	public double StartPressure;
 
 	public boolean successfull = true;
 	public CalcResult() {
@@ -68,7 +68,7 @@ public class CalcResult implements Serializable {
 		return peakO2Percent;
 	}
 
-	public int getStartPressure() {
+	public double getStartPressure() {
 		return StartPressure;
 	}
 
@@ -104,7 +104,7 @@ public class CalcResult implements Serializable {
 		this.peakO2Percent = peakO2Percent;
 	}
 
-	public void setStartPressure(int startPressure) {
+	public void setStartPressure(double startPressure) {
 		StartPressure = startPressure;
 	}
 

@@ -25,7 +25,7 @@ public class ManualBlenderTest {
 		ct.setfHe(0.18d);
 		ct.setPressure(210.0d);
 
-		CalcResult r = dgc.calcVanDerWaals(cs, ct, 12.0, 1, true);
+		CalcResult r = dgc.calcReal(cs, ct, 12.0, 1, true);
 		System.err.println("Start pressure " + r.StartPressure + " bar\n"
 				+ "Top He " + r.HeAdded + " bar\n" + "Top O2 " + r.O2Added
 				+ " bar\n" + "Top with AIR to " + r.EndPressure + " bar.");
