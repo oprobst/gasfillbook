@@ -19,25 +19,43 @@ import de.tsvmalsch.shared.model.Member;
 
 public class ToolbarComposite extends Composite {
 
+	class AsyncCallbackGetCurrentMember implements AsyncCallback<Member> {
+
+		public void onFailure(Throwable caught) {
+
+			logger.log(Level.SEVERE, "Failure when determining member.", caught);
+
+		}
+
+		public void onSuccess(Member result) {
+			lblCurrentMemberName.setText("Hallo " + result.getFirstName());
+
+			if (result.getIsAdmin()) {
+				tp.add(new AdminComposite(), "Admin");
+			}
+		};
+	}
+
+	private CylinderDataComposite cylinderDataComposite;
+
+	private FillPanelComposite fillPanelComposite;
+
+	private Label lblCurrentAccountBalance = new Label("Kontostand: 13,82 €");
+	private Label lblCurrentMemberName = new Label();
+
+	private Logger logger = Logger.getLogger(ToolbarComposite.class
+			.getCanonicalName());
+
+	private TabLayoutPanel tp;
+
+	private UserDataComposite userDataComposite;
+	private UserFillBookComposite userFillBookComposite;
+
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
 	private final UserServiceAsync userService = GWT.create(UserService.class);
-
-	Logger logger = Logger.getLogger(ToolbarComposite.class.getCanonicalName());
-
-	FillPanelComposite fillPanelComposite;
-
-	UserDataComposite userDataComposite;
-	UserFillBookComposite userFillBookComposite;
-
-	Label lblCurrentMemberName = new Label();
-
-	Label lblCurrentAccountBalance = new Label("Kontostand: 13,82 €");
-
-	TabLayoutPanel tp;
-	CylinderDataComposite cylinderDataComposite;
 
 	public ToolbarComposite() {
 
@@ -47,11 +65,10 @@ public class ToolbarComposite extends Composite {
 
 		tp = new TabLayoutPanel(2.1, Unit.EM);
 		tp.setAnimationDuration(200);
-		 
+
 		tp.setHeight(Constants.GLOBAL_HEIGHT_STRING);
 		tp.setWidth(Constants.GLOBAL_WIDTH_STRING);
-		
-		
+
 		HorizontalPanel hPanel = new HorizontalPanel();
 
 		hPanel.add(lblCurrentMemberName);
@@ -75,22 +92,6 @@ public class ToolbarComposite extends Composite {
 		vPanel.add(tp);
 
 		initWidget(vPanel);
-	}
-
-	class AsyncCallbackGetCurrentMember implements AsyncCallback<Member> {
-
-		public void onFailure(Throwable caught) {
-
-			logger.log(Level.SEVERE, "Failure when determining member.", caught);
-
-		}
-
-		public void onSuccess(Member result) {
-			lblCurrentMemberName.setText("Hallo " + result.getFirstName());
-			if (result.getIsAdmin()) {
-				tp.add(new Label("TODO"), "Admin");
-			}
-		};
 	}
 
 }

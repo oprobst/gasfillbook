@@ -3,23 +3,28 @@
                          "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 	<!-- Servlets -->
-		 
+
 	<servlet>
 		<servlet-name>cylinderServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.CylinderServiceImpl</servlet-class>
 	</servlet>
 
-	 
+
 	<servlet>
 		<servlet-name>userServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.UserServiceImpl</servlet-class>
 	</servlet>
-	
-	  	<servlet>
+
+	<servlet>
 		<servlet-name>calcServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.blend.GasBlenderServiceImpl</servlet-class>
-	</servlet> 
-	 
+	</servlet>
+	
+	<servlet>
+		<servlet-name>configServlet</servlet-name>
+		<servlet-class>de.tsvmalsch.server.ConfigurationServiceImpl</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>cylinderServlet</servlet-name>
 		<url-pattern>/gasfillbook/cylinder</url-pattern>
@@ -27,10 +32,14 @@
 	<servlet-mapping>
 		<servlet-name>userServlet</servlet-name>
 		<url-pattern>/gasfillbook/user</url-pattern>
-	</servlet-mapping> 
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>calcServlet</servlet-name>
 		<url-pattern>/gasfillbook/calc</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>configServlet</servlet-name>
+		<url-pattern>/gasfillbook/config</url-pattern>
 	</servlet-mapping>
 
 

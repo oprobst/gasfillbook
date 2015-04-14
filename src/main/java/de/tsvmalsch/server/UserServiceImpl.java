@@ -89,7 +89,8 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public Collection<Member> getAllMembers() {
-		return allMembers.values();
+		List<Member> out = new ArrayList<Member>(allMembers.values());
+		return out;
 	}
 
 	@Override

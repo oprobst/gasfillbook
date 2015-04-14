@@ -40,9 +40,14 @@ background-color
 
 
 .txt-3digit {
-	width: 30px;
+	width: 36px;
 }
 
+.txt-5digit {
+	width: 45px;
+}
+
+ 
 .txbUserData {
 	width: 130px;
 }
