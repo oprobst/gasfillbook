@@ -31,6 +31,7 @@ public class AdminComposite extends Composite {
 			updateMemberList();
 		}
 	}
+
 	class AsyncCallbackGetCurrentConfig extends
 			DefaultAsyncCallback<Configuration> {
 
@@ -39,8 +40,9 @@ public class AdminComposite extends Composite {
 			updateMemberList();
 		};
 	}
+
 	private Collection<Member> allMembers = null;
-	private  Button btnConfirm = new Button("Ändern");
+	private Button btnConfirm = new Button("Ändern");
 	private Button btnReset = new Button("Reset");
 	private Configuration config = null;
 	private final ConfigurationServiceAsync configService = GWT
@@ -61,9 +63,9 @@ public class AdminComposite extends Composite {
 
 	private DoubleBox txbO2ContentCascade = new DoubleBox();
 
-	private DoubleBox txbPriceBarLHe = new DoubleBox();
+	private TextBox txbPriceBarLHe = new TextBox();
 
-	private DoubleBox txbPriceBarLO2 = new DoubleBox();
+	private TextBox txbPriceBarLO2 = new TextBox();
 
 	private TextBox txbWelcomeText = new TextBox();
 
@@ -101,6 +103,9 @@ public class AdminComposite extends Composite {
 		t.setWidget(4, 1, txbListBlendingInstr);
 		t.setWidget(5, 1, txbListAdmins);
 		t.setWidget(6, 1, txbEmailNotifications);
+		txbO2ContentCascade.setMaxLength(4);
+		txbPriceBarLHe.setMaxLength(7);
+		txbPriceBarLO2.setMaxLength(7);
 
 		HorizontalPanel hpButtons = new HorizontalPanel();
 		hpButtons.add(btnConfirm);
@@ -116,12 +121,14 @@ public class AdminComposite extends Composite {
 	private void updateMemberList() {
 
 		if (config != null && allMembers != null) {
-			
-			txbPriceBarLHe.setValue(config.getPricePerBarLHe());
-			txbPriceBarLO2.setValue(config.getPricePerBarLO2());
+
+			txbPriceBarLHe
+					.setText(Double.toString(config.getPricePerBarLHe()));
+			txbPriceBarLO2
+					.setText(Double.toString(config.getPricePerBarLO2()));
 			txbWelcomeText.setText(config.getWelcomeText());
 			txbO2ContentCascade.setValue(config.getNxCascadeOxygen());
-			
+
 			String admins = MemberToListUtil
 					.memberListToCommaSeparatedString(config
 							.getAdministrators());
@@ -131,7 +138,7 @@ public class AdminComposite extends Composite {
 			String accountant = MemberToListUtil
 					.memberListToCommaSeparatedString(config
 							.getAdministrators());
-			
+
 			txbListBlendingInstr.setText(instructors);
 			txbListAdmins.setText(admins);
 			txbEmailNotifications.setText(accountant);

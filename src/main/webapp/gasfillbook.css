@@ -6,80 +6,6 @@ h1 {
 	text-align: center;
 }
 
-.
-{
-text-align
-
-
-
-
-
-
-:
-
-
-
- 
-
-
-
-left
-
-
-
-
-
-
-;
-font-family
-
-
-
-
-
-
-:
-
-
-
- 
-
-
-
-verdana
-,
-sans-serif
-
-
-
-
-
-
-;
-background-color
-
-
-
-
-
-
-:
-
-
-
- 
-
-
-
-#ddecff
-
-
-
-
-
-
-;
-}
 .gwt-Label {
 	margin: 5px;
 	text-align: left;
@@ -101,7 +27,7 @@ background-color
 }
 
 .blending-summary-hint-dialog {
-	 padding: 50px;
+	padding: 50px;
 }
 
 .security-hint {
