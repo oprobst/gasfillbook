@@ -43,7 +43,7 @@ public class FillPanelComposite extends Composite {
 			case 0:// own cylinder
 				selectOtherMemberComposite.setVisible(false);
 				cylinderSelectComposite.setVisible(true);
-				userService.setMemberToFillFor(-2, null);
+				userService.setMemberToFillFor(-2, null);				
 				return;
 			case 1:// club cylinder
 				cylinderSelectComposite.setVisible(true);

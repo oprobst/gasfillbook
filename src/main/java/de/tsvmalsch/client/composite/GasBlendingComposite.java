@@ -16,6 +16,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.ConfigurationService;
+import de.tsvmalsch.client.ConfigurationServiceAsync;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.GasBlenderService;
 import de.tsvmalsch.client.GasBlenderServiceAsync;
@@ -23,6 +25,7 @@ import de.tsvmalsch.client.listener.CurrentCylinderListener;
 import de.tsvmalsch.shared.CalcResult;
 import de.tsvmalsch.shared.CylinderContents;
 import de.tsvmalsch.shared.model.BlendingType;
+import de.tsvmalsch.shared.model.Configuration;
 import de.tsvmalsch.shared.model.Cylinder;
 
 public class GasBlendingComposite extends Composite implements
@@ -41,10 +44,25 @@ public class GasBlendingComposite extends Composite implements
 		}
 	}
 
+	class ConfigurationServiceCallback extends
+			DefaultAsyncCallback<Configuration> {
+
+		@Override
+		public void onSuccess(Configuration result) {
+			config = result;
+			if (blendingType != BlendingType.PARTIAL_METHOD) {
+				lblBarTargetO2Pressure.setText("bar Nx"
+						+ config.getNxCascadeOxygen());
+			}
+		}
+
+	}
+
 	class GasBlenderCallback extends DefaultAsyncCallback<CalcResult> {
 
 		private String formatDouble(double d) {
-			 return Double.toString(d);// Float.toString(Math.round(d * 10) / 10.0f);
+			return Double.toString(d);// Float.toString(Math.round(d * 10) /
+										// 10.0f);
 		}
 
 		private void generateBlendingHint(CalcResult r) {
@@ -103,6 +121,7 @@ public class GasBlendingComposite extends Composite implements
 			sb.append(" barL).</li></ul></div>");
 
 			lblBlendingHint.setHTML(sb.toString());
+			calcResult = r;
 
 		}
 
@@ -155,6 +174,7 @@ public class GasBlendingComposite extends Composite implements
 
 		public void onSuccess(CalcResult r) {
 
+			calcResult = r;
 			if (r.successfull) {
 				generateBlendingHint(r);
 
@@ -177,7 +197,7 @@ public class GasBlendingComposite extends Composite implements
 									* currentCylinder.getTwinSetSizeInLiter()
 									// TODO Real oxygen content of cascade
 									// instead of .40
-									* 0.0055d * (.241d )) * 100)) / 100f 
+									* 0.0055d * (.241d)) * 100)) / 100f
 							+ " Euro");
 				}
 
@@ -230,11 +250,16 @@ public class GasBlendingComposite extends Composite implements
 	private final GasBlenderServiceAsync gasBlenderService = GWT
 			.create(GasBlenderService.class);
 
+	private final ConfigurationServiceAsync configService = GWT
+			.create(ConfigurationService.class);
+
 	private Cylinder currentCylinder = null;
 
 	private boolean heFirst = true;
 
 	public GasBlendingComposite(int blendingType) {
+		configService
+				.getCurrentConfiguration(new ConfigurationServiceCallback());
 
 		this.blendingType = blendingType;
 		VerticalPanel vp = new VerticalPanel();
@@ -265,7 +290,7 @@ public class GasBlendingComposite extends Composite implements
 		t.setWidget(2, 4, rbtFirstHe);
 		t.setWidget(2, 5, rbtFirstO2);
 
-		t.getFlexCellFormatter().setColSpan(3, 0, 6);
+		t.getFlexCellFormatter().setColSpan(3, 0, 7);
 		t.setWidget(3, 0, lblBlendingHint);
 
 		t.setWidget(4, 0, lblFinalBlending);
@@ -279,11 +304,15 @@ public class GasBlendingComposite extends Composite implements
 		hp.add(lblFillingCost);
 		btnAccount.setText("Füllung abrechnen!");
 		hp.add(btnAccount);
+
 		vp.add(hp);
 		formatWidgets();
 		initWidget(vp);
 
 	}
+
+	private CylinderContents targetMix = null;
+	private CalcResult calcResult = null;
 
 	private void calculateBlending() {
 
@@ -313,7 +342,7 @@ public class GasBlendingComposite extends Composite implements
 		start.setfHe(start.getfHe() / 100);
 		target.setfHe(target.getfHe() / 100);
 		target.setfO2(target.getfO2() / 100);
-
+		this.targetMix = target;
 		double size = currentCylinder.getTwinSetSizeInLiter();
 
 		if (blendingType == BlendingType.NX40_CASCADE) {
@@ -379,6 +408,45 @@ public class GasBlendingComposite extends Composite implements
 		rbtFirstHe.addClickHandler(blurHandler);
 		rbtFirstO2.addClickHandler(blurHandler);
 
+		if (blendingType == BlendingType.NX40_CASCADE) {
+			btnAccount.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent arg0) {
+
+					new ConfirmBlendingDialog().showCascadeConfirmation(
+							currentCylinder, targetMix, calcResult,
+							txbBarReallyFilledO2.getValue(),
+							config.getNxCascadeOxygen(),
+							config.getPricePerBarLO2(), null);
+				}
+			});
+		} else if (blendingType == BlendingType.PARTIAL_METHOD) {
+			btnAccount.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent arg0) {
+					new ConfirmBlendingDialog()
+							.showPartialPressureConfirmation(currentCylinder,
+									targetMix, calcResult,
+									txbBarReallyFilledHe.getValue(),
+									txbBarReallyFilledO2.getValue(),
+									config.getPricePerBarLHe(),
+									config.getPricePerBarLO2(), null);
+				}
+			});
+		} else {
+			btnAccount.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent arg0) {
+					new ConfirmBlendingDialog().showAirConfirmation(
+							currentCylinder, txbRemainingPressure.getValue(),
+							txbTargetPressure.getValue());
+				}
+			});
+		}
+
 		if (blendingType != BlendingType.NX40_CASCADE
 				&& blendingType != BlendingType.PARTIAL_METHOD) {
 			txbRemainingO2.setVisible(false);
@@ -396,6 +464,7 @@ public class GasBlendingComposite extends Composite implements
 			lblMixingOrder.setVisible(false);
 			rbtFirstHe.setVisible(false);
 			rbtFirstO2.setVisible(false);
+
 		}
 		if (blendingType != BlendingType.PARTIAL_METHOD) {
 			txbBarReallyFilledHe.setVisible(false);
@@ -414,4 +483,6 @@ public class GasBlendingComposite extends Composite implements
 
 		}
 	}
+
+	private Configuration config = new Configuration();
 }

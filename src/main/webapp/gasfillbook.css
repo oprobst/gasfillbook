@@ -9,35 +9,82 @@ h1 {
 .
 {
 text-align
-:
- 
-left
-;
 
-	
-font-family
+
+
+
+
+
 :
+
+
+
  
+
+
+
+left
+
+
+
+
+
+
+;
+font-family
+
+
+
+
+
+
+:
+
+
+
+ 
+
+
+
 verdana
 ,
 sans-serif
-;
 
-	
+
+
+
+
+
+;
 background-color
+
+
+
+
+
+
 :
+
+
+
  
+
+
+
 #ddecff
+
+
+
+
+
+
 ;
-
-
 }
 .gwt-Label {
 	margin: 5px;
 	text-align: left;
 	font-family: verdana, sans-serif;
 }
-
 
 .txt-3digit {
 	width: 36px;
@@ -47,17 +94,35 @@ background-color
 	width: 45px;
 }
 
- 
+.blending-summary-hint {
+	font-size: 1.2em;
+	color: #000000;
+	padding: 5px;
+}
+
+.blending-summary-hint-dialog {
+	 padding: 50px;
+}
+
+.security-hint {
+	border: 2px;
+	border-color: #AA0000;
+	border-style: solid;
+	font-size: 1.1em;
+	color: #000000;
+	padding: 5px;
+}
+
 .txbUserData {
 	width: 130px;
 }
 
 .blending-hint {
 	border: 2px;
-	border-color:#0000bf;
+	border-color: #0000bf;
 	border-style: solid;
 	font-size: 1.2em;
-	color: #110000;  
+	color: #110000;
 	padding: 5px;
 }
 
