@@ -50,8 +50,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 		hp.add(cancel);
 
 		setWidget(vp);
-		setModal(true);
-		setStyleName("blending-summary-hint-dialog" );
+		setModal(true); 
 	}
 
 	protected void bookBlending() {
