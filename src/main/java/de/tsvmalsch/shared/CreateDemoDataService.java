@@ -239,8 +239,7 @@ public class CreateDemoDataService {
 			fii.setDateOfFilling(new Date(System.currentTimeMillis() - j * 1000
 					* 60 * 60 * 24 * 2));
 			fii.setId((long) 0 + j);
-			HashSet<Cylinder> tank = new HashSet<Cylinder>();
-			tank.add(m.getCylinders().iterator().next());
+			Cylinder tank = m.getCylinders().iterator().next();
 			fii.setFilledCylinder(tank);
 			fii.setPricePerLiterOxygen(0.0055f);
 
@@ -256,8 +255,7 @@ public class CreateDemoDataService {
 			fii.setBlendingMember(m);
 			fii.setDateOfFilling(new Date(System.currentTimeMillis() - j * 1000
 					* 60 * 60 * 24 * 2));
-			HashSet<Cylinder> tank = new HashSet<Cylinder>();
-			tank.add(m.getCylinders().iterator().next());
+			Cylinder tank = m.getCylinders().iterator().next();
 			fii.setFilledCylinder(tank);
 			fii.setPricePerLiterOxygen(0.0055d);
 			fii.setPricePerLiterHelium(0.0175d);
@@ -277,8 +275,7 @@ public class CreateDemoDataService {
 				* 60 * 60 * 24 * 2));
 		fii.setInvoicingDate(new Date(System.currentTimeMillis() - 8 * 1000
 				* 60 * 60 * 24 * 2));
-		HashSet<Cylinder> tank = new HashSet<Cylinder>();
-		tank.add(m.getCylinders().iterator().next());
+		Cylinder tank = m.getCylinders().iterator().next();
 		fii.setFilledCylinder(tank);
 		mlist.add(fii);
 
@@ -297,7 +294,7 @@ public class CreateDemoDataService {
 				* 60 * 60 * 24 * 2));
 		fii.setPaymentReceiptDate(new Date(System.currentTimeMillis() - 0
 				* 1000 * 60 * 60 * 24 * 2));
-		tank.add(m.getCylinders().iterator().next());
+		tank = m.getCylinders().iterator().next();
 		fii.setFilledCylinder(tank);
 		mlist.add(fii);
 

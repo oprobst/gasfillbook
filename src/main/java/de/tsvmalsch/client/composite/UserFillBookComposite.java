@@ -22,15 +22,36 @@ import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
 import de.tsvmalsch.shared.CreateDemoDataService;
-import de.tsvmalsch.shared.model.Cylinder;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
 
 public class UserFillBookComposite extends Composite {
 
-	private Label lblCurrentDebt = new Label("Akt. Kontostand: 32,12 Euro");
+	private class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
+
+		public void onSuccess(Member member) {
+
+			fiiList.clear();
+			fiiList.addAll(CreateDemoDataService.createDummyInvoiceItem(member));
+
+			table.setRowData(fiiList);
+			table.setRowCount(fiiList.size(), true);
+
+			table.redraw();
+
+		};
+	}
+
+	private static final List<FillingInvoiceItem> fiiList = new ArrayList<FillingInvoiceItem>();
+
 	private Label lblAccountCondition = new Label(
 			"Nächster Bankeinzug bei 100 Euro oder im Dez 2015");
+
+	private Label lblCurrentDebt = new Label("Akt. Kontostand: 32,12 Euro");
+
+	private CellTable<FillingInvoiceItem> table;
+
+	private final UserServiceAsync userService = GWT.create(UserService.class);
 
 	public UserFillBookComposite() {
 
@@ -48,8 +69,6 @@ public class UserFillBookComposite extends Composite {
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
 
 	}
-
-	CellTable<FillingInvoiceItem> table;
 
 	private Widget initTable() {
 
@@ -123,14 +142,8 @@ public class UserFillBookComposite extends Composite {
 		TextColumn<FillingInvoiceItem> CylinderColumn = new TextColumn<FillingInvoiceItem>() {
 			@Override
 			public String getValue(FillingInvoiceItem object) {
-				if (object.getFilledCylinder() != null
-						&& object.getFilledCylinder().iterator().next() != null) {
-					Cylinder cyl = object.getFilledCylinder().iterator().next();
-					if (cyl.getName() != null) {
-						return cyl.getName();
-					} else {
-						return cyl.getSerialNumber();
-					}
+				if (object.getFilledCylinder() != null) {
+					return object.getFilledCylinder().getUiIdentifier();
 				} else {
 					return "";
 				}
@@ -181,24 +194,5 @@ public class UserFillBookComposite extends Composite {
 
 		table.setRowData(fiiList);
 		return table;
-	}
-
-	private final UserServiceAsync userService = GWT.create(UserService.class);
-
-	private static final List<FillingInvoiceItem> fiiList = new ArrayList<FillingInvoiceItem>();
-
-	class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
-
-		public void onSuccess(Member member) {
-
-			fiiList.clear();
-			fiiList.addAll(CreateDemoDataService.createDummyInvoiceItem(member));
-
-			table.setRowData(fiiList);
-			table.setRowCount(fiiList.size(), true);
-
-			table.redraw();
-
-		};
 	}
 }

@@ -4,14 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.Max;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -33,20 +30,6 @@ public class FillingInvoiceItem implements Serializable {
 	private static final long serialVersionUID = -8540656564045693342L;
 
 	/**
-	 * If a user do a mistake when booking a gas blending execution, he can
-	 * define another FillingInvoiceItem which is an adjustment of the former
-	 * item.
-	 * 
-	 */
-	private FillingInvoiceItem adjustmentEntryFor;
-
-	/**
-	 * Which kind of blending was executed.
-	 */
-	@NotNull
-	private int blendingType;
-
-	/**
 	 * The blender who made the mix.
 	 */
 	@ManyToOne
@@ -54,19 +37,10 @@ public class FillingInvoiceItem implements Serializable {
 	private Member blendingMember;
 
 	/**
-	 * The price per liter He when executing the gas blending
+	 * Which kind of blending was executed.
 	 */
-	private double pricePerLiterHelium;
-
-	/**
-	 * The price per liter O2 when executing the gas blending
-	 */
-	private double pricePerLiterOxygen;
-
-	/**
-	 * Pressure in cylinder when starting gas blending
-	 */
-	private int startPressure;
+	@NotNull
+	private int blendingType;
 
 	/**
 	 * The date when the cylinder was filled.
@@ -77,9 +51,8 @@ public class FillingInvoiceItem implements Serializable {
 	/**
 	 * The cylinder filled.
 	 */
-	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@Max(2)
-	private Set<Cylinder> filledCylinder;
+	@OneToOne
+	private Cylinder filledCylinder;
 
 	/**
 	 * DB generated UUID
@@ -100,18 +73,11 @@ public class FillingInvoiceItem implements Serializable {
 	 */
 	private int literAirFilled = 0;
 
-	public int getLiterAirFilled() {
-		return literAirFilled;
-	}
-
-	public void setLiterAirFilled(int literAirFilled) {
-		this.literAirFilled = literAirFilled;
-	}
-
 	/**
 	 * The amount of liter filled.
 	 */
 	private int literHeliumFilled = 0;
+
 	/**
 	 * The amount of liter Oxygen filled.
 	 */
@@ -122,31 +88,49 @@ public class FillingInvoiceItem implements Serializable {
 	 */
 	private Date paymentReceiptDate;
 
-	public int getStartPressure() {
-		return startPressure;
-	}
+	/**
+	 * The price per liter He when executing the gas blending
+	 */
+	private double pricePerLiterHelium;
 
-	public void setStartPressure(int startPressure) {
-		this.startPressure = startPressure;
-	}
+	/**
+	 * The price per liter O2 when executing the gas blending
+	 */
+	private double pricePerLiterOxygen;
 
-	public FillingInvoiceItem getAdjustmentEntryFor() {
-		return adjustmentEntryFor;
-	}
+	/**
+	 * Pressure in cylinder when starting gas blending
+	 */
+	private int startPressure;
 
-	public int getBlendingType() {
-		return blendingType;
+	/**
+	 * If a user do a mistake when booking a gas blending execution, he can
+	 * cancel the invoice item. Cancelled items are not billed.
+	 * 
+	 */
+	private boolean valid = true;
+
+	public double calculatePrice() {
+		double price = getPricePerLiterHelium() * getLiterHeliumFilled()
+				+ getPricePerLiterOxygen() * getLiterOxygenFilled();
+
+		double rounded = (double) (int) ((price + 0.005) * 100) / 100;
+		return rounded;
 	}
 
 	public Member getBlendingMember() {
 		return blendingMember;
 	}
 
+	public int getBlendingType() {
+		return blendingType;
+	}
+
 	public Date getDateOfFilling() {
 		return dateOfFilling;
 	}
 
-	public Set<Cylinder> getFilledCylinder() {
+	public Cylinder getFilledCylinder() {
 		return filledCylinder;
 	}
 
@@ -156,6 +140,10 @@ public class FillingInvoiceItem implements Serializable {
 
 	public Date getInvoicingDate() {
 		return invoicingDate;
+	}
+
+	public int getLiterAirFilled() {
+		return literAirFilled;
 	}
 
 	public int getLiterHeliumFilled() {
@@ -178,23 +166,27 @@ public class FillingInvoiceItem implements Serializable {
 		return pricePerLiterOxygen;
 	}
 
-	public void setAdjustmentEntryFor(FillingInvoiceItem adjustmentEntryOf) {
-		this.adjustmentEntryFor = adjustmentEntryOf;
+	public int getStartPressure() {
+		return startPressure;
 	}
 
-	public void setBlendingType(int air) {
-		this.blendingType = air;
+	public boolean isValid() {
+		return valid;
 	}
 
 	public void setBlendingMember(Member member) {
 		this.blendingMember = member;
 	}
 
+	public void setBlendingType(int air) {
+		this.blendingType = air;
+	}
+
 	public void setDateOfFilling(Date dateOfFilling) {
 		this.dateOfFilling = dateOfFilling;
 	}
 
-	public void setFilledCylinder(Set<Cylinder> filledCylinder) {
+	public void setFilledCylinder(Cylinder filledCylinder) {
 		this.filledCylinder = filledCylinder;
 	}
 
@@ -204,6 +196,10 @@ public class FillingInvoiceItem implements Serializable {
 
 	public void setInvoicingDate(Date invoicingDate) {
 		this.invoicingDate = invoicingDate;
+	}
+
+	public void setLiterAirFilled(int literAirFilled) {
+		this.literAirFilled = literAirFilled;
 	}
 
 	public void setLiterHeliumFilled(int literHeliumFilled) {
@@ -226,11 +222,11 @@ public class FillingInvoiceItem implements Serializable {
 		this.pricePerLiterOxygen = pricePerLiterOxygen;
 	}
 
-	public double calculatePrice() {
-		double price = getPricePerLiterHelium() * getLiterHeliumFilled()
-				+ getPricePerLiterOxygen() * getLiterOxygenFilled();
+	public void setStartPressure(int startPressure) {
+		this.startPressure = startPressure;
+	}
 
-		double rounded = (double) (int) ((price + 0.005) * 100) / 100;
-		return rounded;
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 }

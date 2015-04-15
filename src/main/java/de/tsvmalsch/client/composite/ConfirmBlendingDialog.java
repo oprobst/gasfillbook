@@ -1,5 +1,8 @@
 package de.tsvmalsch.client.composite;
 
+import java.util.Date;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -8,14 +11,24 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.AccountingService;
+import de.tsvmalsch.client.AccountingServiceAsync;
+import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.shared.CalcResult;
 import de.tsvmalsch.shared.CylinderContents;
+import de.tsvmalsch.shared.model.BlendingType;
 import de.tsvmalsch.shared.model.Cylinder;
+import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
 
 public class ConfirmBlendingDialog extends DialogBox {
 
-	HTML userMessage = new HTML();
+	private HTML userMessage = new HTML();
+
+	private final AccountingServiceAsync accountingService = GWT
+			.create(AccountingService.class);
+
+	private Member recipient;
 
 	public ConfirmBlendingDialog() {
 
@@ -50,11 +63,22 @@ public class ConfirmBlendingDialog extends DialogBox {
 		hp.add(cancel);
 
 		setWidget(vp);
-		setModal(true); 
+		setModal(true);
 	}
 
+	private FillingInvoiceItem fii = new FillingInvoiceItem();
+
 	protected void bookBlending() {
-		// TODO Auto-generated method stub
+		accountingService.saveFillingInvoiceItem(this.recipient, fii,
+				new BookingCallback());
+	}
+
+	private class BookingCallback extends DefaultAsyncCallback<Void> {
+
+		@Override
+		public void onSuccess(Void result) {
+			hide();
+		}
 
 	}
 
@@ -72,8 +96,8 @@ public class ConfirmBlendingDialog extends DialogBox {
 			CylinderContents targetMix, CalcResult calcResult,
 			double heContent, double o2Content, double hePrice, double o2Price,
 			Member payedBy) {
-		generateText(currentCylinder, targetMix, calcResult, heContent, o2Content,
-				false, 0d, hePrice, o2Price, payedBy);
+		generateText(currentCylinder, targetMix, calcResult, heContent,
+				o2Content, false, 0d, hePrice, o2Price, payedBy);
 		show();
 	}
 
@@ -108,7 +132,21 @@ public class ConfirmBlendingDialog extends DialogBox {
 			o2FinalPrice = Math.round(o2Content
 					* currentCylinder.getTwinSetSizeInLiter() * o2Price * 100) / 100.0d;
 		}
-		double completePrice = heFinalPrice + o2FinalPrice;
+		double cylSize = currentCylinder.getTwinSetSizeInLiter();
+		fii.setBlendingMember(null);
+		if (o2IsNxFromCascade) {
+			fii.setBlendingType(BlendingType.NX40_CASCADE);
+		} else {
+			fii.setBlendingType(BlendingType.PARTIAL_METHOD);
+		}
+		fii.setDateOfFilling(new Date());
+		fii.setLiterAirFilled((int) calcResult.getAirAdded());
+		fii.setLiterHeliumFilled((int) (heContent * cylSize));
+		fii.setLiterOxygenFilled((int) (o2Content * cylSize));
+		fii.setPricePerLiterHelium(hePrice);
+		fii.setPricePerLiterOxygen(o2FinalPrice / (o2Content * cylSize));//urgs...
+		fii.setFilledCylinder(currentCylinder);
+		fii.setValid(true);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div  class='blending-summary-hint'><p>Du hast in Flasche <i>");
@@ -131,7 +169,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 			sb.append(" bar Helium für ");
 			sb.append(heFinalPrice);
 			sb.append(" € (=");
-			sb.append(heContent * currentCylinder.getTwinSetSizeInLiter());
+			sb.append(fii.getLiterHeliumFilled());
 			sb.append(" barL zu ");
 			sb.append(hePrice);
 			sb.append(" €)");
@@ -144,7 +182,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 			sb.append(" für ");
 			sb.append(o2FinalPrice);
 			sb.append(" € gefüllt (= ");
-			sb.append(o2Content * currentCylinder.getTwinSetSizeInLiter());
+			sb.append(fii.getLiterOxygenFilled());
 			sb.append(" barL zu ");
 			sb.append(getNxCascadePrice(o2Price, o2PartialPressureCascade));
 			sb.append(" €). ");
@@ -154,14 +192,14 @@ public class ConfirmBlendingDialog extends DialogBox {
 			sb.append(" bar Sauerstoff für ");
 			sb.append(o2FinalPrice);
 			sb.append(" € (=");
-			sb.append(o2Content * currentCylinder.getTwinSetSizeInLiter());
+			sb.append(fii.getLiterOxygenFilled());
 			sb.append(" barL zu ");
 			sb.append(o2Price);
 			sb.append(" €) gefüllt. </li>");
 
 		}
 		sb.append("</ul>Mit Betätigen des Ok Buttons wird der Betrag von <b> ");
-		sb.append(completePrice);
+		sb.append(fii.calculatePrice());
 		sb.append(" € </b>");
 		if (payedBy != null) {
 			sb.append("dem Nutzer ");
@@ -178,17 +216,33 @@ public class ConfirmBlendingDialog extends DialogBox {
 		sb.append(" <i>muss</i> mit einem entsprechenden Füll-Label versehen werden.</li>");
 		sb.append("<li>Die Richtigkeit des Gemischs <i>muss</i> vor <br/> dem Tauchen durch den Taucher selbst <i>nochmals</i> kontrolliert werden.</li></ul></div>");
 		userMessage.setHTML(sb.toString());
+
+		this.recipient = payedBy;
+
 	}
 
 	public void showAirConfirmation(Cylinder currentCylinder, double from,
 			double to) {
+
+		int barL = (int) ((to - from) * currentCylinder.getTwinSetSizeInLiter());
+		fii.setBlendingMember(null);
+		fii.setBlendingType(BlendingType.AIR);
+		fii.setDateOfFilling(new Date());
+		fii.setLiterAirFilled(barL);
+		fii.setLiterHeliumFilled(0);
+		fii.setLiterOxygenFilled(0);
+		fii.setPricePerLiterHelium(0);
+		fii.setPricePerLiterOxygen(0);
+		fii.setValid(true);
+		fii.setFilledCylinder(currentCylinder);
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("<p>Du hast in Flasche  <i>");
 		sb.append(currentCylinder.getUiIdentifier());
 		sb.append("</i> ");
 		sb.append(to - from);
 		sb.append(" bar (=");
-		sb.append((to - from) * currentCylinder.getTwinSetSizeInLiter());
+		sb.append(barL);
 		sb.append(" barL) Pressluft gefüllt.<br/>");
 
 		sb.append("Bei Betätigen des OK Buttons wird die Füllung registriert. <br/><b>Gut Luft!</b></p>");
@@ -196,4 +250,5 @@ public class ConfirmBlendingDialog extends DialogBox {
 		show();
 
 	}
+
 }

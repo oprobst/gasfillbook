@@ -177,8 +177,8 @@ public class InitDBWithDemoData {
 				fii.setBlendingMember(m);
 				fii.setDateOfFilling(new Date(System.currentTimeMillis() - j
 						* 1000 * 60 * 60 * 24 * 2));
-				HashSet<Cylinder> tank = new HashSet<Cylinder>();
-				tank.add(cy);
+				Cylinder tank = m.getCylinders().iterator().next();
+				 
 				fii.setFilledCylinder(tank);
 				session.save(fii);
 			}
