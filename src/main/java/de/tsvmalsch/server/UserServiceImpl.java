@@ -30,16 +30,6 @@ public class UserServiceImpl extends RemoteServiceServlet implements
 
 	public UserServiceImpl() throws Exception {
 
-		Collection<Member> moreDummys = CreateDemoDataService
-				.createDummyMembers();
-		for (Member dmem : moreDummys) {
-			allMembers
-					.put(dmem.getFirstName() + " " + dmem.getLastName(), dmem);
-		}
-
-		if (true)
-			return;
-
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		Query query = session
