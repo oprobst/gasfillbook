@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
 @Embeddable
@@ -35,7 +33,6 @@ public class UserRights implements Serializable {
 	}
 
 	@NotNull
-	@Enumerated(EnumType.STRING)
 	private int blendingAuthorization = BlendingType.AIR;
 
 	private boolean briefingRequired() {

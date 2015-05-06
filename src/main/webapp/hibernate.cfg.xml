@@ -4,8 +4,8 @@
 <hibernate-configuration>
 	<session-factory>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.password">efkbv9K@#EraAE1;om.>io</property>
-		<property name="hibernate.connection.url">jdbc:mysql://blenderlog.cfjakppy0qay.eu-west-1.rds.amazonaws.com/blenderlog</property>
+		<property name="hibernate.connection.password">arst1234%</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost/blenderlog</property>
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.default_schema">blenderlog</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
