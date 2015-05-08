@@ -1,6 +1,7 @@
 package de.tsvmalsch.client.composite;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -18,40 +19,64 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import de.tsvmalsch.client.AccountingService;
+import de.tsvmalsch.client.AccountingServiceAsync;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
-import de.tsvmalsch.shared.CreateDemoDataService;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
 
 public class UserFillBookComposite extends Composite {
 
-	private class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
+	private class AsyncCallbackGetCurrentMember extends
+			DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member member) {
 
 			fiiList.clear();
-			fiiList.addAll(CreateDemoDataService.createDummyInvoiceItem(member));
-
-			table.setRowData(fiiList);
-			table.setRowCount(fiiList.size(), true);
-
-			table.redraw();
+			accountingService.getAllInvoiceItemsForMember(member,
+					new AsyncCallbackAllFillingInvoiceItems());
 
 		};
 	}
+
+	private class AsyncCallbackAllFillingInvoiceItems extends
+			DefaultAsyncCallback<Collection<FillingInvoiceItem>> {
+
+		public void onSuccess(Collection<FillingInvoiceItem> fiis) {
+			if (fiis != null) {
+				fiiList.addAll(fiis);
+
+				table.setRowData(fiiList);
+				table.setRowCount(fiiList.size(), true);
+
+				table.redraw();
+				openBill = 0.0f;
+				for (FillingInvoiceItem fii : fiis) {
+					if (fii.isValid() && fii.getInvoicingDate() == null) {
+						openBill += fii.calculatePrice();
+					}
+				}
+			}
+		}
+	}
+
+	private float openBill = 0.0f;
 
 	private static final List<FillingInvoiceItem> fiiList = new ArrayList<FillingInvoiceItem>();
 
 	private Label lblAccountCondition = new Label(
 			"Nächster Bankeinzug bei 100 Euro oder im Dez 2015");
 
-	private Label lblCurrentDebt = new Label("Akt. Kontostand: 32,12 Euro");
+	private Label lblCurrentDebt = new Label("Aktuell ausstehend: " + openBill
+			+ " Euro");
 
 	private CellTable<FillingInvoiceItem> table;
 
 	private final UserServiceAsync userService = GWT.create(UserService.class);
+	private final AccountingServiceAsync accountingService = GWT
+			.create(AccountingService.class);
 
 	public UserFillBookComposite() {
 

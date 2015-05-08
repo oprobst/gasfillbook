@@ -4,19 +4,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import org.apache.commons.logging.Log;
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.tsvmalsch.client.AccountingService;
-import de.tsvmalsch.shared.CreateDemoDataService;
-import de.tsvmalsch.shared.model.Cylinder;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
 
@@ -45,8 +46,32 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public Collection<FillingInvoiceItem> getAllInvoiceItemsForMember(Member m) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			session = HibernateUtil.getSessionFactory().getCurrentSession();
+			session.beginTransaction();
+			String hql = "from FillingInvoiceItem where accountedMember = :memNo";
+			Query query = session.createQuery(hql);
+			query.setInteger("memNo", m.getMemberNumber());
+
+			List<FillingInvoiceItem> fiis = new ArrayList<FillingInvoiceItem>(
+					query.list());
+
+			session.getTransaction().commit();
+			Collection<FillingInvoiceItem> serializableFii = new ArrayList<FillingInvoiceItem>(
+					fiis.size());
+			Mapper mapper = new DozerBeanMapper();
+			for (FillingInvoiceItem fii : fiis) {
+				FillingInvoiceItem serialFii = mapper.map(fii,
+						FillingInvoiceItem.class);
+				serializableFii.add(serialFii);
+			}
+
+			return serializableFii;
+		} catch (Exception e) {
+			log.error("Could not load Invoice Items for user " + m, e);
+
+			throw e;
+		}
 	}
 
 	@Override
