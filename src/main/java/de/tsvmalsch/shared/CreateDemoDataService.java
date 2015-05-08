@@ -235,6 +235,7 @@ public class CreateDemoDataService {
 			FillingInvoiceItem fii = new FillingInvoiceItem();
 			fii.setBlendingType(BlendingType.AIR);
 			fii.setBlendingMember(m);
+			fii.setAccountedMember(m);
 			fii.setLiterAirFilled(1000 + j * 100);
 			fii.setDateOfFilling(new Date(System.currentTimeMillis() - j * 1000
 					* 60 * 60 * 24 * 2));
@@ -253,6 +254,7 @@ public class CreateDemoDataService {
 			fii.setLiterAirFilled(800 + j * 112);
 			fii.setId((long) 12 + j);
 			fii.setBlendingMember(m);
+			fii.setAccountedMember(m);
 			fii.setDateOfFilling(new Date(System.currentTimeMillis() - j * 1000
 					* 60 * 60 * 24 * 2));
 			Cylinder tank = m.getCylinders().iterator().next();
@@ -271,6 +273,7 @@ public class CreateDemoDataService {
 		fii.setLiterHeliumFilled(1292);
 		fii.setId(815l);
 		fii.setBlendingMember(m);
+		fii.setAccountedMember(m);
 		fii.setDateOfFilling(new Date(System.currentTimeMillis() - 12 * 1000
 				* 60 * 60 * 24 * 2));
 		fii.setInvoicingDate(new Date(System.currentTimeMillis() - 8 * 1000

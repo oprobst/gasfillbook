@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +22,11 @@ public class CylinderServiceImpl extends RemoteServiceServlet implements
 		CylinderService {
 
 	Logger log = LoggerFactory.getLogger(CylinderServiceImpl.class);
+	
+	private final Session session;
 
 	public CylinderServiceImpl() throws Exception {
-		// A SessionFactory is set up once for an application
+		session = HibernateUtil.getSessionFactory().getCurrentSession();
 
 	}
 
@@ -89,10 +92,10 @@ public class CylinderServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public Cylinder getSelectedCylinder() {
 		HttpServletRequest request = this.getThreadLocalRequest();
-	    HttpSession session = request.getSession(false);
+		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("currentCylinder") == null)
 			return null;
-		
+
 		Cylinder m = (Cylinder) session.getAttribute("currentCylinder");
 		return m;
 	}

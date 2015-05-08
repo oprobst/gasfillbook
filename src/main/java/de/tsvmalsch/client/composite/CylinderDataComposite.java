@@ -35,9 +35,7 @@ import de.tsvmalsch.shared.model.Member;
 
 public class CylinderDataComposite extends Composite {
 
-	private final CylinderServiceAsync cylinderService = GWT
-			.create(CylinderService.class);
-
+	
 	public CylinderDataComposite() {
 
 		VerticalPanel vp = new VerticalPanel();

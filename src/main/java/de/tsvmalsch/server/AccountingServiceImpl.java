@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,8 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.tsvmalsch.client.AccountingService;
+import de.tsvmalsch.shared.CreateDemoDataService;
+import de.tsvmalsch.shared.model.Cylinder;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
 
@@ -22,15 +25,21 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 
 	Logger log = LoggerFactory.getLogger(AccountingServiceImpl.class);
 
+	private final Session session;
+
 	public AccountingServiceImpl() throws Exception {
+		session = HibernateUtil.getSessionFactory().getCurrentSession();
 
 	}
 
 	@Override
-	public void cancelFillingInvoiceItem(Member member, FillingInvoiceItem fii) {
+	public void cancelFillingInvoiceItem(FillingInvoiceItem fii) {
 		fii.setValid(false);
-		writeToFile(member, fii);
-		// TODO Persist!
+		writeToFile(fii);
+
+		session.beginTransaction();
+		session.update(fii);
+		session.getTransaction().commit();
 	}
 
 	@Override
@@ -46,12 +55,13 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void saveFillingInvoiceItem(Member recipient, FillingInvoiceItem fii) {
-		// just to ensure:
-		writeToFile(recipient, fii);
+	public void saveFillingInvoiceItem(FillingInvoiceItem fii) {
 
-		// saveToDB
-		// TODO
+		writeToFile(fii);
+
+		session.beginTransaction();
+		session.save(fii);
+		session.getTransaction().commit();
 	}
 
 	private void storeFile(Member recipient, String entry) {
@@ -79,7 +89,9 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
-	private void writeToFile(Member recipient, FillingInvoiceItem fii) {
+	private void writeToFile(FillingInvoiceItem fii) {
+
+		Member recipient = fii.getAccountedMember();
 		StringBuilder sb = new StringBuilder();
 		sb.append(fii.getId());
 		sb.append(",");

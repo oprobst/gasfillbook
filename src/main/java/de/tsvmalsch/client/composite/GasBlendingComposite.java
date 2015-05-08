@@ -21,15 +21,17 @@ import de.tsvmalsch.client.ConfigurationServiceAsync;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.GasBlenderService;
 import de.tsvmalsch.client.GasBlenderServiceAsync;
+import de.tsvmalsch.client.listener.CurrentAccountingMemberListener;
 import de.tsvmalsch.client.listener.CurrentCylinderListener;
 import de.tsvmalsch.shared.CalcResult;
 import de.tsvmalsch.shared.CylinderContents;
 import de.tsvmalsch.shared.model.BlendingType;
 import de.tsvmalsch.shared.model.Configuration;
 import de.tsvmalsch.shared.model.Cylinder;
+import de.tsvmalsch.shared.model.Member;
 
 public class GasBlendingComposite extends Composite implements
-		CurrentCylinderListener {
+		CurrentCylinderListener, CurrentAccountingMemberListener {
 
 	class CalculateBlendingHandler implements ClickHandler, KeyUpHandler {
 
@@ -408,6 +410,9 @@ public class GasBlendingComposite extends Composite implements
 		rbtFirstHe.addClickHandler(blurHandler);
 		rbtFirstO2.addClickHandler(blurHandler);
 
+		if (accounted == null) {
+			accounted = currentCylinder.getOwner();
+		}
 		if (blendingType == BlendingType.NX40_CASCADE) {
 			btnAccount.addClickHandler(new ClickHandler() {
 
@@ -418,7 +423,7 @@ public class GasBlendingComposite extends Composite implements
 							currentCylinder, targetMix, calcResult,
 							txbBarReallyFilledO2.getValue(),
 							config.getNxCascadeOxygen(),
-							config.getPricePerBarLO2(), null);
+							config.getPricePerBarLO2(), accounted);
 				}
 			});
 		} else if (blendingType == BlendingType.PARTIAL_METHOD) {
@@ -432,7 +437,7 @@ public class GasBlendingComposite extends Composite implements
 									txbBarReallyFilledHe.getValue(),
 									txbBarReallyFilledO2.getValue(),
 									config.getPricePerBarLHe(),
-									config.getPricePerBarLO2(), null);
+									config.getPricePerBarLO2(), accounted);
 				}
 			});
 		} else {
@@ -485,4 +490,11 @@ public class GasBlendingComposite extends Composite implements
 	}
 
 	private Configuration config = new Configuration();
+
+	private Member accounted = null;
+
+	@Override
+	public void accountedMember(Member theOneWhoPays) {
+		accounted = theOneWhoPays;
+	}
 }

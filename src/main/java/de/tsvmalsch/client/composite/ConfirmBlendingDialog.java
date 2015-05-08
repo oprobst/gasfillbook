@@ -69,8 +69,8 @@ public class ConfirmBlendingDialog extends DialogBox {
 	private FillingInvoiceItem fii = new FillingInvoiceItem();
 
 	protected void bookBlending() {
-		accountingService.saveFillingInvoiceItem(this.recipient, fii,
-				new BookingCallback());
+		fii.setAccountedMember(recipient);
+		accountingService.saveFillingInvoiceItem(fii, new BookingCallback());
 	}
 
 	private class BookingCallback extends DefaultAsyncCallback<Void> {
@@ -144,7 +144,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 		fii.setLiterHeliumFilled((int) (heContent * cylSize));
 		fii.setLiterOxygenFilled((int) (o2Content * cylSize));
 		fii.setPricePerLiterHelium(hePrice);
-		fii.setPricePerLiterOxygen(o2FinalPrice / (o2Content * cylSize));//urgs...
+		fii.setPricePerLiterOxygen(o2FinalPrice / (o2Content * cylSize));// urgs...
 		fii.setFilledCylinder(currentCylinder);
 		fii.setValid(true);
 

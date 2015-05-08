@@ -15,8 +15,8 @@ public interface AccountingService extends RemoteService {
 
 	Collection<FillingInvoiceItem> getOpenInvoiceItemsForMember(Member m);
 
-	void saveFillingInvoiceItem(Member recipient, FillingInvoiceItem fii);
- 
+	void saveFillingInvoiceItem(FillingInvoiceItem fii);
 
-	void cancelFillingInvoiceItem(Member member, FillingInvoiceItem fii);
+	void cancelFillingInvoiceItem(FillingInvoiceItem fii);
+
 }

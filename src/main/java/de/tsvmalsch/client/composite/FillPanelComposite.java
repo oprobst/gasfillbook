@@ -15,6 +15,7 @@ import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
+import de.tsvmalsch.client.listener.CurrentAccountingMemberListener;
 import de.tsvmalsch.shared.model.BlendingType;
 import de.tsvmalsch.shared.model.Member;
 import de.tsvmalsch.shared.model.UserRights;
@@ -43,7 +44,7 @@ public class FillPanelComposite extends Composite {
 			case 0:// own cylinder
 				selectOtherMemberComposite.setVisible(false);
 				cylinderSelectComposite.setVisible(true);
-				userService.setMemberToFillFor(-2, null);				
+				userService.setMemberToFillFor(-2, null);
 				return;
 			case 1:// club cylinder
 				cylinderSelectComposite.setVisible(true);
@@ -94,8 +95,6 @@ public class FillPanelComposite extends Composite {
 
 		selectOtherMemberComposite.setVisible(false);
 		cylinderSelectComposite.setVisible(true);
-		userService.setMemberToFillFor(-2,
-				new AsyncCallbackSetMemberToFillFor());
 
 		initWidget(vp);
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
@@ -104,22 +103,16 @@ public class FillPanelComposite extends Composite {
 
 	private TabLayoutPanel tp;
 
-	CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
-	SelectOtherMemberComposite selectOtherMemberComposite = new SelectOtherMemberComposite(
-			cylinderSelectComposite);
-
-	class AsyncCallbackSetMemberToFillFor extends DefaultAsyncCallback<Member> {
-
-		@Override
-		public void onSuccess(Member result) {
-
-		}
-
-	}
+	private CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
+	private SelectOtherMemberComposite selectOtherMemberComposite = null;
 
 	class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member result) {
+
+			selectOtherMemberComposite = new SelectOtherMemberComposite(
+					cylinderSelectComposite, result);
+
 			UserRights userRights = result.getRights();
 
 			if (userRights.isAllowedToFillAir()) {
@@ -127,17 +120,20 @@ public class FillPanelComposite extends Composite {
 						BlendingType.AIR);
 				tp.add(gbc, "Luft");
 				cylinderSelectComposite.addCylinderSelectedListener(gbc);
+				selectOtherMemberComposite.addAccountedMemberListener(gbc);
 			}
 			if (userRights.isAllowedToFillNx40()) {
 				GasBlendingComposite gbc = new GasBlendingComposite(
 						BlendingType.NX40_CASCADE);
 				tp.add(gbc, "Nx40 Kaskade");
 				cylinderSelectComposite.addCylinderSelectedListener(gbc);
+				selectOtherMemberComposite.addAccountedMemberListener(gbc);
 			}
 			if (userRights.isAllowedToFillPartial()) {
 				GasBlendingComposite gbc = new GasBlendingComposite(
 						BlendingType.PARTIAL_METHOD);
 				tp.add(gbc, "Partial Methode");
+				selectOtherMemberComposite.addAccountedMemberListener(gbc);
 				cylinderSelectComposite.addCylinderSelectedListener(gbc);
 
 			}
@@ -145,6 +141,7 @@ public class FillPanelComposite extends Composite {
 				// tp.add(new GasBlendingComposite(BlendingType.MIXER),
 				// "Mixer");
 			}
+
 		};
 	}
 

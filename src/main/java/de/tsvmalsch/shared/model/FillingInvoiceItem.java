@@ -2,7 +2,6 @@ package de.tsvmalsch.shared.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,6 +28,13 @@ public class FillingInvoiceItem implements Serializable {
 	 */
 	private static final long serialVersionUID = -8540656564045693342L;
 
+	/**
+	 * The member who pays the mix
+	 */
+	@ManyToOne
+	@NotNull
+	private Member accountedMember;
+	
 	/**
 	 * The blender who made the mix.
 	 */
@@ -118,6 +124,10 @@ public class FillingInvoiceItem implements Serializable {
 		return rounded;
 	}
 
+	public Member getAccountedMember() {
+		return accountedMember;
+	}
+
 	public Member getBlendingMember() {
 		return blendingMember;
 	}
@@ -172,6 +182,10 @@ public class FillingInvoiceItem implements Serializable {
 
 	public boolean isValid() {
 		return valid;
+	}
+
+	public void setAccountedMember(Member accountedMember) {
+		this.accountedMember = accountedMember;
 	}
 
 	public void setBlendingMember(Member member) {
