@@ -49,9 +49,9 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 		try {
 			session = HibernateUtil.getSessionFactory().getCurrentSession();
 			session.beginTransaction();
-			String hql = "from FillingInvoiceItem where accountedMember = :memNo";
+			String hql = "from FillingInvoiceItem where accountedMember = :memId";
 			Query query = session.createQuery(hql);
-			query.setInteger("memNo", m.getMemberNumber());
+			query.setLong("memId", m.getId());
 
 			List<FillingInvoiceItem> fiis = new ArrayList<FillingInvoiceItem>(
 					query.list());

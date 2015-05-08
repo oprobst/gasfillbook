@@ -116,6 +116,7 @@ public class FillPanelComposite extends Composite {
 			if (userRights.isAllowedToFillAir()) {
 				GasBlendingComposite gbc = new GasBlendingComposite(
 						BlendingType.AIR);
+				gbc.setFillingMember(result);
 				tp.add(gbc, "Luft");
 				cylinderSelectComposite.addCylinderSelectedListener(gbc);
 				selectOtherMemberComposite.addAccountedMemberListener(gbc);
@@ -123,6 +124,7 @@ public class FillPanelComposite extends Composite {
 			if (userRights.isAllowedToFillNx40()) {
 				GasBlendingComposite gbc = new GasBlendingComposite(
 						BlendingType.NX40_CASCADE);
+				gbc.setFillingMember(result);
 				tp.add(gbc, "Nx40 Kaskade");
 				cylinderSelectComposite.addCylinderSelectedListener(gbc);
 				selectOtherMemberComposite.addAccountedMemberListener(gbc);
@@ -130,6 +132,7 @@ public class FillPanelComposite extends Composite {
 			if (userRights.isAllowedToFillPartial()) {
 				GasBlendingComposite gbc = new GasBlendingComposite(
 						BlendingType.PARTIAL_METHOD);
+				gbc.setFillingMember(result);
 				tp.add(gbc, "Partial Methode");
 				selectOtherMemberComposite.addAccountedMemberListener(gbc);
 				cylinderSelectComposite.addCylinderSelectedListener(gbc);

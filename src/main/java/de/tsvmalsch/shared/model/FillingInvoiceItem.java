@@ -31,7 +31,7 @@ public class FillingInvoiceItem implements Serializable {
 	/**
 	 * The member who pays the mix
 	 */
-	@ManyToOne
+	@ManyToOne 
 	@NotNull
 	private Member accountedMember;
 	

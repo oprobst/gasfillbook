@@ -29,9 +29,14 @@ public class ConfirmBlendingDialog extends DialogBox {
 			.create(AccountingService.class);
 
 	private Member recipient;
+	private Member loggedIn;
 
-	public ConfirmBlendingDialog() {
+	public void setLoggedIn(Member loggedIn) {
+		this.loggedIn = loggedIn;
+	}
 
+	public ConfirmBlendingDialog(Member fillingMember) {
+		loggedIn = fillingMember;
 		setTitle("Mischung buchen");
 
 		// Enable animation.
@@ -135,7 +140,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 					* currentCylinder.getTwinSetSizeInLiter() * o2Price * 100) / 100.0d;
 		}
 		double cylSize = currentCylinder.getTwinSetSizeInLiter();
-		fii.setBlendingMember(null);
+		fii.setBlendingMember(loggedIn);
 		if (o2IsNxFromCascade) {
 			fii.setBlendingType(BlendingType.NX40_CASCADE);
 		} else {
@@ -225,7 +230,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 			double to) {
 
 		int barL = (int) ((to - from) * currentCylinder.getTwinSetSizeInLiter());
-		fii.setBlendingMember(null);
+		fii.setBlendingMember(loggedIn);
 		fii.setBlendingType(BlendingType.AIR);
 		fii.setDateOfFilling(new Date());
 		fii.setLiterAirFilled(barL);

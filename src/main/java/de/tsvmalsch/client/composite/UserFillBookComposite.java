@@ -7,12 +7,15 @@ import java.util.List;
 
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DefaultDateTimeFormatInfo;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -58,6 +61,8 @@ public class UserFillBookComposite extends Composite {
 						openBill += fii.calculatePrice();
 					}
 				}
+				lblCurrentDebt.setText("Aktuell ausstehend: "
+						+ ((int) (openBill * 100)) / 100f + " Euro");
 			}
 		}
 	}
@@ -69,8 +74,8 @@ public class UserFillBookComposite extends Composite {
 	private Label lblAccountCondition = new Label(
 			"Nächster Bankeinzug bei 100 Euro oder im Dez 2015");
 
-	private Label lblCurrentDebt = new Label("Aktuell ausstehend: " + openBill
-			+ " Euro");
+	private Label lblCurrentDebt = new Label("Aktuell ausstehend: ? Euro");
+	private Button btnRefresh = new Button("Aktualisieren");
 
 	private CellTable<FillingInvoiceItem> table;
 
@@ -84,6 +89,15 @@ public class UserFillBookComposite extends Composite {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(lblCurrentDebt);
 		hp.add(lblAccountCondition);
+		hp.add(btnRefresh);
+		btnRefresh.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				userService
+						.getCurrentMember(new AsyncCallbackGetCurrentMember());
+			}
+		});
 		vp.add(hp);
 
 		initTable();
@@ -204,16 +218,20 @@ public class UserFillBookComposite extends Composite {
 		TextColumn<FillingInvoiceItem> paymentColumn = new TextColumn<FillingInvoiceItem>() {
 			@Override
 			public String getValue(FillingInvoiceItem object) {
+
+				if (!object.isValid()) {
+					return "STORNO";
+				}
 				if (object.calculatePrice() == 0) {
 					return "frei";
 				}
-				if (object.getPaymentReceiptDate() == null) {
+				if (object.getInvoicingDate() == null) {
 					return "offen";
 				}
-				return dtf.format(object.getPaymentReceiptDate());
+				return dtf.format(object.getInvoicingDate());
 			}
 		};
-		table.addColumn(paymentColumn, "Bezahlt");
+		table.addColumn(paymentColumn, "Abgebucht am");
 
 		table.setRowCount(fiiList.size(), true);
 

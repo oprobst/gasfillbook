@@ -417,7 +417,7 @@ public class GasBlendingComposite extends Composite implements
 				@Override
 				public void onClick(ClickEvent arg0) {
 
-					new ConfirmBlendingDialog().showCascadeConfirmation(
+					new ConfirmBlendingDialog(fillingMember).showCascadeConfirmation(
 							currentCylinder, targetMix, calcResult,
 							txbBarReallyFilledO2.getValue(),
 							config.getNxCascadeOxygen(),
@@ -429,7 +429,7 @@ public class GasBlendingComposite extends Composite implements
 
 				@Override
 				public void onClick(ClickEvent arg0) {
-					new ConfirmBlendingDialog()
+					new ConfirmBlendingDialog(fillingMember)
 							.showPartialPressureConfirmation(currentCylinder,
 									targetMix, calcResult,
 									txbBarReallyFilledHe.getValue(),
@@ -443,7 +443,7 @@ public class GasBlendingComposite extends Composite implements
 
 				@Override
 				public void onClick(ClickEvent arg0) {
-					new ConfirmBlendingDialog().showAirConfirmation(
+					new ConfirmBlendingDialog(fillingMember).showAirConfirmation(
 							currentCylinder, txbRemainingPressure.getValue(),
 							txbTargetPressure.getValue());
 				}
@@ -490,6 +490,11 @@ public class GasBlendingComposite extends Composite implements
 	private Configuration config = new Configuration();
 
 	private Member accounted = null;
+	private Member fillingMember = null;
+
+	public void setFillingMember(Member fillingMember) {
+		this.fillingMember = fillingMember;
+	}
 
 	@Override
 	public void accountedMember(Member theOneWhoPays) {
