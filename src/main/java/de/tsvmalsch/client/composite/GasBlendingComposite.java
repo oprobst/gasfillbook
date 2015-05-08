@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import de.tsvmalsch.client.ConfigurationService;
 import de.tsvmalsch.client.ConfigurationServiceAsync;
+import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.GasBlenderService;
 import de.tsvmalsch.client.GasBlenderServiceAsync;
@@ -265,6 +266,7 @@ public class GasBlendingComposite extends Composite implements
 
 		this.blendingType = blendingType;
 		VerticalPanel vp = new VerticalPanel();
+		vp.setWidth(Constants.GLOBAL_WIDTH_STRING);
 
 		FlexTable t = new FlexTable();
 
@@ -410,18 +412,18 @@ public class GasBlendingComposite extends Composite implements
 		rbtFirstHe.addClickHandler(blurHandler);
 		rbtFirstO2.addClickHandler(blurHandler);
 
-	
 		if (blendingType == BlendingType.NX40_CASCADE) {
 			btnAccount.addClickHandler(new ClickHandler() {
 
 				@Override
 				public void onClick(ClickEvent arg0) {
 
-					new ConfirmBlendingDialog(fillingMember).showCascadeConfirmation(
-							currentCylinder, targetMix, calcResult,
-							txbBarReallyFilledO2.getValue(),
-							config.getNxCascadeOxygen(),
-							config.getPricePerBarLO2(), accounted);
+					new ConfirmBlendingDialog(fillingMember)
+							.showCascadeConfirmation(currentCylinder,
+									targetMix, calcResult,
+									txbBarReallyFilledO2.getValue(),
+									config.getNxCascadeOxygen(),
+									config.getPricePerBarLO2(), accounted);
 				}
 			});
 		} else if (blendingType == BlendingType.PARTIAL_METHOD) {
@@ -443,9 +445,10 @@ public class GasBlendingComposite extends Composite implements
 
 				@Override
 				public void onClick(ClickEvent arg0) {
-					new ConfirmBlendingDialog(fillingMember).showAirConfirmation(
-							currentCylinder, txbRemainingPressure.getValue(),
-							txbTargetPressure.getValue());
+					new ConfirmBlendingDialog(fillingMember)
+							.showAirConfirmation(currentCylinder,
+									txbRemainingPressure.getValue(),
+									txbTargetPressure.getValue());
 				}
 			});
 		}

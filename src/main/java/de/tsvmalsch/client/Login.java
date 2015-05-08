@@ -38,6 +38,7 @@ public class Login extends Composite {
 	protected void setCurrentMember(Member currentMember) {
 		this.currentMember = currentMember;
 		textBoxMemberNumber.setText("" + currentMember.getMemberNumber());
+
 		suggestBox.setText(currentMember.getFirstName() + " "
 				+ currentMember.getLastName());
 		textBoxPassword.setText("");
@@ -67,7 +68,7 @@ public class Login extends Composite {
 		authService.getAllMembersNames(new AsyncCallbackAllMembers());
 
 		VerticalPanel verticalPanel = new VerticalPanel();
-		initWidget(verticalPanel);
+
 
 		lblWelcome.setStyleName("gwt-Label-Login");
 		verticalPanel.add(lblWelcome);
@@ -79,7 +80,7 @@ public class Login extends Composite {
 
 		FlexTable flexTable = new FlexTable();
 		verticalPanel.add(flexTable);
-		flexTable.setWidth("345px");
+		flexTable.setWidth("1024px");
 
 		Label lblUsername = new Label("Name:");
 		lblUsername.setStyleName("gwt-Label-Login");
@@ -101,7 +102,7 @@ public class Login extends Composite {
 		textBoxMemberNumber
 				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
 		textBoxMemberNumber.setMaxLength(4);
-		textBoxMemberNumber.setStyleName(".txt-3digit");
+		textBoxMemberNumber.setStyleName("txt-3digit");
 
 		Label lblPassword = new Label("Password:");
 		lblPassword.setStyleName("gwt-Label-Login");
@@ -118,7 +119,8 @@ public class Login extends Composite {
 			}
 		});
 
-		Button btnSignIn = new Button("Sign In");
+		Button btnSignIn = new Button("Einloggen");
+
 		btnSignIn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (suggestBox.getText().length() == 0
@@ -134,7 +136,12 @@ public class Login extends Composite {
 
 			}
 		});
-		flexTable.setWidget(3, 1, btnSignIn);
+		
+		btnSignIn.setStyleName("button-login");
+		
+		verticalPanel.add(btnSignIn);
+		
+		initWidget(verticalPanel);
 	}
 
 	class AsyncCallbackAllMembers implements AsyncCallback<Collection<String>> {

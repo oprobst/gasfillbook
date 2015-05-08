@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -96,11 +95,11 @@ public class SelectOtherMemberComposite extends Composite {
 	}
 
 	private RadioButton rbtCylinderOwnersAccount = new RadioButton("creditor",
-			"Besitzer");
+			"Den Besitzer");
 
-	private RadioButton rbtownAccount = new RadioButton("creditor", "Ich");
+	private RadioButton rbtownAccount = new RadioButton("creditor", "Mich");
 
-	private Member selectedMember;;
+	private Member selectedMember;
 
 	private SuggestBox suggestBox = null;;
 
@@ -152,14 +151,14 @@ public class SelectOtherMemberComposite extends Composite {
 				.addChangeHandler(new TextBoxMemberNumberChangeHandler());
 		hp.add(textBoxMemberNumber);
 
-		Label lblCharge = new Label("Es zahlt ");
-		rbtownAccount.setValue(true);
+		Label lblCharge = new Label("Abrechnung an: ");
+		rbtCylinderOwnersAccount.setValue(true);
 		rbtownAccount.addValueChangeHandler(new CheckBoxHandler());
 		rbtCylinderOwnersAccount.addValueChangeHandler(new CheckBoxHandler());
 		hp.add(lblCharge);
-		hp.add(rbtownAccount);
-		hp.add(rbtCylinderOwnersAccount);
 
+		hp.add(rbtCylinderOwnersAccount);
+		hp.add(rbtownAccount);
 		initWidget(hp);
 	};
 

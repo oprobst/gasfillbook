@@ -6,9 +6,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import de.tsvmalsch.client.AccountingService;
@@ -21,7 +22,7 @@ import de.tsvmalsch.shared.model.Cylinder;
 import de.tsvmalsch.shared.model.FillingInvoiceItem;
 import de.tsvmalsch.shared.model.Member;
 
-public class ConfirmBlendingDialog extends DialogBox {
+public class ConfirmBlendingDialog extends PopupPanel {
 
 	private HTML userMessage = new HTML();
 
@@ -44,13 +45,20 @@ public class ConfirmBlendingDialog extends DialogBox {
 
 		// Enable glass background.
 		setGlassEnabled(true);
-
+		HorizontalPanel outerhp = new HorizontalPanel();
+		outerhp.setWidth("100%");
 		HorizontalPanel hp = new HorizontalPanel();
 		VerticalPanel vp = new VerticalPanel();
+
+		outerhp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+
+		outerhp.add(hp);
+
 		vp.add(userMessage);
-		vp.add(hp);
+		vp.add(outerhp);
 
 		Button ok = new Button("OK");
+
 		ok.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				ConfirmBlendingDialog.this.hide();
@@ -68,6 +76,8 @@ public class ConfirmBlendingDialog extends DialogBox {
 		hp.add(cancel);
 
 		setWidget(vp);
+		setPopupPosition(100, 100);
+
 		setModal(true);
 	}
 
@@ -209,7 +219,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 		sb.append(fii.calculatePrice());
 		sb.append(" € </b>");
 		if (payedBy != null) {
-			sb.append("dem Nutzer <b>");
+			sb.append("dem Nutzer <br/><b>");
 			sb.append(payedBy.getFirstName());
 			sb.append(" ");
 			sb.append(payedBy.getLastName());
@@ -244,7 +254,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 		recipient = currentCylinder.getOwner();
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("<p>Du hast in Flasche  <i>");
+		sb.append("<p class='blending-summary-hint'>Du hast in Flasche  <i>");
 		sb.append(currentCylinder.getUiIdentifier());
 		sb.append("</i> ");
 		sb.append(to - from);
@@ -253,7 +263,7 @@ public class ConfirmBlendingDialog extends DialogBox {
 		sb.append(" barL) Pressluft gefüllt.<br/>");
 
 		sb.append("Bei Betätigen des OK Buttons wird die Füllung registriert. <br/>");
-		sb.append("Pressluftfüllungen sind bereits in Deinem Jahresbeitrag enthalten, es fallen keine weiteren Kosten an.");
+		sb.append("Pressluftfüllungen sind bereits in Deinem Jahresbeitrag enthalten,<br/> es fallen keine weiteren Kosten an.");
 		sb.append("<br/><b>Gut Luft!</b></p>");
 		userMessage.setHTML(sb.toString());
 		show();

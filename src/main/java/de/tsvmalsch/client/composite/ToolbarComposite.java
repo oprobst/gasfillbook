@@ -40,7 +40,7 @@ public class ToolbarComposite extends Composite {
 
 	private FillPanelComposite fillPanelComposite;
 
-	private Label lblCurrentAccountBalance = new Label("Kontostand: 13,82 €");
+	private Label lblCurrentAccountBalance = new Label("Kontostand: ? €");
 	private Label lblCurrentMemberName = new Label();
 
 	private Logger logger = Logger.getLogger(ToolbarComposite.class
@@ -63,7 +63,9 @@ public class ToolbarComposite extends Composite {
 
 		VerticalPanel vPanel = new VerticalPanel();
 
-		tp = new TabLayoutPanel(2.1, Unit.EM);
+		vPanel.setWidth(Constants.GLOBAL_WIDTH_STRING);
+
+		tp = new TabLayoutPanel(2.6, Unit.EM);
 		tp.setAnimationDuration(200);
 
 		tp.setHeight(Constants.GLOBAL_HEIGHT_STRING);
@@ -72,10 +74,11 @@ public class ToolbarComposite extends Composite {
 		HorizontalPanel hPanel = new HorizontalPanel();
 
 		hPanel.add(lblCurrentMemberName);
-
+		hPanel.setWidth(Constants.GLOBAL_WIDTH_STRING);
 		hPanel.add(lblCurrentAccountBalance);
 		vPanel.add(hPanel);
 
+		lblCurrentAccountBalance.setStyleName("current-debit-label");
 		lblCurrentMemberName.setStyleName("gwt-login-label");
 
 		userDataComposite = new UserDataComposite();
@@ -89,9 +92,16 @@ public class ToolbarComposite extends Composite {
 		tp.add(cylinderDataComposite, "Flaschen");
 		tp.add(userDataComposite, "Stammdaten");
 
+		userFillBookComposite.setToolbar(this);
+
 		vPanel.add(tp);
 
 		initWidget(vPanel);
+	}
+
+	public void setCurrentCredit(float amount) {
+		lblCurrentAccountBalance.setText("Aktueller Kontostand: " + amount
+				+ " €");
 	}
 
 }

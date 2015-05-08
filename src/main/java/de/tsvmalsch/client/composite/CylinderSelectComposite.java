@@ -140,7 +140,7 @@ public class CylinderSelectComposite extends Composite {
 		lblInspectionWarning.setStyleName("label-warning");
 
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
-
+		
 		initWidget(hp);
 
 	}

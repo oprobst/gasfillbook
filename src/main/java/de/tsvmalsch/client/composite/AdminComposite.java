@@ -14,10 +14,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import de.tsvmalsch.client.ConfigurationService;
 import de.tsvmalsch.client.ConfigurationServiceAsync;
+import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
-import de.tsvmalsch.shared.MemberToListUtil;
 import de.tsvmalsch.shared.model.Configuration;
 import de.tsvmalsch.shared.model.Member;
 
@@ -74,7 +74,8 @@ public class AdminComposite extends Composite {
 	public AdminComposite() {
 
 		VerticalPanel vp = new VerticalPanel();
-		vp.setWidth("600px");
+		vp.setWidth(Constants.GLOBAL_WIDTH_STRING);
+
 		vp.add(lblPriceBarLHe);
 		FlexTable t = new FlexTable();
 
@@ -122,26 +123,23 @@ public class AdminComposite extends Composite {
 
 		if (config != null && allMembers != null) {
 
-			txbPriceBarLHe
-					.setText(Double.toString(config.getPricePerBarLHe()));
-			txbPriceBarLO2
-					.setText(Double.toString(config.getPricePerBarLO2()));
+			txbPriceBarLHe.setText(Double.toString(config.getPricePerBarLHe()));
+			txbPriceBarLO2.setText(Double.toString(config.getPricePerBarLO2()));
 			txbWelcomeText.setText(config.getWelcomeText());
 			txbO2ContentCascade.setValue(config.getNxCascadeOxygen());
 
-			/*String admins = MemberToListUtil
-					.memberListToCommaSeparatedString(config
-							.getAdministrators());
-			String instructors = MemberToListUtil
-					.memberListToCommaSeparatedString(config
-							.getAdministrators());
-			String accountant = MemberToListUtil
-					.memberListToCommaSeparatedString(config
-							.getAdministrators());
-
-			txbListBlendingInstr.setText(instructors);
-			txbListAdmins.setText(admins);
-			txbEmailNotifications.setText(accountant);*/
+			/*
+			 * String admins = MemberToListUtil
+			 * .memberListToCommaSeparatedString(config .getAdministrators());
+			 * String instructors = MemberToListUtil
+			 * .memberListToCommaSeparatedString(config .getAdministrators());
+			 * String accountant = MemberToListUtil
+			 * .memberListToCommaSeparatedString(config .getAdministrators());
+			 * 
+			 * txbListBlendingInstr.setText(instructors);
+			 * txbListAdmins.setText(admins);
+			 * txbEmailNotifications.setText(accountant);
+			 */
 		}
 	};
 }

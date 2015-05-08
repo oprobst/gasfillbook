@@ -7,21 +7,72 @@ h1 {
 }
 
 .gwt-Label {
-	margin: 5px;
+	margin: 3px;
 	text-align: left;
 	font-family: verdana, sans-serif;
+	font-size: 1.4em;
+	padding: 5px 4px;
+}
+
+.gwt-SuggestBox {
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
+	padding: 5px 4px;
+}
+
+.gwt-ListBox {
+	margin: 3px;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
+	padding: 5px 4px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs .gwt-Label {
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.6em;
+	font-weight: normal;
+	margin: 0px;
+	padding: 2px 8px 1px 8px;
+	color: #1e58d2;
+	background-color: #b6c2ce;
+	color: #1e58d2;
+	margin: 0px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected .gwt-Label {
+	background-color: #003d78;
+	color: #f5f5ff;
+	padding: 2px 8px 1px 8px;
+	font-weight: bold;
 }
 
 .txt-3digit {
 	width: 36px;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
+	padding: 5px 4px;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
 }
 
 .txt-5digit {
 	width: 45px;
+	text-align: left;
+	padding: 5px 4px;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
 }
 
 .blending-summary-hint {
-	font-size: 1.2em;
+	font-size: 1.4em;
 	color: #000000;
 	padding: 5px;
 }
@@ -36,7 +87,7 @@ h1 {
 	border-style: solid;
 	font-size: 1.1em;
 	color: #000000;
-	padding: 5px;
+	padding: 5px 4px;
 }
 
 .txbUserData {
@@ -47,53 +98,86 @@ h1 {
 	border: 2px;
 	border-color: #0000bf;
 	border-style: solid;
-	font-size: 1.2em;
+	font-size: 1.4em;
 	color: #110000;
-	padding: 5px;
+	padding: 5px 4px;
+}
+
+.gwt-RadioButton {
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.6em;
+	margin: 0px;
+	padding: 5px 7px;
 }
 
 .button-book-filling {
 	background-color: orange;
 	font-weight: bold;
+	font-size: 1.8em;
 }
 
 .label-warning {
+	margin: 3px;
+	padding: 5px 7px;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 	font-weight: bold;
-	color: #FF2222;
+	color: #b50000;
 }
 
 .label-ok {
+	margin: 3px;
+	padding: 5px 7px;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 	font-weight: bold;
-	color: #22FF22;
+	color: #108d11;
 }
 
 .gwt-login-label {
-	font-size: 1.2em;
+	font-size: 1.6em;
 	font-weight: bold;
-	color: #0080ff;
-	margin: 5px;
+	color: #003061;
+	margin-left: 15px;
+	margin-bottom: 5px;
 	text-align: left;
 	font-family: verdana, sans-serif;
+}
+
+.current-debit-label {
+	font-size: 1.6em;
+	font-weight: bold;
+	margin-right: 15px;
+	margin-bottom: 5px;
+	text-align: right;
+	font-family: verdana, sans-serif;
+	margin-right: 15px;
 }
 
 .gwt-welcome-label {
-	font-size: 2em;
+	font-size: 2.5em;
 	font-weight: bold;
-	color: #0000ff;
+	background-image: url(img/bkg_gradient.gif);
+	background-repeat: repeat-x;
+	color: #060042;
 	margin: 5px;
 	text-align: left;
 	font-family: verdana, sans-serif;
+	background-repeat: repeat-x;
 }
 
 .gwt-Label-Login {
-	font-size: 1em;
+	font-size: 1.4em;
 	font-weight: bold;
-	color: #222299;
+	color: #00002a;
 }
 
 .sendButton {
 	display: block;
-	font-size: 16pt;
+	font-size: 1.4em;
 }
 
 /** Most GWT widgets already have a style name defined */
@@ -119,36 +203,89 @@ h1 {
 	padding: 5px 4px;
 	border: 1px solid #ccc;
 	border-top: 1px solid #999;
-	font-size: small;
-	font-family: Arial Unicode MS, Arial, sans-serif;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 }
 
 .gwt-TextBox-readonly {
 	color: #888;
+	padding: 5px 4px;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 }
 
 .gwt-PasswordTextBox {
 	padding: 5px 4px;
 	border: 1px solid #ccc;
 	border-top: 1px solid #999;
-	font-size: 100%;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 }
 
 .gwt-PasswordTextBox-readonly {
 	color: #888;
+	padding: 5px 4px;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 }
 
 .gwt-TextArea {
-	padding: 4px;
+	padding: 5px 4px;
 	border: 1px solid #ccc;
-	border-top: 1px solid #666;
-	font-size: 100%;
-	font-family: Arial Unicode MS, Arial, sans-serif;
+	border-top: 1px solid #999;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 }
 
 .gwt-TextArea-readonly {
 	color: #888;
+	padding: 5px 4px;
+	border: 1px solid #ccc;
+	border-top: 1px solid #999;
+	text-align: left;
+	font-family: verdana, sans-serif;
+	font-size: 1.4em;
 }
+
+/* Button  */
+.gwt-PopupPanel .gwt-Button {
+	margin: 3px;
+	padding: 5px 7px;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+	font-size: 1.4em;
+	background: url("images/hborder.png") repeat-x 0px -2077px;
+	border: 1px solid #bbb;
+	border-bottom: 1px solid #a0a0a0;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+/* Button  */
+.button-login {
+	margin: 3px;
+	padding: 5px 7px;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+	font-size: 1.4em;
+	background: url("images/hborder.png") repeat-x 0px -2077px;
+	border: 1px solid #bbb;
+	border-bottom: 1px solid #a0a0a0;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
 /* Button  */
 .gwt-Button {
 	margin: 3px;
@@ -156,7 +293,7 @@ h1 {
 	text-decoration: none;
 	cursor: pointer;
 	cursor: hand;
-	font-size: small;
+	font-size: 1.4em;
 	background: url("images/hborder.png") repeat-x 0px -2077px;
 	border: 1px solid #bbb;
 	border-bottom: 1px solid #a0a0a0;

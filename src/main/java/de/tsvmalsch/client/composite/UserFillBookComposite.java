@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import de.tsvmalsch.client.AccountingService;
 import de.tsvmalsch.client.AccountingServiceAsync;
+import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
@@ -61,8 +62,10 @@ public class UserFillBookComposite extends Composite {
 						openBill += fii.calculatePrice();
 					}
 				}
-				lblCurrentDebt.setText("Aktuell ausstehend: "
-						+ ((int) (openBill * 100)) / 100f + " Euro");
+				float open = Math.round(openBill * 100) / 100f;
+
+				lblCurrentDebt.setText("Aktuell ausstehend: " + open + " Euro");
+				tbc.setCurrentCredit(open);
 			}
 		}
 	}
@@ -87,6 +90,7 @@ public class UserFillBookComposite extends Composite {
 
 		VerticalPanel vp = new VerticalPanel();
 		HorizontalPanel hp = new HorizontalPanel();
+	
 		hp.add(lblCurrentDebt);
 		hp.add(lblAccountCondition);
 		hp.add(btnRefresh);
@@ -102,7 +106,7 @@ public class UserFillBookComposite extends Composite {
 
 		initTable();
 		vp.add(table);
-
+		vp.setWidth(Constants.GLOBAL_WIDTH_STRING);
 		initWidget(vp);
 
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
@@ -237,5 +241,12 @@ public class UserFillBookComposite extends Composite {
 
 		table.setRowData(fiiList);
 		return table;
+	}
+
+	private ToolbarComposite tbc;
+
+	public void setToolbar(ToolbarComposite toolbarComposite) {
+		tbc = toolbarComposite;
+
 	}
 }

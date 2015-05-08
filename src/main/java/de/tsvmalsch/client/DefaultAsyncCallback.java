@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DialogBox;
 
 public abstract class DefaultAsyncCallback<T> implements AsyncCallback<T> {
-	
+
 	Logger logger = Logger.getLogger(DefaultAsyncCallback.class
 			.getCanonicalName());
 

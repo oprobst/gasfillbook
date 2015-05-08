@@ -1,24 +1,13 @@
 package de.tsvmalsch.client;
 
-import de.tsvmalsch.client.composite.ToolbarComposite;
-import de.tsvmalsch.shared.FieldVerifier;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import de.tsvmalsch.client.composite.ToolbarComposite;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -42,7 +31,7 @@ public class GasFillBook implements EntryPoint {
 
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		rootPanel.add(horizontalPanel, 10, 10);
-		horizontalPanel.setSize("470px", "212px");
+		horizontalPanel.setSize("1024px", "100px");
 
 		VerticalPanel verticalPanel = new VerticalPanel();
 		horizontalPanel.add(verticalPanel);
@@ -50,7 +39,7 @@ public class GasFillBook implements EntryPoint {
 		Label lblWelcomeToThe = new Label("Füllstation TSV Malsch");
 		lblWelcomeToThe.setStyleName("gwt-welcome-label");
 		verticalPanel.add(lblWelcomeToThe);
-		lblWelcomeToThe.setSize("206px", "124px");
+		lblWelcomeToThe.setSize("1024px", "200px");
 
 		Login login = new Login(this);
 		verticalPanel.add(login);

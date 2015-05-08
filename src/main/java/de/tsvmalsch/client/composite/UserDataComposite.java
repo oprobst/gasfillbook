@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
@@ -57,7 +58,7 @@ public class UserDataComposite extends Composite {
 		userService.getCurrentMember(new AsyncCallbackGetCurrentMember());
 
 		VerticalPanel vp = new VerticalPanel();
-		vp.setWidth("600px");
+		vp.setWidth(Constants.GLOBAL_WIDTH_STRING);
 		vp.add(lblHeader);
 		FlexTable t = new FlexTable();
 

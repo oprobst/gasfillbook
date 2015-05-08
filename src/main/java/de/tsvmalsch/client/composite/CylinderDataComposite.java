@@ -3,7 +3,6 @@ package de.tsvmalsch.client.composite;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.GWT;
@@ -15,18 +14,15 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
-import de.tsvmalsch.client.CylinderService;
-import de.tsvmalsch.client.CylinderServiceAsync;
+import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
@@ -35,12 +31,12 @@ import de.tsvmalsch.shared.model.Member;
 
 public class CylinderDataComposite extends Composite {
 
-	
 	public CylinderDataComposite() {
 
 		VerticalPanel vp = new VerticalPanel();
 		initTable();
 		vp.add(table);
+		vp.setWidth(Constants.GLOBAL_WIDTH_STRING);
 
 		initWidget(vp);
 

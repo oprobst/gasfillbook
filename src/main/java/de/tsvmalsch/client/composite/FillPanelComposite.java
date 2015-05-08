@@ -15,7 +15,6 @@ import de.tsvmalsch.client.Constants;
 import de.tsvmalsch.client.DefaultAsyncCallback;
 import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.client.UserServiceAsync;
-import de.tsvmalsch.client.listener.CurrentAccountingMemberListener;
 import de.tsvmalsch.shared.model.BlendingType;
 import de.tsvmalsch.shared.model.Member;
 import de.tsvmalsch.shared.model.UserRights;
@@ -84,9 +83,10 @@ public class FillPanelComposite extends Composite {
 
 		vp.add(selectOtherMemberComposite);
 		vp.add(cylinderSelectComposite);
-
-		tp = new TabLayoutPanel(2.1, Unit.EM);
+ 
+		tp = new TabLayoutPanel(2.6, Unit.EM);
 		tp.setAnimationDuration(200);
+		tp.getElement().getStyle().setMarginTop(18.0, Unit.PX);
 
 		tp.setHeight(Constants.GLOBAL_HEIGHT_STRING);
 		tp.setWidth(Constants.GLOBAL_WIDTH_STRING);
