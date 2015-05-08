@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 
+import org.apache.commons.logging.Log;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +26,9 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 
 	Logger log = LoggerFactory.getLogger(AccountingServiceImpl.class);
 
-	private final Session session;
+	private Session session;
 
 	public AccountingServiceImpl() throws Exception {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
 
 	}
 
@@ -36,10 +36,11 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 	public void cancelFillingInvoiceItem(FillingInvoiceItem fii) {
 		fii.setValid(false);
 		writeToFile(fii);
-
+		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.update(fii);
 		session.getTransaction().commit();
+
 	}
 
 	@Override
@@ -56,12 +57,18 @@ public class AccountingServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public void saveFillingInvoiceItem(FillingInvoiceItem fii) {
-
-		writeToFile(fii);
-
-		session.beginTransaction();
-		session.save(fii);
-		session.getTransaction().commit();
+		try {
+			writeToFile(fii);
+			session = HibernateUtil.getSessionFactory().getCurrentSession();
+			session.beginTransaction();
+			session.save(fii);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			log.error("Could not write Invoice Item! ", fii);
+			log.error("User " + fii.getAccountedMember().getMemberNumber()
+					+ " price: " + fii.calculatePrice());
+			throw e;
+		}
 	}
 
 	private void storeFile(Member recipient, String entry) {
