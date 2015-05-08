@@ -43,14 +43,17 @@ public class FillPanelComposite extends Composite {
 			case 0:// own cylinder
 				selectOtherMemberComposite.setVisible(false);
 				cylinderSelectComposite.setVisible(true);
+				selectOtherMemberComposite.enable(false);
 				return;
 			case 1:// club cylinder
 				cylinderSelectComposite.setVisible(true);
 				selectOtherMemberComposite.setVisible(false);
+				selectOtherMemberComposite.enable(false);
 				return;
 			case 2:// cylinder of other member
 				selectOtherMemberComposite.setVisible(true);
 				cylinderSelectComposite.setVisible(true);
+				selectOtherMemberComposite.enable(true);
 				return;
 			default:
 				throw new RuntimeException("Unknown ListBox selection index "
@@ -107,8 +110,6 @@ public class FillPanelComposite extends Composite {
 	class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member result) {
-			selectOtherMemberComposite.setLoggedInUser(result);
-			selectOtherMemberComposite.setCurrentMember(result);
 
 			UserRights userRights = result.getRights();
 
@@ -138,6 +139,10 @@ public class FillPanelComposite extends Composite {
 				// tp.add(new GasBlendingComposite(BlendingType.MIXER),
 				// "Mixer");
 			}
+			selectOtherMemberComposite.setLoggedInUser(result);
+			selectOtherMemberComposite.setCurrentMember(result);
+			selectOtherMemberComposite.setVisible(false);
+			selectOtherMemberComposite.enable(false);
 
 		};
 	}

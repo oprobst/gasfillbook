@@ -58,7 +58,7 @@ public class SelectOtherMemberComposite extends Composite {
 		public void onValueChange(ValueChangeEvent<Boolean> event) {
 			accountingChanged();
 		}
- 
+
 	}
 
 	class TextBoxMemberNameChangeHandler implements BlurHandler {
@@ -92,6 +92,7 @@ public class SelectOtherMemberComposite extends Composite {
 		if (this.selectedMember == null) {
 			this.selectedMember = loggedInUser;
 		}
+		this.accountingChanged();
 	}
 
 	private RadioButton rbtCylinderOwnersAccount = new RadioButton("creditor",
@@ -106,6 +107,15 @@ public class SelectOtherMemberComposite extends Composite {
 	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();;
 
 	private IntegerBox textBoxMemberNumber = null;;
+
+	public void enable(boolean isEnabled) {
+		if (isEnabled) {
+			accountingChanged();
+		} else {
+			notifyListener(loggedInUser);
+		}
+
+	}
 
 	/**
 	 * @param cylinderSelectComposite
@@ -155,7 +165,6 @@ public class SelectOtherMemberComposite extends Composite {
 
 	private void accountingChanged() {
 		if (rbtownAccount.getValue()) {
-
 			notifyListener(loggedInUser);
 		} else {
 			notifyListener(selectedMember);
@@ -164,7 +173,6 @@ public class SelectOtherMemberComposite extends Composite {
 
 	public void addAccountedMemberListener(GasBlendingComposite gbc) {
 		this.currentlyAccountedListener.add(gbc);
-
 	}
 
 	private void notifyListener(Member newAccountedUserSelected) {

@@ -245,10 +245,11 @@ public class ConfirmBlendingDialog extends DialogBox {
 		sb.append(barL);
 		sb.append(" barL) Pressluft gefüllt.<br/>");
 
-		sb.append("Bei Betätigen des OK Buttons wird die Füllung registriert. <br/><b>Gut Luft!</b></p>");
+		sb.append("Bei Betätigen des OK Buttons wird die Füllung registriert. <br/>");
+		sb.append("Pressluftfüllungen sind bereits in Deinem Jahresbeitrag enthalten, es fallen keine weiteren Kosten an.");
+		sb.append("<br/><b>Gut Luft!</b></p>");
 		userMessage.setHTML(sb.toString());
 		show();
 
 	}
-
 }
