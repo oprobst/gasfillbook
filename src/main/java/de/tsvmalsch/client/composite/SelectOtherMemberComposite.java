@@ -9,6 +9,9 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IntegerBox;
@@ -41,6 +44,7 @@ public class SelectOtherMemberComposite extends Composite {
 			}
 		}
 	}
+
 	class AsyncCallbackMemberByNumber extends DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member result) {
@@ -48,13 +52,15 @@ public class SelectOtherMemberComposite extends Composite {
 		}
 	}
 
-	class CheckBoxBlurHandler implements BlurHandler {
+	class CheckBoxHandler implements ValueChangeHandler<Boolean> {
 
 		@Override
-		public void onBlur(BlurEvent event) {
+		public void onValueChange(ValueChangeEvent<Boolean> event) {
 			accountingChanged();
 		}
+ 
 	}
+
 	class TextBoxMemberNameChangeHandler implements BlurHandler {
 
 		@Override
@@ -79,7 +85,14 @@ public class SelectOtherMemberComposite extends Composite {
 
 	private final CylinderSelectComposite cylinderSelectComposite;
 
-	private final Member loggedInUser;
+	private Member loggedInUser;
+
+	public void setLoggedInUser(Member loggedInUser) {
+		this.loggedInUser = loggedInUser;
+		if (this.selectedMember == null) {
+			this.selectedMember = loggedInUser;
+		}
+	}
 
 	private RadioButton rbtCylinderOwnersAccount = new RadioButton("creditor",
 			"Besitzer");
@@ -99,10 +112,8 @@ public class SelectOtherMemberComposite extends Composite {
 	 *            Will be notified if member to fill for changed.
 	 */
 	public SelectOtherMemberComposite(
-			CylinderSelectComposite cylinderSelectComposite, Member loggedInUser) {
+			CylinderSelectComposite cylinderSelectComposite) {
 
-		this.loggedInUser = loggedInUser;
-		this.selectedMember = loggedInUser;
 		this.cylinderSelectComposite = cylinderSelectComposite;
 		authService.getAllMembersNames(new AsyncCallbackAllMembers());
 
@@ -133,7 +144,8 @@ public class SelectOtherMemberComposite extends Composite {
 
 		Label lblCharge = new Label("Es zahlt ");
 		rbtownAccount.setValue(true);
-		rbtownAccount.addBlurHandler(new CheckBoxBlurHandler());
+		rbtownAccount.addValueChangeHandler(new CheckBoxHandler());
+		rbtCylinderOwnersAccount.addValueChangeHandler(new CheckBoxHandler());
 		hp.add(lblCharge);
 		hp.add(rbtownAccount);
 		hp.add(rbtCylinderOwnersAccount);

@@ -22,7 +22,6 @@ import de.tsvmalsch.shared.model.UserRights;
 
 public class FillPanelComposite extends Composite {
 
-	private int currentView = 0;
 	private VerticalPanel vp = null;
 
 	private final UserServiceAsync userService = GWT.create(UserService.class);
@@ -44,12 +43,10 @@ public class FillPanelComposite extends Composite {
 			case 0:// own cylinder
 				selectOtherMemberComposite.setVisible(false);
 				cylinderSelectComposite.setVisible(true);
-				userService.setMemberToFillFor(-2, null);
 				return;
 			case 1:// club cylinder
 				cylinderSelectComposite.setVisible(true);
 				selectOtherMemberComposite.setVisible(false);
-				userService.setMemberToFillFor(-1, null);
 				return;
 			case 2:// cylinder of other member
 				selectOtherMemberComposite.setVisible(true);
@@ -104,14 +101,14 @@ public class FillPanelComposite extends Composite {
 	private TabLayoutPanel tp;
 
 	private CylinderSelectComposite cylinderSelectComposite = new CylinderSelectComposite();
-	private SelectOtherMemberComposite selectOtherMemberComposite = null;
+	private SelectOtherMemberComposite selectOtherMemberComposite = new SelectOtherMemberComposite(
+			cylinderSelectComposite);
 
 	class AsyncCallbackGetCurrentMember extends DefaultAsyncCallback<Member> {
 
 		public void onSuccess(Member result) {
-
-			selectOtherMemberComposite = new SelectOtherMemberComposite(
-					cylinderSelectComposite, result);
+			selectOtherMemberComposite.setLoggedInUser(result);
+			selectOtherMemberComposite.setCurrentMember(result);
 
 			UserRights userRights = result.getRights();
 

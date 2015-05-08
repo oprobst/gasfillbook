@@ -120,6 +120,8 @@ public class ConfirmBlendingDialog extends DialogBox {
 			double o2PartialPressureCascade, double hePrice, double o2Price,
 			Member payedBy) {
 
+		this.recipient = payedBy;
+
 		double heFinalPrice = Math.round(heContent
 				* currentCylinder.getTwinSetSizeInLiter() * hePrice * 100) / 100.0d;
 
@@ -202,12 +204,12 @@ public class ConfirmBlendingDialog extends DialogBox {
 		sb.append(fii.calculatePrice());
 		sb.append(" € </b>");
 		if (payedBy != null) {
-			sb.append("dem Nutzer ");
+			sb.append("dem Nutzer <b>");
 			sb.append(payedBy.getFirstName());
 			sb.append(" ");
 			sb.append(payedBy.getLastName());
 		}
-		sb.append(" in Rechnung gestellt.</p></div>");
+		sb.append("</b> in Rechnung gestellt.</p></div>");
 
 		sb.append("<div class='security-hint'><b>Hinweis:</b> <ul><li>Das Tauchen mit Mischgasen bedarf einer besonderen Ausbildung.</li>");
 		sb.append("<li>Die Richtigkeit des resultierenden Gemischs <i>muss</i> nach dem Mischen analysiert werden.</li>");
@@ -216,8 +218,6 @@ public class ConfirmBlendingDialog extends DialogBox {
 		sb.append(" <i>muss</i> mit einem entsprechenden Füll-Label versehen werden.</li>");
 		sb.append("<li>Die Richtigkeit des Gemischs <i>muss</i> vor <br/> dem Tauchen durch den Taucher selbst <i>nochmals</i> kontrolliert werden.</li></ul></div>");
 		userMessage.setHTML(sb.toString());
-
-		this.recipient = payedBy;
 
 	}
 

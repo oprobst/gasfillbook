@@ -410,9 +410,7 @@ public class GasBlendingComposite extends Composite implements
 		rbtFirstHe.addClickHandler(blurHandler);
 		rbtFirstO2.addClickHandler(blurHandler);
 
-		if (accounted == null) {
-			accounted = currentCylinder.getOwner();
-		}
+	
 		if (blendingType == BlendingType.NX40_CASCADE) {
 			btnAccount.addClickHandler(new ClickHandler() {
 

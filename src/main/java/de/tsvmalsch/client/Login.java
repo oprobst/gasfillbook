@@ -129,6 +129,8 @@ public class Login extends Composite {
 				authService.authenticate(textBoxMemberNumber.getValue(),
 						textBoxPassword.getText(),
 						new AsyncCallbackAuthenticate());
+				logger.log(Level.INFO, "Login attempt for user "
+						+ textBoxMemberNumber.getValue());
 
 			}
 		});

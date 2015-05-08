@@ -129,7 +129,7 @@ public class AdminComposite extends Composite {
 			txbWelcomeText.setText(config.getWelcomeText());
 			txbO2ContentCascade.setValue(config.getNxCascadeOxygen());
 
-			String admins = MemberToListUtil
+			/*String admins = MemberToListUtil
 					.memberListToCommaSeparatedString(config
 							.getAdministrators());
 			String instructors = MemberToListUtil
@@ -141,7 +141,7 @@ public class AdminComposite extends Composite {
 
 			txbListBlendingInstr.setText(instructors);
 			txbListAdmins.setText(admins);
-			txbEmailNotifications.setText(accountant);
+			txbEmailNotifications.setText(accountant);*/
 		}
 	};
 }
