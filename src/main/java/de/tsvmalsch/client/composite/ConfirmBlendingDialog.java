@@ -240,6 +240,8 @@ public class ConfirmBlendingDialog extends DialogBox {
 		fii.setPricePerLiterOxygen(0);
 		fii.setValid(true);
 		fii.setFilledCylinder(currentCylinder);
+		fii.setAccountedMember(currentCylinder.getOwner());
+		recipient = currentCylinder.getOwner();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("<p>Du hast in Flasche  <i>");
