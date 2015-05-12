@@ -52,7 +52,7 @@ h1 {
 }
 
 .txt-3digit {
-	width: 36px;
+	width: 42px;
 	text-align: left;
 	font-family: verdana, sans-serif;
 	font-size: 1.4em;
@@ -62,7 +62,7 @@ h1 {
 }
 
 .txt-5digit {
-	width: 45px;
+	width: 120px;
 	text-align: left;
 	padding: 5px 4px;
 	font-family: verdana, sans-serif;
@@ -160,7 +160,7 @@ h1 {
 .gwt-welcome-label {
 	font-size: 2.5em;
 	font-weight: bold;
-	background-image: url(img/bkg_gradient.gif);
+	background-image: url(images/bkg_gradient.gif);
 	background-repeat: repeat-x;
 	color: #060042;
 	margin: 5px;
@@ -169,10 +169,20 @@ h1 {
 	background-repeat: repeat-x;
 }
 
+.gwt-Label-Login-Welcome {
+	font-size: 1.5em;
+	font-weight: bold;
+	color: #00004a;
+	margin: 12px;
+	text-align: left;
+	font-family: verdana, sans-serif;
+}
+
 .gwt-Label-Login {
 	font-size: 1.4em;
 	font-weight: bold;
 	color: #00002a;
+	margin: 5px;
 }
 
 .sendButton {

@@ -2,14 +2,10 @@ package de.tsvmalsch.shared.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -33,15 +29,13 @@ public class Configuration implements Serializable {
 	/**
 	 * All members who are allowed to configure the application.
 	 */
-	@OneToMany(mappedBy = "administrators", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<Member> administrators;
+	private String administrators;
 
 	/**
 	 * All members who are allowed to provide briefings for the blending
-	 * facility.
+	 * facility, separated by comma
 	 */
-	@OneToMany(mappedBy = "blendingInstructors", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<Member> blendingInstructors;
+	private String blendingInstructors;
 
 	/** DB generated uuid. */
 	@Id
@@ -53,8 +47,7 @@ public class Configuration implements Serializable {
 	 * All invoice notifications are not only send to the blending member, but
 	 * also to the accounting. This property lists all members to be notified.
 	 */
-	@OneToMany(mappedBy = "emailNotifications", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<Member> invoiceNotificationMails;
+	private String invoiceNotificationMails;
 
 	/** The Oxygen percentage of current cascade gas. */
 	@NotNull
@@ -78,24 +71,12 @@ public class Configuration implements Serializable {
 
 	/** Information text shown on login dialog. */
 	private String welcomeText;
-
-	/**
-	 * Gets the all members who are allowed to configure the application.
-	 *
-	 * @return the all members who are allowed to configure the application
-	 */
-	public List<Member> getAdministrators() {
+ 
+	public String getAdministrators() {
 		return administrators;
 	}
-
-	/**
-	 * Gets the all members who are allowed to provide briefings for the
-	 * blending facility.
-	 *
-	 * @return the all members who are allowed to provide briefings for the
-	 *         blending facility
-	 */
-	public List<Member> getBlendingInstructors() {
+ 
+	public String getBlendingInstructors() {
 		return blendingInstructors;
 	}
 
@@ -108,14 +89,7 @@ public class Configuration implements Serializable {
 		return id;
 	}
 
-	/**
-	 * Gets the all invoice notifications are not only send to the blending
-	 * member, but also to the accounting.
-	 *
-	 * @return the all invoice notifications are not only send to the blending
-	 *         member, but also to the accounting
-	 */
-	public List<Member> getInvoiceNotificationMails() {
+	public String getInvoiceNotificationMails() {
 		return invoiceNotificationMails;
 	}
 
@@ -146,6 +120,7 @@ public class Configuration implements Serializable {
 		return pricePerBarLO2;
 	}
 
+	 
 	/**
 	 * Gets the person who saved the new configuration.
 	 *
@@ -154,6 +129,8 @@ public class Configuration implements Serializable {
 	public Member getStoredBy() {
 		return storedBy;
 	}
+
+	 
 
 	/**
 	 * Gets the time stamp when the configuration applied.
@@ -173,26 +150,11 @@ public class Configuration implements Serializable {
 		return welcomeText;
 	}
 
-	/**
-	 * Sets the all members who are allowed to configure the application.
-	 *
-	 * @param administrators
-	 *            the new all members who are allowed to configure the
-	 *            application
-	 */
-	public void setAdministrators(List<Member> administrators) {
+	public void setAdministrators(String administrators) {
 		this.administrators = administrators;
 	}
 
-	/**
-	 * Sets the all members who are allowed to provide briefings for the
-	 * blending facility.
-	 *
-	 * @param blendingInstructors
-	 *            the new all members who are allowed to provide briefings for
-	 *            the blending facility
-	 */
-	public void setBlendingInstructors(List<Member> blendingInstructors) {
+	public void setBlendingInstructors(String blendingInstructors) {
 		this.blendingInstructors = blendingInstructors;
 	}
 
@@ -206,16 +168,7 @@ public class Configuration implements Serializable {
 		this.id = id;
 	}
 
-	/**
-	 * Sets the all invoice notifications are not only send to the blending
-	 * member, but also to the accounting.
-	 *
-	 * @param invoiceNotificationMails
-	 *            the new all invoice notifications are not only send to the
-	 *            blending member, but also to the accounting
-	 */
-	public void setInvoiceNotificationMails(
-			List<Member> invoiceNotificationMails) {
+	public void setInvoiceNotificationMails(String invoiceNotificationMails) {
 		this.invoiceNotificationMails = invoiceNotificationMails;
 	}
 

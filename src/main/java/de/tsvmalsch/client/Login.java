@@ -27,41 +27,149 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import de.tsvmalsch.shared.model.Configuration;
 import de.tsvmalsch.shared.model.Member;
 
 public class Login extends Composite {
 
-	protected Member getCurrentMember() {
-		return currentMember;
+	class AsyncCallbackAllMembers implements AsyncCallback<Collection<String>> {
+
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE,
+					"Failure when getting all members from db.", caught);
+
+			dialogBox.center();
+
+		}
+
+		public void onSuccess(Collection<String> result) {
+			suggestBoxContent.addAll(result);
+		}
 	}
 
-	protected void setCurrentMember(Member currentMember) {
-		this.currentMember = currentMember;
-		textBoxMemberNumber.setText("" + currentMember.getMemberNumber());
+	class AsyncCallbackAuthenticate implements AsyncCallback<Boolean> {
 
-		suggestBox.setText(currentMember.getFirstName() + " "
-				+ currentMember.getLastName());
-		textBoxPassword.setText("");
-		textBoxPassword.setFocus(true);
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE, "Failure when authenticating member.",
+					caught);
+
+			dialogBox.center();
+			caught.printStackTrace();
+
+		}
+
+		public void onSuccess(Boolean result) {
+			if (result) {
+
+				parent.userAuthenticated();
+
+			} else {
+				DialogBox dialogBox = new DialogBox();
+				dialogBox.setTitle("Authentication failed");
+				dialogBox.setText("Username or password wrong.");
+				dialogBox.center();
+
+			}
+
+		}
 	}
 
-	private Member currentMember;
+	class AsyncCallbackGetCurrentConfig extends
+			DefaultAsyncCallback<Configuration> {
 
-	private IntegerBox textBoxMemberNumber;
-	private TextBox textBoxPassword;
-	private Label lblWelcome = new Label("Hallo,");
-	MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();
-	final SuggestBox suggestBox;
+		public void onSuccess(Configuration configuration) {
+			if (configuration != null
+					&& !configuration.getWelcomeText().trim().isEmpty()) {
+				lblWelcome.setText(configuration.getWelcomeText());
+			}
+		};
+	}
 
-	Logger logger = Logger.getLogger(Login.class.getCanonicalName());
+	class AsyncCallbackMemberByName implements AsyncCallback<Member> {
+
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE,
+					"Failure when getting all members from db.", caught);
+
+			dialogBox.center();
+
+		}
+
+		public void onSuccess(Member result) {
+			setCurrentMember(result);
+		}
+	}
+
+	class AsyncCallbackMemberByNumber implements AsyncCallback<Member> {
+
+		public void onFailure(Throwable caught) {
+			// Show the RPC error message to the user
+			DialogBox dialogBox = new DialogBox();
+			dialogBox.setTitle("Remote Procedure Call - Failure");
+			dialogBox.setText(caught.getMessage());
+			logger.log(Level.SEVERE,
+					"Failure when getting all members from db.", caught);
+
+			dialogBox.center();
+
+		}
+
+		public void onSuccess(Member result) {
+			setCurrentMember(result);
+		}
+	}
+
+	class TextBoxMemberNameChangeHandler implements BlurHandler {
+
+		@Override
+		public void onBlur(BlurEvent event) {
+			String name = suggestBox.getText();
+			authService.getMemberByName(name, new AsyncCallbackMemberByName());
+		}
+	}
+
+	class TextBoxMemberNumberChangeHandler implements ChangeHandler {
+		@Override
+		public void onChange(ChangeEvent event) {
+			int i = textBoxMemberNumber.getValue();
+			authService.getMemberByNumber(i, new AsyncCallbackMemberByNumber());
+		}
+	}
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
 	private final UserServiceAsync authService = GWT.create(UserService.class);
+	private final ConfigurationServiceAsync configService = GWT
+			.create(ConfigurationService.class);
+	private Member currentMember;
+
+	private Label lblWelcome = new Label("Willkommen an der Füllstation");
+
+	private Logger logger = Logger.getLogger(Login.class.getCanonicalName());
 
 	private final GasFillBook parent;
+
+	private final SuggestBox suggestBox;;
+
+	private MultiWordSuggestOracle suggestBoxContent = new MultiWordSuggestOracle();;
+
+	private IntegerBox textBoxMemberNumber;;
+
+	private TextBox textBoxPassword;
 
 	public Login(GasFillBook gasFillBook) {
 		parent = gasFillBook;
@@ -69,12 +177,11 @@ public class Login extends Composite {
 
 		VerticalPanel verticalPanel = new VerticalPanel();
 
-
-		lblWelcome.setStyleName("gwt-Label-Login");
+		lblWelcome.setStyleName("gwt-Label-Login-Welcome");
 		verticalPanel.add(lblWelcome);
 
 		Label lblLoginToYour = new Label(
-				"bitte gib Deinen Namen oder deine Mitgliedsnummer ein.");
+				"Bitte gib Deinen Namen oder Deine Mitgliedsnummer ein:");
 		lblLoginToYour.setStyleName("gwt-Label-Login");
 		verticalPanel.add(lblLoginToYour);
 
@@ -136,117 +243,29 @@ public class Login extends Composite {
 
 			}
 		});
-		
+
 		btnSignIn.setStyleName("button-login");
-		
+
 		verticalPanel.add(btnSignIn);
-		
+
 		initWidget(verticalPanel);
+
+		configService
+				.getCurrentConfiguration(new AsyncCallbackGetCurrentConfig());
+	};
+
+	protected Member getCurrentMember() {
+		return currentMember;
+	};
+
+	protected void setCurrentMember(Member currentMember) {
+		this.currentMember = currentMember;
+		textBoxMemberNumber.setText("" + currentMember.getMemberNumber());
+
+		suggestBox.setText(currentMember.getFirstName() + " "
+				+ currentMember.getLastName());
+		textBoxPassword.setText("");
+		textBoxPassword.setFocus(true);
 	}
-
-	class AsyncCallbackAllMembers implements AsyncCallback<Collection<String>> {
-
-		public void onFailure(Throwable caught) {
-			// Show the RPC error message to the user
-			DialogBox dialogBox = new DialogBox();
-			dialogBox.setTitle("Remote Procedure Call - Failure");
-			dialogBox.setText(caught.getMessage());
-			logger.log(Level.SEVERE,
-					"Failure when getting all members from db.", caught);
-
-			dialogBox.center();
-
-		}
-
-		public void onSuccess(Collection<String> result) {
-			suggestBoxContent.addAll(result);
-		}
-	};
-
-	class AsyncCallbackMemberByNumber implements AsyncCallback<Member> {
-
-		public void onFailure(Throwable caught) {
-			// Show the RPC error message to the user
-			DialogBox dialogBox = new DialogBox();
-			dialogBox.setTitle("Remote Procedure Call - Failure");
-			dialogBox.setText(caught.getMessage());
-			logger.log(Level.SEVERE,
-					"Failure when getting all members from db.", caught);
-
-			dialogBox.center();
-
-		}
-
-		public void onSuccess(Member result) {
-			setCurrentMember(result);
-		}
-	};
-
-	class AsyncCallbackMemberByName implements AsyncCallback<Member> {
-
-		public void onFailure(Throwable caught) {
-			// Show the RPC error message to the user
-			DialogBox dialogBox = new DialogBox();
-			dialogBox.setTitle("Remote Procedure Call - Failure");
-			dialogBox.setText(caught.getMessage());
-			logger.log(Level.SEVERE,
-					"Failure when getting all members from db.", caught);
-
-			dialogBox.center();
-
-		}
-
-		public void onSuccess(Member result) {
-			setCurrentMember(result);
-		}
-	};
-
-	class AsyncCallbackAuthenticate implements AsyncCallback<Boolean> {
-
-		public void onFailure(Throwable caught) {
-			// Show the RPC error message to the user
-			DialogBox dialogBox = new DialogBox();
-			dialogBox.setTitle("Remote Procedure Call - Failure");
-			dialogBox.setText(caught.getMessage());
-			logger.log(Level.SEVERE, "Failure when authenticating member.",
-					caught);
-
-			dialogBox.center();
-			caught.printStackTrace();
-
-		}
-
-		public void onSuccess(Boolean result) {
-			if (result) {
-
-				parent.userAuthenticated();
-
-			} else {
-				DialogBox dialogBox = new DialogBox();
-				dialogBox.setTitle("Authentication failed");
-				dialogBox.setText("Username or password wrong.");
-				dialogBox.center();
-
-			}
-
-		}
-	}
-
-	class TextBoxMemberNumberChangeHandler implements ChangeHandler {
-		@Override
-		public void onChange(ChangeEvent event) {
-			int i = textBoxMemberNumber.getValue();
-			authService.getMemberByNumber(i, new AsyncCallbackMemberByNumber());
-		}
-	};
-
-	class TextBoxMemberNameChangeHandler implements BlurHandler {
-
-		@Override
-		public void onBlur(BlurEvent event) {
-			String name = suggestBox.getText();
-			authService.getMemberByName(name, new AsyncCallbackMemberByName());
-		}
-	};
 
 }

@@ -3,6 +3,8 @@ package de.tsvmalsch.client.composite;
 import java.util.Collection;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DoubleBox;
@@ -28,7 +30,7 @@ public class AdminComposite extends Composite {
 
 		public void onSuccess(Collection<Member> result) {
 			allMembers = result;
-			updateMemberList();
+			updateDialog();
 		}
 	}
 
@@ -37,7 +39,16 @@ public class AdminComposite extends Composite {
 
 		public void onSuccess(Configuration configuration) {
 			config = configuration;
-			updateMemberList();
+			updateDialog();
+		};
+	}
+
+	class StoreConfigurationCallback extends
+			DefaultAsyncCallback<Configuration> {
+
+		public void onSuccess(Configuration configuration) {
+			config = configuration;
+			updateDialog();
 		};
 	}
 
@@ -111,6 +122,23 @@ public class AdminComposite extends Composite {
 		HorizontalPanel hpButtons = new HorizontalPanel();
 		hpButtons.add(btnConfirm);
 		hpButtons.add(btnReset);
+
+		btnConfirm.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				confirm();
+			}
+		});
+
+		btnReset.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				reset();
+			}
+
+		});
 		vp.add(hpButtons);
 		initWidget(vp);
 
@@ -119,27 +147,39 @@ public class AdminComposite extends Composite {
 		userService.getAllMembers(new AsyncCallbackGetAllMembers());
 	}
 
-	private void updateMemberList() {
+	private void reset() {
+		configService
+				.getCurrentConfiguration(new AsyncCallbackGetCurrentConfig());
+	}
+
+	private void confirm() {
+		if (config != null) {
+			config.setAdministrators(txbListAdmins.getText());
+			config.setBlendingInstructors(txbListAdmins.getText());
+			config.setInvoiceNotificationMails(txbEmailNotifications.getText());
+			config.setPricePerBarLHe(Double.parseDouble(txbPriceBarLHe
+					.getText()));
+			config.setPricePerBarLO2(Double.parseDouble(txbPriceBarLO2
+					.getText()));
+			config.setNxCascadeOxygen(Double.parseDouble(txbO2ContentCascade
+					.getText()));
+			config.setWelcomeText(txbWelcomeText.getText());
+			configService.storeConfiguration(config,
+					new StoreConfigurationCallback());
+		}
+	}
+
+	private void updateDialog() {
 
 		if (config != null && allMembers != null) {
-
 			txbPriceBarLHe.setText(Double.toString(config.getPricePerBarLHe()));
 			txbPriceBarLO2.setText(Double.toString(config.getPricePerBarLO2()));
 			txbWelcomeText.setText(config.getWelcomeText());
 			txbO2ContentCascade.setValue(config.getNxCascadeOxygen());
+			txbListBlendingInstr.setText(config.getBlendingInstructors());
+			txbListAdmins.setText(config.getAdministrators());
+			txbEmailNotifications.setText(config.getInvoiceNotificationMails());
 
-			/*
-			 * String admins = MemberToListUtil
-			 * .memberListToCommaSeparatedString(config .getAdministrators());
-			 * String instructors = MemberToListUtil
-			 * .memberListToCommaSeparatedString(config .getAdministrators());
-			 * String accountant = MemberToListUtil
-			 * .memberListToCommaSeparatedString(config .getAdministrators());
-			 * 
-			 * txbListBlendingInstr.setText(instructors);
-			 * txbListAdmins.setText(admins);
-			 * txbEmailNotifications.setText(accountant);
-			 */
 		}
 	};
 }

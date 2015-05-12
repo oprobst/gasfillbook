@@ -29,7 +29,8 @@ public interface ConfigurationService extends RemoteService {
 	 * 
 	 * @param config
 	 *            the configuration to store
+	 * @return 
 	 */
-	void storeConfiguration(Configuration config);
+	Configuration storeConfiguration(Configuration config);
  
 }

@@ -1,14 +1,17 @@
 package de.tsvmalsch.server;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.tsvmalsch.client.ConfigurationService;
-import de.tsvmalsch.client.UserService;
 import de.tsvmalsch.shared.model.Configuration;
-import de.tsvmalsch.shared.model.Member;
 
 /**
  * Implementation of the Configuration Service.
@@ -19,7 +22,10 @@ import de.tsvmalsch.shared.model.Member;
 public class ConfigurationServiceImpl extends RemoteServiceServlet implements
 		ConfigurationService {
 
-	Configuration currConfig = new Configuration();
+	private Logger log = LoggerFactory
+			.getLogger(ConfigurationServiceImpl.class);
+
+	private Configuration currConfig = null;
 
 	/*
 	 * (non-Javadoc)
@@ -28,10 +34,25 @@ public class ConfigurationServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public Configuration getCurrentConfiguration() {
+		if (currConfig == null) {
+			Session session = HibernateUtil.getSessionFactory()
+					.getCurrentSession();
+			session.beginTransaction();
+			Query query = session
+					.createQuery("FROM de.tsvmalsch.shared.model.Configuration ");
+
+			List<Configuration> config = new ArrayList<Configuration>(
+					query.list());
+
+			session.getTransaction().commit();
+			this.currConfig = config.get(config.size() - 1);
+
+		}
 		return this.currConfig;
 	}
 
 	/*
+	 * 
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -39,9 +60,19 @@ public class ConfigurationServiceImpl extends RemoteServiceServlet implements
 	 * .shared.model.Configuration)
 	 */
 	@Override
-	public void storeConfiguration(Configuration config) {
-		this.currConfig = config;
-		// TODO save to db.
+	public Configuration storeConfiguration(Configuration config) {
+
+		try {
+			Session session = HibernateUtil.getSessionFactory()
+					.getCurrentSession();
+			session.beginTransaction();
+			session.save(config);
+			session.getTransaction().commit();
+			return config;
+		} catch (Exception e) {
+			log.error("Could not store Configuration ", e);
+			throw e;
+		}
 
 	}
 

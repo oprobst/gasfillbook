@@ -129,7 +129,7 @@ public class CreateDemoDataService {
 			mlist.add(m);
 			m.setFirstName(CreateDemoDataService.getFirstName(i % 250));
 			m.setLastName(CreateDemoDataService.getLastName(i % 94));
-			m.setMemberNumber(i);
+			m.setMemberNumber(i + 1);
 			m.setEncodedPassword("1");
 
 			m.setEmail(CreateDemoDataService.getFirstName(i % 250) + "."
