@@ -31,20 +31,20 @@ public class EMailServiceImpl extends RemoteServiceServlet implements
 
 		Thread sendMailThread = new Thread() {
 
-			public synchronized void start() {
+			public void run() {
 				try {
 					sendMail();
 				} catch (MessagingException e) {
-					// TODO Auto-generated catch block
+					log.error("Failed to send mail", e);
 					e.printStackTrace();
 				}
 			};
 		};
-		sendMailThread.run();
+		sendMailThread.start();
 
 	}
 
-	public boolean sendMail(/* Member m, Collection<FillingInvoiceItem> bill */)
+	private boolean sendMail(/* Member m, Collection<FillingInvoiceItem> bill */)
 			throws MessagingException {
 
 		String to = "OliverProbst@gmx.de";
@@ -94,9 +94,10 @@ public class EMailServiceImpl extends RemoteServiceServlet implements
 
 			t.sendMessage(message, message.getAllRecipients());
 
-
 			log.info("Send message!");
+
 		} catch (MessagingException mex) {
+
 			log.error("Could not send Mail", mex);
 
 			/*

@@ -9,7 +9,7 @@ public class SentEMailTest {
 		try {
 			email = new EMailServiceImpl();
 
-			email.sendMail();
+			email.startEmailThread();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
