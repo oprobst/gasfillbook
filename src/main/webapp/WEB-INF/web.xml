@@ -19,25 +19,33 @@
 		<servlet-name>calcServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.blend.GasBlenderServiceImpl</servlet-class>
 	</servlet>
-	
+
 	<servlet>
 		<servlet-name>configServlet</servlet-name>
 		<servlet-class>de.tsvmalsch.server.ConfigurationServiceImpl</servlet-class>
-	</servlet>  
-	
-		<servlet>
+	</servlet>
+
+	<servlet>
 		<servlet-name>accounting</servlet-name>
 		<servlet-class>de.tsvmalsch.server.AccountingServiceImpl</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>emailer</servlet-name>
+		<servlet-class>de.tsvmalsch.server.EMailServiceImpl</servlet-class>
+	</servlet>
 
 
+	<servlet-mapping>
+		<servlet-name>emailer</servlet-name>
+		<url-pattern>/gasfillbook/emailer</url-pattern>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>accounting</servlet-name>
 		<url-pattern>/gasfillbook/accounting</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
 		<servlet-name>cylinderServlet</servlet-name>
 		<url-pattern>/gasfillbook/cylinder</url-pattern>

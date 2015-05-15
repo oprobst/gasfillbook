@@ -51,6 +51,18 @@ public class Login extends Composite {
 		}
 	}
 
+	class AsyncCallbackEMailThread implements AsyncCallback<Void> {
+
+		public void onFailure(Throwable t) {
+			logger.log(Level.WARNING, "Problem when starting email thread", t);
+		}
+
+		@Override
+		public void onSuccess(Void result) {
+			logger.log(Level.INFO, "Started EMail Thread successfuly");
+		}
+	}
+
 	class AsyncCallbackAuthenticate implements AsyncCallback<Boolean> {
 
 		public void onFailure(Throwable caught) {
@@ -155,6 +167,9 @@ public class Login extends Composite {
 	private final UserServiceAsync authService = GWT.create(UserService.class);
 	private final ConfigurationServiceAsync configService = GWT
 			.create(ConfigurationService.class);
+	private final EMailServiceAsync mailService = GWT
+			.create(EMailService.class);
+
 	private Member currentMember;
 
 	private Label lblWelcome = new Label("Willkommen an der Füllstation");
@@ -252,6 +267,8 @@ public class Login extends Composite {
 
 		configService
 				.getCurrentConfiguration(new AsyncCallbackGetCurrentConfig());
+
+		mailService.startEmailThread(new AsyncCallbackEMailThread());
 	};
 
 	protected Member getCurrentMember() {

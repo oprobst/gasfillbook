@@ -45,6 +45,18 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.12</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+
+		<!-- Java Mail -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.5</version>
+		</dependency>
 
 		<!-- Persistence dependencies -->
 		<dependency>
