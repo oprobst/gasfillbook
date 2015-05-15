@@ -18,6 +18,12 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 
+		<!-- Default for testing: -->
+		<mail.user>testaccount@tief-dunkel-kalt.org</mail.user>
+		<mail.smtp.host>smtp.1und1.de</mail.smtp.host>
+		<!-- 'mail.password' must be provided as startup parameter for security 
+			reasons -->
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -134,6 +140,7 @@
 					<modules>
 						<module>de.tsvmalsch.gasfillbook</module>
 					</modules>
+					<extraJvmArgs>-Dmail.smtp.host=${mail.smtp.host} -Xmx512m -Dmail.user=${mail.user} -Dmail.password=${mail.password}</extraJvmArgs>
 				</configuration>
 			</plugin>
 		</plugins>
